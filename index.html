@@ -94,6 +94,11 @@ section{padding-block:clamp(56px,8vw,104px);border-top:1px solid var(--rule)}
 .piece p{color:var(--ink-2);margin-top:8px;max-width:52ch}
 .meta{font-family:var(--mono);font-size:.8rem;color:var(--ink-3);margin-top:12px}
 
+.more{display:inline-flex;align-items:center;gap:8px;margin-top:40px;text-decoration:none;color:var(--accent);font-weight:500}
+.more:hover{text-decoration:underline;text-underline-offset:4px}
+.more i{transition:transform .3s var(--ease)}
+.more:hover i{transform:translateX(3px)}
+
 /* Now: label column + rows */
 .now{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:clamp(24px,5vw,64px)}
 .now-list{display:grid;gap:0}
@@ -154,7 +159,8 @@ footer small{color:var(--ink-3);font-size:.88rem}
         <li><a href="#work">Work</a></li>
         <li><a href="#now">Now</a></li>
         <li class="hide-sm"><a href="#about">About</a></li>
-        <li><a href="https://github.com/paul-bebear" rel="noopener">GitHub</a></li>
+        <li><a href="archive/">Archive</a></li>
+        <li class="hide-sm"><a href="https://github.com/paul-bebear" rel="noopener">GitHub</a></li>
       </ul>
     </nav>
   </div>
@@ -209,6 +215,7 @@ footer small{color:var(--ink-3);font-size:.88rem}
           </div>
         </a>
       </div>
+      <a class="more reveal" href="archive/">Everything else, in the archive <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
     </div>
   </section>
 

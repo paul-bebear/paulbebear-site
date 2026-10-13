@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Archive · Paul Bébéar</title>
+<meta name="description" content="Everything Paul Bébéar has built that has a link: data visualisations, explainers, products and code.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230e6b5c'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='700' font-size='15' fill='white' text-anchor='middle'%3EPB%3C/text%3E%3C/svg%3E">
+<style>
+/* Design read: personal portfolio hub, clean analytical register. Native CSS, Geist + Geist Mono.
+   Dials: variance 6, motion 4, density 3. One accent (deep teal), cool neutrals, auto light/dark.
+   Radius system: media and panels 12px, interactive buttons full pill. */
+:root{
+  --bg:#f6f7f8; --surface:#ffffff; --ink:#15181c; --ink-2:#4b525b; --ink-3:#6c737c;
+  --rule:#e1e4e8; --accent:#0e6b5c; --accent-ink:#ffffff; --accent-soft:#e2f0ed;
+  --shadow:0 1px 2px rgba(21,24,28,.05),0 12px 32px -12px rgba(21,24,28,.14);
+  --r:12px;
+  --sans:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#111315; --surface:#181b1e; --ink:#eceef0; --ink-2:#b3b9c0; --ink-3:#8b929a;
+    --rule:#262a2f; --accent:#4cc3ab; --accent-ink:#0b1714; --accent-soft:#16302b;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 32px -12px rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111315; --surface:#181b1e; --ink:#eceef0; --ink-2:#b3b9c0; --ink-3:#8b929a;
+  --rule:#262a2f; --accent:#4cc3ab; --accent-ink:#0b1714; --accent-soft:#16302b;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 32px -12px rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+img{display:block;max-width:100%;height:auto}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:clamp(16px,4vw,40px)}
+h1,h2,h3{margin:0;letter-spacing:-.025em;text-wrap:balance}
+p{margin:0}
+
+/* Nav */
+.nav{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid transparent}
+.nav .wrap{height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-weight:600;text-decoration:none;letter-spacing:-.01em}
+.nav ul{display:flex;gap:clamp(14px,2.5vw,28px);list-style:none;margin:0;padding:0;font-size:.95rem}
+.nav ul a{text-decoration:none;color:var(--ink-2);transition:color .2s var(--ease)}
+.nav ul a:hover{color:var(--ink)}
+
+/* Hero: asymmetric split */
+.hero{display:grid;grid-template-columns:minmax(0,11fr) minmax(0,10fr);gap:clamp(28px,5vw,64px);align-items:center;padding-block:clamp(40px,7vw,88px) clamp(56px,8vw,104px)}
+.hero h1{font-size:clamp(2.3rem,4.4vw,3.4rem);line-height:1.05;font-weight:650}
+.hero p{margin-top:20px;color:var(--ink-2);font-size:1.12rem;max-width:42ch}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.btn{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;text-decoration:none;font-weight:500;font-size:.98rem;padding:12px 20px;border-radius:999px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);transition:transform .25s var(--ease),border-color .2s var(--ease),background .2s var(--ease)}
+.btn:hover{border-color:var(--ink-3)}
+.btn:active{transform:translateY(1px) scale(.98)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.hero-media{display:block;text-decoration:none;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--rule);background:#0b1220}
+.hero-media img{aspect-ratio:16/10;object-fit:cover;width:100%;transition:transform .8s var(--ease)}
+.hero-media:hover img{transform:scale(1.025)}
+.hero-cap{display:flex;justify-content:space-between;gap:12px;margin-top:12px;font-size:.92rem;color:var(--ink-2)}
+.hero-cap a{text-decoration:none;color:var(--ink);font-weight:500}
+.hero-cap a:hover{color:var(--accent)}
+
+/* Work: wide feature + two */
+section{padding-block:clamp(56px,8vw,104px);border-top:1px solid var(--rule)}
+.section-title{font-size:clamp(1.7rem,3vw,2.3rem);font-weight:650;line-height:1.1}
+.work-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(20px,3vw,32px);margin-top:40px}
+.piece{text-decoration:none;display:grid;gap:16px;align-content:start}
+.piece.wide{grid-column:1 / -1;grid-template-columns:minmax(0,7fr) minmax(0,4fr);align-items:center;gap:clamp(20px,4vw,48px)}
+.thumb{border-radius:var(--r);overflow:hidden;border:1px solid var(--rule);background:var(--surface);box-shadow:var(--shadow)}
+.thumb img{aspect-ratio:16/10;object-fit:cover;object-position:top;width:100%;transition:transform .8s var(--ease)}
+.piece:hover .thumb img{transform:scale(1.03)}
+.piece h3{font-size:1.3rem;font-weight:600;display:flex;align-items:center;gap:8px}
+.piece h3 i{font-size:1rem;color:var(--ink-3);transition:transform .3s var(--ease),color .2s}
+.piece:hover h3 i{transform:translate(2px,-2px);color:var(--accent)}
+.piece.wide h3{font-size:clamp(1.5rem,2.4vw,1.9rem)}
+.piece p{color:var(--ink-2);margin-top:8px;max-width:52ch}
+.meta{font-family:var(--mono);font-size:.8rem;color:var(--ink-3);margin-top:12px}
+
+.more{display:inline-flex;align-items:center;gap:8px;margin-top:40px;text-decoration:none;color:var(--accent);font-weight:500}
+.more:hover{text-decoration:underline;text-underline-offset:4px}
+.more i{transition:transform .3s var(--ease)}
+.more:hover i{transform:translateX(3px)}
+
+/* Now: label column + rows */
+.now{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:clamp(24px,5vw,64px)}
+.now-list{display:grid;gap:0}
+.now-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 24px;padding-block:24px;border-bottom:1px solid var(--rule)}
+.now-item:first-child{padding-top:4px}
+.now-item:last-child{border-bottom:0}
+.now-item h3{font-size:1.15rem;font-weight:600}
+.now-item p{grid-column:1;color:var(--ink-2);max-width:56ch}
+.now-item .link{grid-row:1;grid-column:2;align-self:start;font-size:.92rem;text-decoration:none;color:var(--accent);display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.now-item .link:hover{text-decoration:underline;text-underline-offset:3px}
+.now-item .status{grid-row:1;grid-column:2;font-family:var(--mono);font-size:.8rem;color:var(--ink-3);white-space:nowrap}
+
+/* About: vertical stack, wide measure */
+.about > *{max-width:760px}
+.about .lead{font-size:clamp(1.25rem,2.2vw,1.6rem);line-height:1.4;font-weight:500;letter-spacing:-.015em;margin-top:24px}
+.about .body{color:var(--ink-2);margin-top:20px;max-width:62ch}
+.interests{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px;padding:0;list-style:none}
+.interests li{font-size:.9rem;padding:6px 14px;border-radius:999px;background:var(--accent-soft);color:var(--ink)}
+
+footer{border-top:1px solid var(--rule);padding-block:40px 56px}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:20px;align-items:center}
+footer nav{display:flex;flex-wrap:wrap;gap:20px}
+footer a{text-decoration:none;color:var(--ink-2);display:inline-flex;align-items:center;gap:6px}
+footer a:hover{color:var(--ink)}
+footer small{color:var(--ink-3);font-size:.88rem}
+
+/* Motion: one load-in for the hero, reveal for sections entering view */
+@media (prefers-reduced-motion:no-preference){
+  .rise{opacity:0;transform:translateY(16px);animation:rise .9s var(--ease) forwards}
+  .rise.d1{animation-delay:.08s}.rise.d2{animation-delay:.16s}.rise.d3{animation-delay:.24s}
+  @keyframes rise{to{opacity:1;transform:none}}
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+  .reveal.in{opacity:1;transform:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+
+/* Mobile collapse */
+@media (max-width:860px){
+  .hero{grid-template-columns:1fr}
+  .piece.wide{grid-template-columns:1fr}
+  .now{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .work-grid{grid-template-columns:1fr}
+  .nav ul li.hide-sm{display:none}
+  .now-item{grid-template-columns:1fr}
+  .now-item .link,.now-item .status{grid-row:auto;grid-column:1}
+}
+</style>
+
+<style>
+.page-head{padding-block:clamp(40px,7vw,80px) clamp(24px,4vw,40px)}
+.page-head h1{font-size:clamp(2.3rem,4.4vw,3.4rem);line-height:1.05;font-weight:650}
+.page-head p{margin-top:16px;color:var(--ink-2);font-size:1.1rem;max-width:52ch}
+.group{padding-block:clamp(32px,5vw,56px);border-top:1px solid var(--rule)}
+.group-grid{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,9fr);gap:clamp(20px,4vw,56px)}
+.group h2{font-size:1.25rem;font-weight:600;letter-spacing:-.015em}
+.entries{display:grid}
+.entry{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 24px;align-items:baseline;padding-block:18px;text-decoration:none;border-bottom:1px solid var(--rule)}
+.entry:first-child{padding-top:2px}
+.entry:last-child{border-bottom:0}
+.entry h3{font-size:1.08rem;font-weight:600;display:flex;align-items:center;gap:8px}
+.entry h3 i{font-size:.95rem;color:var(--ink-3);transition:transform .3s var(--ease),color .2s}
+.entry:hover h3{color:var(--accent)}
+.entry:hover h3 i{transform:translate(2px,-2px);color:var(--accent)}
+.entry p{grid-column:1;color:var(--ink-2);max-width:60ch}
+.entry .where{grid-row:1;grid-column:2;font-family:var(--mono);font-size:.8rem;color:var(--ink-3);white-space:nowrap}
+@media (max-width:760px){.group-grid{grid-template-columns:1fr}.entry{grid-template-columns:1fr}.entry .where{grid-row:auto;grid-column:1}}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="/">Paul Bébéar</a>
+    <nav aria-label="Primary">
+      <ul>
+        <li><a href="/#work">Work</a></li>
+        <li><a href="/#now">Now</a></li>
+        <li class="hide-sm"><a href="/#about">About</a></li>
+        <li><a href="/archive/" aria-current="page" style="color:var(--ink)">Archive</a></li>
+        <li class="hide-sm"><a href="https://github.com/paul-bebear" rel="noopener">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main>
+  <div class="wrap page-head">
+    <h1>Archive</h1>
+    <p>Everything I've built that has a link. The home page shows a few; this is the full list.</p>
+  </div>
+
+  <section class="group">
+    <div class="wrap group-grid">
+      <h2>Work</h2>
+      <div class="entries">
+        <a class="entry" href="/half-line/">
+          <h3>The Half Line <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h3>
+          <span class="where">paulbebear.com, 2026</span>
+          <p>How few people hold half of all wealth or income, in 26 countries.</p>
+        </a>
+        <a class="entry" href="https://atlas-through-time.vercel.app" rel="noopener">
+          <h3>Atlas Through Time <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h3>
+          <span class="where">vercel.app, 2026</span>
+          <p>Interactive globe of borders, wars and nations across 5,000 years.</p>
+        </a>
+        <a class="entry" href="/spacex-ipo/">
+          <h3>SpaceX's IPO, checked <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h3>
+          <span class="where">paulbebear.com, 2026</span>
+          <p>A viral video on the SpaceX listing, checked claim by claim.</p>
+        </a>
+        <a class="entry" href="/capex-opex-da/">
+          <h3>Capex, opex and D&amp;A <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h3>
+          <span class="where">paulbebear.com, 2026</span>
+          <p>When a cost hits profit, and why regulated grids prefer to capitalise.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+  <section class="group">
+    <div class="wrap group-grid">
+      <h2>Building</h2>
+      <div class="entries">
+        <a class="entry" href="https://indexable.pro" rel="noopener">
+          <h3>Indexable <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h3>
+          <span class="where">indexable.pro, 2026</span>
+          <p>Structured data for restaurants and bars in Madrid.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+  <section class="group">
+    <div class="wrap group-grid">
+      <h2>Code</h2>
+      <div class="entries">
+        <a class="entry" href="https://github.com/paul-bebear/Arcane-Wines-DB" rel="noopener">
+          <h3>Arcane Wines DB <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h3>
+          <span class="where">GitHub, 2026</span>
+          <p>Database migration and BI frontend for a wine bar.</p>
+        </a>
+        <a class="entry" href="https://github.com/paul-bebear" rel="noopener">
+          <h3>All repositories <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h3>
+          <span class="where">GitHub</span>
+          <p>Everything on GitHub, including early projects.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+  <section class="group">
+    <div class="wrap group-grid">
+      <h2>Study tools</h2>
+      <div class="entries">
+        <a class="entry" href="/labour-economics/">
+          <h3>Labour economics study guide <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h3>
+          <span class="where">paulbebear.com, 2026</span>
+          <p>Interactive exam guide with quizzes on labour market fundamentals.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+<footer>
+  <div class="wrap">
+    <small>Paul Bébéar, Madrid</small>
+    <nav aria-label="Elsewhere">
+      <a href="https://www.linkedin.com/in/pbebear/" rel="noopener"><i class="ph ph-linkedin-logo" aria-hidden="true"></i>LinkedIn</a>
+      <a href="https://github.com/paul-bebear" rel="noopener"><i class="ph ph-github-logo" aria-hidden="true"></i>GitHub</a>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>

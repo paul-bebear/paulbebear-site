@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Labour Economics — Exam & Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f2ec;
+    --surface: #ede9e0;
+    --card: #fff;
+    --border: #d8d2c5;
+    --accent: #2d4a22;
+    --accent2: #c8401a;
+    --accent3: #8b6914;
+    --text: #1a1a14;
+    --muted: #7a7060;
+    --correct: #2d4a22;
+    --correct-bg: #e8f0e4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 0 0 80px;
+  }
+
+  header {
+    background: var(--accent);
+    padding: 28px 40px 22px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .header-left h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.01em;
+  }
+  .header-left p {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.6);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .mode-toggle {
+    display: flex;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .mode-btn {
+    padding: 9px 20px;
+    border: none;
+    background: transparent;
+    color: rgba(255,255,255,0.6);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .mode-btn.active {
+    background: #fff;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .container { max-width: 860px; margin: 0 auto; padding: 40px 24px 0; }
+
+  .progress-bar {
+    background: var(--border);
+    height: 3px;
+    border-radius: 3px;
+    margin-bottom: 36px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  .question-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 26px 30px;
+    margin-bottom: 14px;
+    transition: box-shadow 0.2s, border-color 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    animation: popIn 0.25s ease;
+  }
+  .question-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: #c0b8a8; }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .q-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--accent);
+    background: var(--correct-bg);
+    border: 1px solid rgba(45,74,34,0.2);
+    padding: 3px 9px;
+    border-radius: 4px;
+    white-space: nowrap;
+    margin-top: 3px;
+    font-weight: 500;
+  }
+  .q-text {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-weight: 400;
+    color: var(--text);
+  }
+
+  .options-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+  .option {
+    padding: 11px 15px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    font-size: 0.87rem;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--bg);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .option::before { content: '○'; color: var(--muted); font-size: 0.75rem; margin-top: 2px; flex-shrink: 0; }
+
+  .exam-mode .option:hover { border-color: var(--accent); background: var(--correct-bg); }
+  .exam-mode .option.correct { border-color: var(--accent); background: var(--correct-bg); font-weight: 500; color: var(--accent); }
+  .exam-mode .option.correct::before { content: '✓'; color: var(--accent); font-weight: 700; }
+  .exam-mode .option.wrong { border-color: var(--accent2); background: #faeae6; color: var(--accent2); }
+  .exam-mode .option.wrong::before { content: '✗'; color: var(--accent2); }
+
+  .study-mode .option { cursor: default; }
+  .study-mode .option.correct { border-color: var(--accent); background: var(--correct-bg); color: var(--accent); font-weight: 600; }
+  .study-mode .option.correct::before { content: '✓'; color: var(--accent); font-weight: 700; }
+  .study-mode .option:not(.correct) { color: var(--muted); border-color: #e8e2d8; }
+  .study-mode .option:not(.correct)::before { content: '·'; }
+
+  .study-note {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: #fffbf0;
+    border-left: 3px solid var(--accent3);
+    border-radius: 0 6px 6px 0;
+    font-size: 0.82rem;
+    color: #5a4010;
+    line-height: 1.65;
+    display: none;
+  }
+  .study-mode .study-note { display: block; }
+
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 40px 0 20px;
+  }
+  .section-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--accent);
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+
+  .score-box {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--accent);
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.7);
+    display: none;
+    box-shadow: 0 4px 20px rgba(45,74,34,0.3);
+  }
+  .score-box span { color: #fff; font-weight: 500; }
+  .exam-mode .score-box { display: block; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Labour Economics</h1>
+    <p>50 Questions · EU-LFS · Supply & Demand · Wages · Unemployment</p>
+  </div>
+  <div class="mode-toggle">
+    <button class="mode-btn active" onclick="setMode('exam')">Exam</button>
+    <button class="mode-btn" onclick="setMode('study')">Study</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+  <div id="questions-container"></div>
+</div>
+
+<div class="score-box" id="score-box">Score: <span id="score-val">0 / 50</span></div>
+
+<script>
+const questions = [
+  { n:1, q:"What is the primary objective of the EU Labour Force Survey (EU-LFS)?", opts:["To measure household income and wealth","To provide harmonised data on labour market participation across EU Member States","To collect firm-level data on employment costs","To monitor short-term business cycles"], ans:"To provide harmonised data on labour market participation across EU Member States", note:"The EU-LFS provides comparable employment/unemployment statistics across all EU member states using harmonised definitions — it's the main source for EU labour market data." },
+  { n:2, q:"The EU Labour Force Survey is mainly:", opts:["An administrative dataset based on tax records","A census of the entire working-age population","A household sample survey conducted in all EU Member States","A firm-based survey coordinated by private institutions"], ans:"A household sample survey conducted in all EU Member States", note:"Key distinction: it's a survey (sample-based, not census), conducted at the household level, coordinated by Eurostat." },
+  { n:3, q:"Which population group is covered by the EU Labour Force Survey?", opts:["Only employed individuals","Only registered unemployed persons","The population living in private households aged 15 and over","The entire population, including those in collective households"], ans:"The population living in private households aged 15 and over", note:"It excludes collective households (dormitories, prisons, care homes). Working-age threshold = 15+. Note: some countries use 16+ due to national specifics." },
+  { n:4, q:"How is international comparability of EU-LFS data ensured?", opts:["By using country-specific definitions of employment","By applying common concepts and definitions based on ILO standards","By converting national data ex post using statistical models","By focusing exclusively on euro-area countries"], ans:"By applying common concepts and definitions based on ILO standards", note:"ILO standards define employment/unemployment universally: employed = worked ≥1 hour in reference week; unemployed = no work + available + actively searching." },
+  { n:5, q:"In a linear regression where the dependent variable is the logarithm of wages and the independent variable is years of schooling, how should the estimated coefficient on schooling be interpreted?", opts:["As the absolute increase in wages associated with one additional year of schooling","As the percentage change in wages associated with one additional year of schooling, approximately","As the probability of being employed after one additional year of schooling","As the total return to education over the life cycle"], ans:"As the percentage change in wages associated with one additional year of schooling, approximately", note:"Log-linear model: ln(w) = α + β·S + ε. The coefficient β ≈ percentage change in wages per additional year of schooling (Mincer equation). Exact interpretation: (e^β − 1) × 100%." },
+  { n:6, q:"What does the margin of error of an estimated regression coefficient capture?", opts:["The difference between the estimated coefficient and its true population value","The range within which the true coefficient is expected to lie with a given level of confidence","The probability that the coefficient is statistically significant","The size of the sample used in the regression"], ans:"The range within which the true coefficient is expected to lie with a given level of confidence", note:"Margin of error = ±critical value × standard error. Gives a confidence interval: e.g. 95% CI means if we repeated the sampling 100 times, ~95 intervals would contain the true β." },
+  { n:7, q:"How is statistical significance of a regression coefficient typically assessed?", opts:["By checking whether the estimated coefficient is large in absolute value","By comparing the p-value to a pre-specified significance level (e.g. 5%)","By verifying that the regression has a high R-squared","By ensuring that the margin of error is smaller than the coefficient"], ans:"By comparing the p-value to a pre-specified significance level (e.g. 5%)", note:"p-value = probability of observing a t-statistic this extreme if H₀ (β=0) were true. If p < 0.05, reject H₀ → statistically significant at 5% level. R² measures fit, not significance." },
+  { n:8, q:"If a regression of log wages on years of schooling yields a statistically insignificant coefficient on schooling, which interpretation is most appropriate?", opts:["Schooling has no effect on wages in the population","The estimated return to schooling is too small to matter economically","The data do not provide sufficient evidence to conclude that schooling affects wages","The regression model is misspecified"], ans:"The data do not provide sufficient evidence to conclude that schooling affects wages", note:"Absence of evidence ≠ evidence of absence. Insignificance could be due to small sample, high variance, omitted variables, or multicollinearity — not necessarily zero effect." },
+  { n:9, q:"Who are the key actors in the labor market?", opts:["Workers (employees), Firms (employers), and the Government.","Consumers, Retailers, and Advertising Agencies.","Central Banks, Commercial Banks, and Insurance Companies.","Importers, Exporters, and Customs Authorities."], ans:"Workers (employees), Firms (employers), and the Government.", note:"Workers supply labor, firms demand it, and government sets the rules (minimum wage, employment protection, taxes, benefits). All three interact to determine wages and employment levels." },
+  { n:10, q:"Which kind of questions do labor economists analyze?", opts:["How do changes in the minimum wage affect employment levels and wage distribution?","What is the optimal monetary policy to control inflation without raising unemployment?","How do international tariffs impact the trade balance between two countries?","What are the most effective strategies for corporate mergers and acquisitions?"], ans:"How do changes in the minimum wage affect employment levels and wage distribution?", note:"Labor economics focuses on the labor market specifically: wages, employment, unemployment, discrimination, human capital, and labor institutions — not monetary policy or trade policy." },
+  { n:11, q:"The labor force participation rate is defined as:", opts:["Employed workers divided by total population","Employed workers divided by working-age population","Labor force divided by working-age population","Labor force divided by total population"], ans:"Labor force divided by working-age population", note:"LFPR = (Employed + Unemployed) / Working-age population. The labor force includes all who are either employed OR actively seeking work. Working-age is typically 15–64 or 15+." },
+  { n:12, q:"An individual belongs to the labor force if he/she is:", opts:["Of working age","Employed or actively searching for a job","Employed full-time only","Receiving unemployment benefits"], ans:"Employed or actively searching for a job", note:"Labor force = Employed + Unemployed. The unemployed must be: (1) without work, (2) available to work, and (3) actively searching. Benefits alone don't determine membership." },
+  { n:13, q:"Which effect explains why higher wages may increase hours worked?", opts:["Income effect","Substitution effect","Wealth effect","Discouragement effect"], ans:"Substitution effect", note:"Higher wage → each hour of leisure is more expensive (opportunity cost rises) → substitute away from leisure toward work. Income effect works the opposite direction." },
+  { n:14, q:"The income effect of a wage increase tends to:", opts:["Increase labor supply","Reduce labor supply","Leave labor supply unchanged","Increase productivity"], ans:"Reduce labor supply", note:"Higher wage → higher income → can afford more leisure → work fewer hours. Income effect dominates substitution at high wages, causing the backward-bending labor supply curve." },
+  { n:15, q:"A backward-bending labor supply curve occurs when:", opts:["Substitution effect dominates at all wages","Income effect dominates at high wages","Productivity decreases","Labor demand is perfectly elastic"], ans:"Income effect dominates at high wages", note:"At low wages: substitution dominates → more work as wages rise. At high wages: income effect dominates → fewer hours as wages rise further. The curve bends backward at high wage levels." },
+  { n:16, q:"Labor demand is derived from:", opts:["Workers' preferences","Firms' profit maximization","Government regulation","Labor supply decisions"], ans:"Firms' profit maximization", note:"Firms hire labor until MRP_L = Wage (marginal revenue product = wage). Demand for labor is derived — it comes from demand for the goods workers produce, not labor for its own sake." },
+  { n:17, q:"A rise in labor productivity, ceteris paribus, leads to:", opts:["Lower labor demand","Higher equilibrium wage and employment","Higher unemployment","Lower participation rate"], ans:"Higher equilibrium wage and employment", note:"Higher productivity → MRP_L shifts up → firms willing to hire more at each wage → labor demand curve shifts right → equilibrium wage and quantity both rise." },
+  { n:18, q:"The elasticity of labor demand is higher when:", opts:["Labor costs are a small share of total costs","The product demand is inelastic","Substitutes for labor are easily available","The time horizon is short"], ans:"Substitutes for labor are easily available", note:"Marshall's rules of derived demand: labor demand is more elastic (1) the more substitutable labor is, (2) the more elastic product demand, (3) the larger labor's cost share, (4) the longer the time horizon." },
+  { n:19, q:"In a competitive labor market, the equilibrium wage is determined by:", opts:["Government decree","The intersection of labor supply and labor demand","Firm bargaining power alone","Worker union negotiations"], ans:"The intersection of labor supply and labor demand", note:"In a perfectly competitive market: wages = equilibrium at S=D intersection. Deviations (min wage above equilibrium, unions) introduce wedges between supply and demand." },
+  { n:20, q:"A monopsony in the labor market refers to:", opts:["Many firms competing for workers","One dominant employer in the market","A labor union controlling wages","A government wage board"], ans:"One dominant employer in the market", note:"Monopsony = single buyer of labor. The firm faces an upward-sloping labor supply curve, sets wages below competitive level, and hires fewer workers than optimal → labor market inefficiency." },
+  { n:21, q:"Human capital theory suggests that:", opts:["Wages are set by tradition","Workers invest in skills to raise future earnings","Firms set wages based on seniority","Education has no effect on wages"], ans:"Workers invest in skills to raise future earnings", note:"Becker's human capital theory: education and training are investments. Workers incur costs now (tuition, foregone earnings) for higher future wages. Mincerian earnings function quantifies returns." },
+  { n:22, q:"The 'Mincer equation' is used to estimate:", opts:["Firm profitability","Returns to education and experience on wages","Unemployment duration","Labor force participation rates"], ans:"Returns to education and experience on wages", note:"ln(w) = α + β₁·S + β₂·Exp + β₃·Exp² + ε. β₁ ≈ return to one additional year of schooling. The concave experience term (Exp²) captures diminishing returns to experience." },
+  { n:23, q:"On-the-job training is typically divided into:", opts:["Voluntary and mandatory training","Formal and informal training","General and specific training","Short-term and long-term training"], ans:"General and specific training", note:"General training raises productivity at many firms → worker bears cost (lower wages during training, earns returns later). Specific training only useful at current firm → firm shares cost and returns." },
+  { n:24, q:"If a firm provides specific training, it typically:", opts:["Pays the full market wage during training","Pays above market wage to retain trained workers","Shares the cost and benefits with the worker","Charges the worker for training costs"], ans:"Shares the cost and benefits with the worker", note:"Specific training is bilateral hold-up: if the firm pays all costs, workers could quit; if workers bear all costs, firms could fire them post-training. Nash solution = shared investment and returns." },
+  { n:25, q:"The 'signalling theory' by Spence suggests that education:", opts:["Always increases productivity","Is primarily valued as a credible signal of ability","Is subsidised by firms","Has no labour market returns"], ans:"Is primarily valued as a credible signal of ability", note:"Spence's model: education may not increase productivity — it signals pre-existing ability to employers. High-ability workers get education cheaply as a signal; low-ability can't afford to mimic." },
+  { n:26, q:"Wage discrimination occurs when:", opts:["Wages differ due to productivity differences","Wages differ for identical workers due to personal characteristics","Workers in different industries earn different wages","Firms pay more to experienced workers"], ans:"Wages differ for identical workers due to personal characteristics", note:"Discrimination = same productivity, different pay due to race, gender, etc. (Becker's taste for discrimination). Distinguished from compensating differentials (different jobs) or human capital differences." },
+  { n:27, q:"The 'gender wage gap' refers to:", opts:["Differences in hours worked between genders","Differences in average earnings between men and women","Differences in educational attainment","Differences in job preferences"], ans:"Differences in average earnings between men and women", note:"Raw gap includes compositional differences (occupation, sector, hours). Unexplained gap (after controlling for all observables) is the discrimination component. EU average ≈ 13% unadjusted." },
+  { n:28, q:"Compensating wage differentials arise because:", opts:["Workers with higher education earn more","Jobs with worse characteristics must pay higher wages to attract workers","Firms in monopolistic industries pay more","Government regulations set wages by job type"], ans:"Jobs with worse characteristics must pay higher wages to attract workers", note:"Rosen's hedonic wage theory: unpleasant jobs (dangerous, dirty, irregular hours) require wage premiums to compensate workers for non-wage disamenities. Equalizes total utility across jobs." },
+  { n:29, q:"Which of the following is NOT a type of unemployment?", opts:["Frictional unemployment","Seasonal unemployment","Structural unemployment","Permanent unemployment"], ans:"Permanent unemployment", note:"Standard taxonomy: frictional (search/matching), structural (skills mismatch), cyclical (recession-driven), seasonal (weather/holiday patterns). 'Permanent unemployment' isn't a recognized category." },
+  { n:30, q:"Frictional unemployment is primarily caused by:", opts:["Lack of jobs in the economy","Workers transitioning between jobs","Technological change making skills obsolete","Economic recession"], ans:"Workers transitioning between jobs", note:"Frictional unemployment = time cost of matching workers to jobs. It exists even in healthy economies. Reduced by better information (job boards, agencies) but never eliminated — some search is natural." },
+  { n:31, q:"Structural unemployment arises when:", opts:["The economy is in recession","Workers lack the skills demanded by available jobs","Workers choose not to work","Jobs are seasonal"], ans:"Workers lack the skills demanded by available jobs", note:"Structural = mismatch between worker skills and job requirements (geographic or skill mismatch). Addressed by retraining programs. Persists even during economic booms — it's structural, not cyclical." },
+  { n:32, q:"The 'natural rate of unemployment' includes:", opts:["Only cyclical unemployment","Frictional and structural unemployment","Only frictional unemployment","All forms of unemployment"], ans:"Frictional and structural unemployment", note:"Natural rate = unemployment rate when labor market is in equilibrium (no cyclical unemployment). It's not zero because frictional and structural are always present. Related to NAIRU." },
+  { n:33, q:"Cyclical unemployment is associated with:", opts:["Job search frictions","Recessions and low aggregate demand","Skills mismatch","Seasonal labor demand"], ans:"Recessions and low aggregate demand", note:"Cyclical unemployment = Keynesian unemployment. When AD falls, firms reduce output and lay off workers. Addressed by monetary/fiscal stimulus. Keynes's main focus vs. classical economists." },
+  { n:34, q:"The NAIRU is the unemployment rate at which:", opts:["Inflation accelerates","Inflation is stable","Unemployment is zero","Wages are constant in nominal terms"], ans:"Inflation is stable", note:"NAIRU = Non-Accelerating Inflation Rate of Unemployment. At NAIRU, actual unemployment = natural rate. Below NAIRU → labor market too tight → wage pressures → inflation rises. Above NAIRU → slack → disinflation." },
+  { n:35, q:"According to the expectations-augmented Phillips curve:", opts:["There is a permanent trade-off between inflation and unemployment","Monetary policy cannot affect unemployment in the short run","Only unexpected inflation affects unemployment","Inflation does not matter"], ans:"Only unexpected inflation affects unemployment", note:"Friedman-Phelps: πt = πᵉt − α(Ut − U*). Surprise inflation can reduce unemployment temporarily by cutting real wages. Expected inflation is built into wages → no long-run trade-off." },
+  { n:36, q:"If unemployment is below the NAIRU:", opts:["Inflation tends to fall","Inflation tends to accelerate","Real wages fall permanently","Productivity rises"], ans:"Inflation tends to accelerate", note:"Below NAIRU → excess demand for labor → wage growth exceeds productivity → unit labor costs rise → firms raise prices → inflation accelerates. This is why central banks monitor NAIRU." },
+  { n:37, q:"The DMP model explains unemployment through:", opts:["Wage rigidity only","Search and matching frictions","Minimum wages","Trade unions"], ans:"Search and matching frictions", note:"Diamond-Mortensen-Pissarides (Nobel 2010): unemployment arises from time needed to match workers and vacancies. Key equations: matching function M(U,V), job creation/destruction conditions, Nash bargaining." },
+  { n:38, q:"Job separation rate affects:", opts:["Only labor supply","Only labor demand","Unemployment dynamics","Productivity growth"], ans:"Unemployment dynamics", note:"In DMP: steady-state unemployment u* = s / (s + f), where s = separation rate and f = job finding rate. Higher separation rate → higher unemployment. Separation is exogenous in basic DMP, endogenous in extensions." },
+  { n:39, q:"A negative productivity shock will:", opts:["Reduce unemployment","Increase labor demand","Increase unemployment","Leave unemployment unchanged"], ans:"Increase unemployment", note:"Negative productivity shock → MRP_L falls → firms find it less profitable to maintain vacancies → job creation falls → job finding rate falls → unemployment rises. DMP Beveridge curve shifts." },
+  { n:40, q:"Cyclical unemployment is mainly driven by:", opts:["Structural reforms","Business cycle fluctuations","Demographic changes","Labor market institutions"], ans:"Business cycle fluctuations", note:"Cyclical unemployment tracks GDP gaps. In recessions, it rises sharply; in expansions, it falls. Okun's law quantifies the relationship: ~1pp GDP gap ≈ 0.5pp change in unemployment." },
+  { n:41, q:"A binding minimum wage is set:", opts:["Below equilibrium wage","At equilibrium wage","Above equilibrium wage","Equal to productivity"], ans:"Above equilibrium wage", note:"Binding = has actual effect. If min wage < equilibrium, it's non-binding (irrelevant). Only when set above equilibrium does it constrain wages and potentially cause unemployment." },
+  { n:42, q:"A binding minimum wage may cause:", opts:["Higher employment","Lower unemployment","Excess labor supply","Higher productivity automatically"], ans:"Excess labor supply", note:"Minimum wage above equilibrium: Qs > Qd (more workers want to work than firms will hire) → excess supply = unemployment. BUT monopsony model reverses this — can raise employment." },
+  { n:43, q:"The tax wedge refers to:", opts:["Difference between gross and net wages","Income tax rate only","Corporate tax only","Consumption taxes"], ans:"Difference between gross and net wages", note:"Tax wedge = employer labor cost − employee take-home pay. Includes: income tax + employee social contributions + employer social contributions. High wedges reduce employment and participation incentives." },
+  { n:44, q:"Higher tax wedge tend to:", opts:["Increase labor demand","Reduce labor supply","Increase participation","Reduce unemployment"], ans:"Reduce labor supply", note:"Higher tax wedge → lower net wage for workers → reduces incentive to supply labor (substitution effect: leisure becomes relatively cheaper). Also reduces labor demand via higher employer costs." },
+  { n:45, q:"Unemployment insurance mainly aims to:", opts:["Increase productivity","Provide income smoothing","Eliminate unemployment","Increase labor demand"], ans:"Provide income smoothing", note:"UI = consumption smoothing during job loss. Also functions as automatic stabilizer (maintains AD during recessions). Moral hazard tradeoff: higher benefits → longer search → higher unemployment." },
+  { n:46, q:"Generous unemployment benefits may:", opts:["Reduce job search duration","Increase reservation wages","Eliminate frictional unemployment","Increase vacancies"], ans:"Increase reservation wages", note:"Higher benefits → workers can afford to be choosier → reservation wage rises → longer unemployment duration. Mortensen effect: also improves job quality by allowing better matching." },
+  { n:47, q:"A manufacturing company pays above market wage to increase effort under imperfect monitoring. Which mechanism justifies this 'efficiency wage'?", opts:["Paying more attracts a larger number of applicants, reducing recruitment costs.","A higher wage increases workers' purchasing power, stimulating aggregate demand and the firm's profits.","A higher wage increases the cost to workers of losing their job (the cost of job loss), incentivizing them to provide greater effort and reducing turnover.","Paying higher wages is a legal requirement for large companies in many countries, aimed at reducing income inequality"], ans:"A higher wage increases the cost to workers of losing their job (the cost of job loss), incentivizing them to provide greater effort and reducing turnover.", note:"Shapiro-Stiglitz efficiency wage: wage above market → workers fear job loss → shirk less. The 'cost of job loss' = W − outside option. Makes monitoring unnecessary when the wage premium is high enough." },
+  { n:48, q:"According to efficiency wage theory, if many firms adopt this strategy, which consequence is most likely at the aggregate level?", opts:["The unemployment rate will decrease towards zero, as higher wages stimulate hiring.","Involuntary unemployment will be created, because the wage paid will be above the market equilibrium level.","Wage inflation will accelerate indefinitely, triggering a wage-price spiral.","Labor's share of national income will decrease drastically in favor of profits."], ans:"Involuntary unemployment will be created, because the wage paid will be above the market equilibrium level.", note:"If all firms pay efficiency wages above equilibrium, aggregate wages stay high, Ld < Ls → involuntary unemployment. This unemployment is the 'disciplining device' — it reinforces the threat of job loss." },
+  { n:49, q:"According to the intertemporal substitution hypothesis, how do workers respond to a temporary increase in the real wage?", opts:["They reduce labor supply because higher wages increase lifetime income","They increase labor supply in the period when wages are temporarily high","They do not change labor supply because preferences are time-invariant","They permanently increase labor supply in all future periods"], ans:"They increase labor supply in the period when wages are temporarily high", note:"Intertemporal substitution: workers 'sell' labor when its price is highest. Temporary high wage → work more now, less when wages are normal. Key mechanism behind RBC (Real Business Cycle) models." },
+  { n:50, q:"Which empirical implication is most consistent with the intertemporal substitution hypothesis?", opts:["Workers with higher permanent wages work fewer hours over their lifetime","Hours worked respond more strongly to predictable changes in permanent wages than to temporary wage fluctuations","Labor supply is more elastic with respect to temporary wage changes than to permanent wage changes","Labor supply decisions are unaffected by expectations about future wages"], ans:"Labor supply is more elastic with respect to temporary wage changes than to permanent wage changes", note:"Frisch elasticity > Marshallian elasticity. Temporary changes trigger substitution across time; permanent changes trigger mainly income effects. MaCurdy and others find Frisch elasticity ≈ 0.1–0.5 empirically." }
+];
+
+const sections = [
+  { title: "EU-LFS & Econometrics", range: [1,8] },
+  { title: "Labour Market Fundamentals", range: [9,20] },
+  { title: "Human Capital & Wages", range: [21,28] },
+  { title: "Unemployment Theory", range: [29,40] },
+  { title: "Institutions & Policy", range: [41,50] }
+];
+
+let mode = 'exam';
+let answered = {};
+let score = 0;
+
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  render();
+}
+
+function render() {
+  const container = document.getElementById('questions-container');
+  container.innerHTML = '';
+  document.body.className = mode+'-mode';
+
+  let html = '';
+  let sIdx = 0;
+
+  questions.forEach((q, i) => {
+    if (sIdx < sections.length && q.n === sections[sIdx].range[0]) {
+      html += `<div class="section-divider"><div class="section-line"></div><div class="section-label">${sections[sIdx].title}</div><div class="section-line"></div></div>`;
+      sIdx++;
+    }
+
+    const isAnswered = answered[q.n];
+    let optionsHtml = q.opts.map(opt => {
+      const isCorrect = opt === q.ans;
+      let cls = '';
+      if (mode === 'study') { cls = isCorrect ? ' correct' : ''; }
+      else if (mode === 'exam' && isAnswered) { cls = isCorrect ? ' correct' : (opt === answered[q.n] ? ' wrong' : ''); }
+      const clickAttr = mode === 'exam' && !isAnswered ? `onclick="answer(${q.n}, '${opt.replace(/'/g,"\\'").replace(/"/g,'&quot;')}', this)"` : '';
+      return `<li class="option${cls}" ${clickAttr}>${opt}</li>`;
+    }).join('');
+
+    const noteHtml = `<div class="study-note">💡 ${q.note}</div>`;
+
+    html += `
+      <div class="question-card">
+        <div class="q-header">
+          <span class="q-num">Q${String(q.n).padStart(2,'0')}</span>
+          <p class="q-text">${q.q}</p>
+        </div>
+        <ul class="options-list">${optionsHtml}</ul>
+        ${noteHtml}
+      </div>`;
+  });
+
+  container.innerHTML = html;
+  updateProgress();
+  updateScore();
+}
+
+function answer(qNum, chosen, el) {
+  if (answered[qNum]) return;
+  const q = questions.find(x => x.n === qNum);
+  const correct = chosen === q.ans;
+  answered[qNum] = chosen;
+  if (correct) score++;
+
+  const card = el.closest('.question-card');
+  card.querySelectorAll('.option').forEach(opt => {
+    const text = opt.textContent.trim();
+    if (text === q.ans.trim()) opt.classList.add('correct');
+    else if (text === chosen.trim()) opt.classList.add('wrong');
+    opt.onclick = null;
+  });
+  updateProgress();
+  updateScore();
+}
+
+function updateProgress() {
+  const pct = mode === 'study' ? 100 : (Object.keys(answered).length / questions.length * 100);
+  document.getElementById('progress').style.width = pct + '%';
+}
+
+function updateScore() {
+  const total = Object.keys(answered).length;
+  document.getElementById('score-val').textContent = `${score} / ${total} answered`;
+}
+
+render();
+</script>
+</body>
+</html>

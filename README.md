@@ -7,6 +7,8 @@ index.html              home: hero, Work, Now, About
 half-line/index.html    The Half Line
 spacex-ipo/index.html   SpaceX IPO teardown
 capex-opex-da/index.html  Capex, Opex and D&A
+archive/index.html      full list of linked work (nav: Archive)
+labour-economics/index.html  Labour economics study guide
 assets/                 thumbnails (1200x750 webp)
 ```
 
@@ -27,5 +29,5 @@ When a piece changes: replace its `index.html` here, refresh the thumbnail if th
 
 Local fix carried in the site copy: `capex-opex-da` has `align-content:start` on `.branch` (the "No" tag stretched into a tall pill). Re-apply it if the page is replaced, or fix it in the artifact.
 
-## Before going live
-- Point paulbebear.com at the Vercel project.
+## Adding a piece
+Home page Work section: 4-6 pieces max. Every published piece also gets an entry in archive/index.html.
