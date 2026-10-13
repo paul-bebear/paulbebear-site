@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Premium Ladder</title>
+<meta name="description" content="How many times the median full-time salary do banking, consulting and Big Tech careers pay, in seven countries, from the first job to 20 years in, before and after tax.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232a78d6'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='700' font-size='15' fill='white' text-anchor='middle'%3EPB%3C/text%3E%3C/svg%3E">
+<style>
+/* Design read: editorial data piece for LinkedIn visitors and recruiters, companion to The Half Line.
+   Reuses The Half Line's type and tokens so the two read as one series (Bricolage Grotesque, Source Serif 4, IBM Plex Mono).
+   Dials: variance 5, motion 3, density 5. One accent (blue). Radius: controls 8px, panels 10px. Auto light/dark. */
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#14171c; --ink-2:#4b525d; --ink-3:#6b737e;
+  --rule:#dde1e7; --grid:#e9ecf0; --accent:#2a78d6; --accent-soft:#d6e6f9;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --f-data:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111418; --panel:#181c21; --ink:#eef0f3; --ink-2:#b4bac3; --ink-3:#8f97a2;
+  --rule:#2a3038; --grid:#232930; --accent:#4b93ea; --accent-soft:#1d3554; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111418; --panel:#181c21; --ink:#eef0f3; --ink-2:#b4bac3; --ink-3:#8f97a2;
+  --rule:#2a3038; --grid:#232930; --accent:#4b93ea; --accent-soft:#1d3554; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-underline-offset:3px;text-decoration-thickness:1px}
+a:hover{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:clamp(16px,4vw,32px);padding-block:28px 72px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.015em}
+h1{font-size:clamp(40px,6.4vw,64px);line-height:1.02;font-weight:700}
+h2{font-size:clamp(22px,2.6vw,28px);font-weight:700;line-height:1.15}
+h3{font-size:17px;font-weight:700;line-height:1.3}
+p{margin:0}
+.label{font-family:var(--f-data);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.num{font-family:var(--f-data);font-variant-numeric:tabular-nums}
+
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;font:13px var(--f-data);color:var(--ink-3);margin-bottom:clamp(28px,5vw,48px)}
+.top a{text-decoration:none;color:var(--ink-2)}
+.top a:hover{color:var(--accent)}
+
+header{display:grid;gap:16px;margin-bottom:32px;max-width:760px}
+.lede{font-size:clamp(18px,2vw,20px);color:var(--ink-2);max-width:62ch}
+.lede b{color:var(--ink);font-weight:600}
+
+/* controls */
+.controls{display:grid;grid-template-columns:auto auto auto minmax(240px,1fr);gap:16px 28px;align-items:end;padding-block:18px;border-block:1px solid var(--rule)}
+.ctl{display:grid;gap:8px;min-width:0}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:8px;overflow:hidden;background:var(--panel);width:max-content;max-width:100%}
+.seg button{font:500 13px var(--f-data);padding:9px 13px;border:0;background:transparent;color:var(--ink-2);cursor:pointer;white-space:nowrap;transition:background-color .2s var(--ease),color .2s var(--ease)}
+.seg button+button{border-left:1px solid var(--rule)}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.seg button:active{transform:translateY(1px)}
+.years{display:grid;gap:6px}
+.years-head{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.years-head .val{font:500 13px var(--f-data);color:var(--ink)}
+.years input{width:100%;accent-color:var(--accent);margin:0;height:24px}
+.ticks{display:flex;justify-content:space-between;font:11px var(--f-data);color:var(--ink-3);padding-inline:2px}
+@media (max-width:860px){.controls{grid-template-columns:1fr 1fr}.years{grid-column:1/-1}}
+@media (max-width:520px){.controls{grid-template-columns:1fr}.seg{width:100%}.seg button{flex:1;padding-inline:8px}}
+
+/* chart */
+.chart-wrap{margin-top:28px}
+.chart-title{font:600 clamp(16px,1.8vw,18px)/1.35 var(--f-display);max-width:70ch}
+.chart-sub{font:13px var(--f-data);color:var(--ink-3);margin-top:6px}
+.chart{position:relative;margin-top:18px;--lab:170px;--val:104px}
+.axis{position:relative;height:22px;margin-left:var(--lab);margin-right:var(--val)}
+.axis span{position:absolute;transform:translateX(-50%);font:11px var(--f-data);color:var(--ink-3);top:0}
+.plot{position:relative;margin-left:var(--lab);margin-right:var(--val)}
+.gridline{position:absolute;top:0;bottom:0;width:1px;background:var(--grid)}
+.gridline.one{background:var(--rule)}
+.rows{position:relative}
+.row{position:absolute;left:0;right:0;height:var(--rh);display:grid;grid-template-columns:var(--lab) 1fr var(--val);align-items:center;transition:transform .5s var(--ease),opacity .3s var(--ease);cursor:default;border-radius:6px}
+.row:hover,.row.active{background:color-mix(in srgb,var(--accent-soft) 55%,transparent)}
+.row .who{padding-left:8px;min-width:0}
+.row .who b{display:block;font:600 15px/1.2 var(--f-display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .who small{display:block;font:11px var(--f-data);color:var(--ink-3)}
+.row .track{position:relative;height:100%}
+.row .bar{position:absolute;left:0;top:50%;height:2px;width:100px;margin-top:-1px;background:var(--accent);transform-origin:0 50%;transition:transform .5s var(--ease)}
+.row .bar.dash{background:repeating-linear-gradient(90deg,var(--accent) 0 5px,transparent 5px 9px)}
+.row .dot{position:absolute;left:-7px;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px var(--bg);transition:transform .5s var(--ease)}
+.row .dot.hollow{background:var(--bg);border:2px solid var(--accent)}
+.row .end{position:absolute;left:-1px;top:50%;width:2px;height:10px;margin-top:-5px;background:var(--accent);transition:transform .5s var(--ease)}
+.row .val{text-align:right;padding-right:8px;font:500 14px var(--f-data);font-variant-numeric:tabular-nums}
+.row .val small{display:block;font-size:11px;color:var(--ink-3);font-weight:400}
+.row.none .who b{color:var(--ink-3)}
+.row.none .track::after{content:"No credible data";position:absolute;left:0;top:50%;transform:translateY(-50%);font:12px var(--f-data);color:var(--ink-3)}
+.row.none .val{color:var(--ink-3)}
+.axis-title{margin-left:var(--lab);margin-right:var(--val);font:11px var(--f-data);color:var(--ink-3);margin-top:8px;text-align:center}
+.row .who .sh{display:none}
+@media (max-width:640px){.chart{--lab:44px;--val:52px}.row .who small{display:none}.row .who .lg-n{display:none}.row .who .sh{display:block}.row .who b{font-size:14px}.row .val{font-size:13px}.row .val small{display:none}}
+
+.legend{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:18px;font:12px var(--f-data);color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.lg{position:relative;width:34px;height:14px;display:inline-block}
+.lg i{position:absolute;left:0;right:0;top:6px;height:2px;background:var(--accent)}
+.lg i.dash{background:repeating-linear-gradient(90deg,var(--accent) 0 5px,transparent 5px 9px)}
+.lg b{position:absolute;left:10px;top:0;width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px var(--bg)}
+.lg b.hollow{background:var(--bg);border:2px solid var(--accent)}
+
+/* tooltip */
+.tip{position:absolute;z-index:5;width:min(340px,calc(100% - 16px));background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:14px 16px;box-shadow:0 12px 32px -12px rgba(20,23,28,.28);pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .15s var(--ease),transform .15s var(--ease);font-size:14px;line-height:1.45}
+.tip.on{opacity:1;transform:none}
+.tip h4{margin:0 0 2px;font:600 15px var(--f-display)}
+.tip .lvl{font:12px var(--f-data);color:var(--ink-3);margin-bottom:10px}
+.tip dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0 0 10px;font:12.5px var(--f-data)}
+.tip dt{color:var(--ink-3)}
+.tip dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
+.tip .q{font:12px var(--f-data);color:var(--ink-2);margin-bottom:6px}
+.tip .note{font-size:13px;color:var(--ink-2)}
+.tip .src{font:11px var(--f-data);color:var(--ink-3);margin-top:8px}
+
+details.table{margin-top:22px;border-top:1px solid var(--rule);padding-top:12px}
+details.table summary{cursor:pointer;font:13px var(--f-data);color:var(--ink-2)}
+details.table table{width:100%;border-collapse:collapse;margin-top:12px;font:13px var(--f-data);font-variant-numeric:tabular-nums}
+details.table th,details.table td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--grid)}
+details.table th{color:var(--ink-3);font-weight:500}
+.tscroll{overflow-x:auto}
+
+/* reading sections */
+section{margin-top:clamp(56px,8vw,88px)}
+.findings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:36px 48px;margin-top:24px}
+.finding{display:grid;gap:8px;align-content:start}
+.finding p{color:var(--ink-2);max-width:56ch}
+.finding .big{font:700 clamp(30px,3.6vw,40px)/1 var(--f-display);color:var(--accent);letter-spacing:-.02em}
+.finding.wide{grid-column:1/-1;padding:22px 24px;background:var(--panel);border:1px solid var(--rule);border-radius:10px}
+@media (max-width:760px){.findings{grid-template-columns:1fr}}
+
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px 48px;margin-top:20px}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+.prose p+p{margin-top:12px}
+.prose p{color:var(--ink-2);max-width:62ch}
+.prose b{color:var(--ink);font-weight:600}
+ul.plain{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+ul.plain li{color:var(--ink-2);font-size:15.5px;padding-left:16px;position:relative}
+ul.plain li::before{content:"";position:absolute;left:0;top:.72em;width:6px;height:1px;background:var(--ink-3)}
+ul.plain li b{color:var(--ink);font-weight:600}
+
+.cav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 48px;margin-top:24px}
+.cav h3{margin-bottom:12px}
+@media (max-width:760px){.cav{grid-template-columns:1fr}}
+
+.srcs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 36px;margin-top:24px}
+.srcs h3{margin-bottom:10px}
+.srcs ol{margin:0;padding:0;list-style:none;display:grid;gap:9px}
+.srcs li{font-size:14px;color:var(--ink-2);line-height:1.45}
+.srcs li .id{font:11px var(--f-data);color:var(--ink-3);margin-right:6px}
+.srcs li .yr{font:11px var(--f-data);color:var(--ink-3);white-space:nowrap}
+@media (max-width:900px){.srcs{grid-template-columns:1fr 1fr}}
+@media (max-width:600px){.srcs{grid-template-columns:1fr}}
+
+footer{margin-top:72px;padding-top:20px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font:12px var(--f-data);color:var(--ink-3)}
+footer a{color:var(--ink-2);text-decoration:none}
+
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="/">Paul Bébéar</a><a href="/half-line/">A companion to The Half Line</a></div>
+
+  <header>
+    <h1>The Premium Ladder</h1>
+    <p class="lede">How many times the median full-time salary does a career in banking, consulting or Big Tech pay? At the first job, <b>about 1.5 to 3 times, almost everywhere.</b> The gap between countries opens later.</p>
+  </header>
+
+  <div class="controls" role="group" aria-label="Chart settings">
+    <div class="ctl"><span class="label" id="l-job">Career</span>
+      <div class="seg" role="group" aria-labelledby="l-job" data-key="job">
+        <button data-v="ib" aria-pressed="true">Banking</button><button data-v="mbb" aria-pressed="false">Consulting</button><button data-v="swe" aria-pressed="false">Big Tech</button>
+      </div></div>
+    <div class="ctl"><span class="label" id="l-tax">Pay</span>
+      <div class="seg" role="group" aria-labelledby="l-tax" data-key="tax">
+        <button data-v="g" aria-pressed="true">Pre-tax</button><button data-v="n" aria-pressed="false">After tax</button>
+      </div></div>
+    <div class="ctl"><span class="label" id="l-den">Compared with</span>
+      <div class="seg" role="group" aria-labelledby="l-den" data-key="den">
+        <button data-v="a" aria-pressed="true">All workers</button><button data-v="s" aria-pressed="false">Same age</button>
+      </div></div>
+    <div class="ctl years">
+      <div class="years-head"><label class="label" for="yr">Years worked</label><span class="val" id="yr-val"></span></div>
+      <input id="yr" type="range" min="0" max="5" step="1" value="0" aria-describedby="yr-val">
+      <div class="ticks" aria-hidden="true"><span>0</span><span>3</span><span>6</span><span>10</span><span>15</span><span>20</span></div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <p class="chart-title" id="ctitle"></p>
+    <p class="chart-sub" id="csub"></p>
+    <div class="chart" id="chart">
+      <div class="axis" id="axis-top" aria-hidden="true"></div>
+      <div class="plot" id="plot"></div>
+      <div class="rows" id="rows" role="list"></div>
+      <div class="axis-title">Times the median, log scale. Dot: midpoint. Line: low to high end of the sources' range.</div>
+      <div class="tip" id="tip" role="status" aria-live="polite"></div>
+    </div>
+    <div class="legend" aria-label="Data quality key">
+      <span><span class="lg"><i></i><b></b></span>Sourced: two or more sources</span>
+      <span><span class="lg"><i></i><b class="hollow"></b></span>Thin: one or old source</span>
+      <span><span class="lg"><i class="dash"></i><b class="hollow"></b></span>Ballpark (≈): estimated, see method</span>
+    </div>
+    <details class="table"><summary>Show this view as a table</summary><div class="tscroll"><table id="tbl"></table></div></details>
+  </div>
+
+  <section aria-labelledby="h-find">
+    <h2 id="h-find">What the numbers say</h2>
+    <div class="findings">
+      <div class="finding">
+        <span class="big num">1.4x to 2.9x</span>
+        <h3>The first job is not where the gap is.</h3>
+        <p>In the first year, banking pays 1.7x (Switzerland) to 2.9x (the United States and France) the median full-time salary, and consulting 1.4x to 2.1x. A New York analyst earns about 2.9x the median, not 5 to 10 times. An analyst in Milan earns 1.8x.</p>
+      </div>
+      <div class="finding">
+        <span class="big num">3.9x vs 12.7x</span>
+        <h3>The countries split apart as careers lengthen.</h3>
+        <p>At entry, the highest banking multiple is 1.7 times the lowest. Ten years in, the gap is 3.3 times: a director in New York earns 12.7x the median, one in Zurich 3.9x and one in Frankfurt 4.1x. Switzerland and Germany stay lowest: their median salaries are high, and EU rules cap German bank bonuses. France's estimate is higher still, but it is a ballpark built on a 2021 survey.</p>
+      </div>
+      <div class="finding">
+        <span class="big num">-27%</span>
+        <h3>Tax narrows the premium in New York as much as in Europe.</h3>
+        <p>Progressive tax cuts the multiple wherever it is large. A New York banker ten years in drops from 12.7x to 9.2x after federal, state and city tax, a 27% cut; London goes from 11.5x to 7.9x. Germany barely moves (4.1x to 3.6x): social contributions are capped, so the median worker gives up a similar share of pay as the banker.</p>
+      </div>
+      <div class="finding">
+        <span class="big num">3.3x vs 1.9x</span>
+        <h3>Big Tech pays a bigger entry premium than banking in most of Europe.</h3>
+        <p>A new-grad engineer at Google, Meta or Amazon starts at a higher multiple than a first-year banker in 5 of 7 countries. In Madrid it is 3.3x against 1.9x; in Zurich 3.1x against 1.7x. In New York the two are close (3.1x and 2.9x). The entry premium looks like a global-firm premium more than a finance one.</p>
+      </div>
+      <div class="finding wide">
+        <h3>Read the high end with care.</h3>
+        <p>Beyond ten years most figures are thin or ballpark, and several countries have no credible data at all. Years 15 and 20 describe the minority who make managing director or partner, and they leave out carry and deferred pay. Even at the top of the ladder, the multiples are in the tens. The fortunes in The Half Line are worth thousands of years of a median salary: pay alone does not build that gap.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-method">
+    <h2 id="h-method">How it is built</h2>
+    <div class="two">
+      <div class="prose">
+        <p><b>The multiple</b> is total pay for the role divided by the national median gross salary of full-time workers, both in the same currency and the same year (2025). Because it is a ratio, no exchange rate or purchasing-power adjustment is needed.</p>
+        <p><b>Total pay</b> is base salary plus bonus. Big Tech pay includes stock at grant value. Private-equity carry and partnership distributions beyond reported profit are not included.</p>
+        <p><b>The median</b> comes from national statistics: BLS (US, 2025), ONS (UK, April 2025), and the EU Structure of Earnings Survey 2022 for the euro countries and Switzerland, raised to 2025 with each country's wage index. <b>Same age</b> compares roles at 0 to 6 years with workers under 30, and roles at 10 to 20 years with workers aged 30 to 49.</p>
+        <p><b>Each stage</b> maps to a title: analyst, associate, VP, director, managing director in banking; entry hire, consultant, engagement manager, principal, partner in consulting; L3 to L8 (or the Meta and Amazon equivalents) in Big Tech. Banking and consulting entrants join after a bachelor's in the US and usually after a master's in continental Europe.</p>
+      </div>
+      <div class="prose">
+        <p><b>Quality.</b> Every point is tagged. <b>Sourced</b>: two or more independent sources, or 20+ verified Levels.fyi data points. <b>Thin</b>: one source, a source from 2021 or 2022, or 5 to 19 data points. <b>Ballpark</b>: a source's own rough estimate, or a gap filled one rung up the ladder.</p>
+        <p><b>How gaps are filled.</b> A missing stage is estimated only when the same country has real data at the stage just below. The estimate takes London's pay at that stage (or New York's, if London has no data) and scales it by the country's pay relative to London at the stage below. Estimates are never built on other estimates. Where nothing qualifies, the row says "No credible data".</p>
+        <p><b>Year 20</b> repeats year 15 for most countries, flagged as ballpark: no source separates managing-director, partner or principal-engineer pay by tenure.</p>
+        <p><b>Coverage.</b> Seven countries. The Netherlands was dropped for lack of credible banking and consulting data. Private equity was left out because carry cannot be observed and its entry level does not match the other careers.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-tax">
+    <h2 id="h-tax">After-tax assumptions</h2>
+    <div class="two">
+      <ul class="plain">
+        <li><b>One person, no children,</b> living in the city of the job, 2025 tax rules, standard deductions only, no church tax.</li>
+        <li><b>The same rules on both sides.</b> The median worker is taxed as if living in the same city, so the after-tax multiple compares like with like.</li>
+        <li><b>Employee social contributions are deducted</b> at statutory rates and ceilings. Employer contributions sit outside gross pay on both sides.</li>
+        <li><b>Bonuses are taxed as ordinary income.</b> Stock is taxed at grant value, as if vested in the same year.</li>
+        <li><b>Expat regimes are not applied:</b> Italy's impatriati regime, Spain's Beckham law, France's impatriate regime. They can cut tax sharply for exactly these hires.</li>
+      </ul>
+      <ul class="plain">
+        <li><b>United States:</b> federal income tax (2025 standard deduction $15,750), Social Security and Medicare, New York State and New York City income tax, paid family leave and disability levies. New York's high-income recapture is simplified.</li>
+        <li><b>United Kingdom:</b> England, 2025/26 income tax and Class 1 National Insurance, with the personal allowance tapered above £100,000.</li>
+        <li><b>Switzerland:</b> City of Zurich, computed with the Swiss Federal Tax Administration calculator (federal, cantonal, municipal tax and social contributions, including mandatory pension).</li>
+        <li><b>Germany:</b> tax class I, statutory health and care insurance at average rates, childless surcharge, solidarity surcharge. Higher earners often switch to private health insurance, which is not modelled.</li>
+        <li><b>France:</b> Paris, cadre contributions, the income-tax scale for 2025 income, the 10% professional deduction and the high-income contribution.</li>
+        <li><b>Italy:</b> Milan, INPS contributions, IRPEF with 2025 employment credits and tax-wedge relief, Lombardy and Milan surcharges.</li>
+        <li><b>Spain:</b> Madrid, Social Security up to the 2025 ceiling, state and Madrid income-tax scales.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-cav">
+    <h2 id="h-cav">Caveats</h2>
+    <div class="cav">
+      <div>
+        <h3>What the chart cannot see</h3>
+        <ul class="plain">
+          <li><b>It shows the ladder, not the odds.</b> Each stage is what someone still on the track earns. Most entrants leave before VP or manager; few become managing director or partner. Years 15 and 20 describe survivors, not what a new analyst should expect.</li>
+          <li><b>Pay data thins out at the top.</b> Entry pay is well documented. Above VP or manager, figures are mostly modelled or self-reported, and carry, partnership distributions and deferred stock are partly invisible.</li>
+          <li><b>The best local graduates may work abroad.</b> Many strong Italian, Spanish and French graduates take London or New York offers. A low domestic multiple can reflect that the best-paid jobs sit elsewhere.</li>
+          <li><b>Hours differ.</b> Banking and consulting often run 60 to 80 hours a week against about 40 for the median worker. Per hour, the premium is much smaller.</li>
+          <li><b>Taxes buy different things.</b> After-tax pay ignores public healthcare and education, which differ widely between the US and Europe.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Data quality</h3>
+        <ul class="plain">
+          <li><b>France's banking figures are old.</b> They come from a 2021 survey, a record bonus year, and 2022 ranges. They may overstate current pay.</li>
+          <li><b>Italy and Spain use market-wide sources.</b> Michael Page (Italy) and JobRise (Spain) cover the M&A market broadly, not only the top banks, so they probably understate elite pay. Italian bonus percentages are ceilings.</li>
+          <li><b>Levels.fyi is self-reported</b> and pools several years. Big Tech figures average Google, Meta and Amazon, with stock at grant value.</li>
+          <li><b>Banking bonuses swing</b> by about 30% from year to year. Figures target the 2025 bonus cycle where the sources allow.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Comparability</h3>
+        <ul class="plain">
+          <li><b>EU and Swiss medians exclude firms with fewer than 10 employees,</b> which pay less. This raises those medians and lowers those multiples by an estimated 5 to 10% relative to the US and UK.</li>
+          <li><b>Uprating is approximate.</b> EU 2022 medians are raised to 2025 with the wages and salaries labour cost index (per hour, not per worker); Switzerland with the federal wage index.</li>
+          <li><b>Same-age medians are approximate for Europe.</b> Eurostat publishes means, not medians, by age, so the median is scaled by the mean's age profile.</li>
+          <li><b>Entry ages differ.</b> US entrants are about 22, continental Europeans about 23 to 24 after a master's.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Regulation and tax</h3>
+        <ul class="plain">
+          <li><b>The EU caps bank bonuses</b> at 100% of fixed pay, or 200% with shareholder approval. The UK removed its cap in 2023. This shapes senior pay in Paris, Frankfurt, Milan and Madrid against London, New York and Zurich.</li>
+          <li><b>Expat tax regimes are excluded,</b> so after-tax pay for foreign hires in Italy, Spain and France can be much higher than shown.</li>
+          <li><b>Employer costs differ.</b> Gross pay excludes employer contributions (about 45% on top in France). Both sides of the ratio exclude them, so the multiple is consistent, but the cost to the employer is not.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-src">
+    <h2 id="h-src">Sources</h2>
+    <div class="srcs" id="srcs"></div>
+  </section>
+
+  <footer><span>Paul Bébéar. Data as of October 2026.</span><span><a href="/half-line/">The Half Line</a> &nbsp; <a href="/archive/">Archive</a> &nbsp; <a href="/">paulbebear.com</a></span></footer>
+</div>
+
+<script>
+const DATA = {"cells":[{"j":"ib","c":"US","s":0,"t":"Analyst, year 1","q":"S","lo":160,"hi":200,"nlo":105.0,"nhi":129.9,"src":["S1","S3","S4"],"note":"Base $105-110k + bonus; 2025 cycle","ga":[2.56,3.19],"gs":[3.08,3.86],"na":[2.22,2.74],"ns":[2.64,3.27]},{"j":"ib","c":"US","s":3,"t":"Associate, year 1","q":"S","lo":280,"hi":350,"nlo":172.8,"nhi":209.2,"src":["S1","S2"],"note":"First-year associate: base ~$175k + 60-70% bonus","ga":[4.47,5.59],"gs":[5.4,6.75],"na":[3.65,4.42],"ns":[4.35,5.26]},{"j":"ib","c":"US","s":6,"t":"Vice President","q":"S","lo":500,"hi":650,"nlo":287.1,"nhi":364.8,"src":["S1","S2"],"note":"VP year 1-2","ga":[7.99,10.38],"gs":[9.64,12.53],"na":[6.07,7.71],"ns":[7.22,9.18]},{"j":"ib","c":"US","s":10,"t":"Director","q":"T","lo":700,"hi":900,"nlo":389.8,"nhi":489.6,"src":["S1"],"note":"Director / SVP","ga":[11.18,14.38],"gs":[10.28,13.22],"na":[8.23,10.34],"ns":[7.67,9.63]},{"j":"ib","c":"US","s":15,"t":"Managing Director","q":"S","lo":1000,"hi":2000,"nlo":539.5,"nhi":983.0,"src":["S1","S2"],"note":"MD; sources give $1-2M+ and $0.5M to several million","ga":[15.97,31.94],"gs":[14.68,29.37],"na":[11.4,20.77],"ns":[10.62,19.34]},{"j":"ib","c":"US","s":20,"t":"Senior MD","q":"B","lo":1000,"hi":3000,"nlo":539.5,"nhi":1454.2,"src":["S1"],"note":"No source separates MD pay by tenure; range widened","ga":[15.97,47.92],"gs":[14.68,44.05],"na":[11.4,30.73],"ns":[10.62,28.62]},{"j":"ib","c":"UK","s":0,"t":"Analyst, year 1","q":"S","lo":85,"hi":125,"nlo":59.9,"nhi":78.1,"src":["S5","S1"],"note":"Bulge bracket totals ~£85-95k; elite boutiques up to £125k","ga":[2.18,3.2],"gs":[2.63,3.86],"na":[1.89,2.47],"ns":[2.23,2.91]},{"j":"ib","c":"UK","s":3,"t":"Associate, year 1","q":"S","lo":155,"hi":230,"nlo":93.9,"nhi":133.7,"src":["S5","S1"],"note":"First-year associate","ga":[3.97,5.89],"gs":[4.79,7.11],"na":[2.97,4.23],"ns":[3.5,4.99]},{"j":"ib","c":"UK","s":6,"t":"Vice President","q":"T","lo":235,"hi":345,"nlo":136.3,"nhi":194.6,"src":["S5"],"note":"","ga":[6.02,8.84],"gs":[7.26,10.67],"na":[4.31,6.15],"ns":[5.09,7.26]},{"j":"ib","c":"UK","s":10,"t":"Director","q":"T","lo":350,"hi":575,"nlo":197.3,"nhi":316.5,"src":["S5"],"note":"","ga":[8.97,14.73],"gs":[8.26,13.56],"na":[6.24,10.01],"ns":[5.79,9.3]},{"j":"ib","c":"UK","s":15,"t":"Managing Director","q":"B","lo":580.0,"hi":1160.0,"nlo":319.2,"nhi":626.6,"src":["S1","S2"],"note":"Ballpark: US managing director pay x United Kingdom/US ratio observed at 10 yrs (0.76, in EUR at 2025 FX)","ga":[14.86,29.71],"gs":[13.68,27.36],"na":[10.09,19.81],"ns":[9.38,18.4]},{"j":"ib","c":"UK","s":20,"t":"Senior MD","q":"B","lo":580.0,"hi":1160.0,"nlo":319.2,"nhi":626.6,"src":["S1","S2"],"note":"Ballpark: same as 15 yrs. No source separates pay by tenure at this level","ga":[14.86,29.71],"gs":[13.68,27.36],"na":[10.09,19.81],"ns":[9.38,18.4]},{"j":"ib","c":"CH","s":0,"t":"Analyst, year 1","q":"T","lo":140,"hi":170,"nlo":104.6,"nhi":123.3,"src":["S11","S12"],"note":"Fixed CHF 90-120k (2026) + average bonus ~CHF 50k (undated factsheet)","ga":[1.57,1.91],"gs":[2.13,2.59],"na":[1.49,1.76],"ns":[1.94,2.28]},{"j":"ib","c":"CH","s":3,"t":"Associate, year 1","q":"T","lo":180,"hi":220,"nlo":129.3,"nhi":152.8,"src":["S11","S12"],"note":"Fixed 120-160k + ~60k","ga":[2.02,2.47],"gs":[2.74,3.35],"na":[1.84,2.18],"ns":[2.39,2.83]},{"j":"ib","c":"CH","s":6,"t":"Vice President","q":"T","lo":240,"hi":260,"nlo":164.0,"nhi":175.1,"src":["S11","S12"],"note":"Fixed 160-180k + ~80k","ga":[2.69,2.92],"gs":[3.66,3.96],"na":[2.34,2.49],"ns":[3.04,3.24]},{"j":"ib","c":"CH","s":10,"t":"Director","q":"T","lo":310,"hi":380,"nlo":202.0,"nhi":239.4,"src":["S11","S12"],"note":"Fixed 180-250k + ~130k","ga":[3.48,4.27],"gs":[3.41,4.19],"na":[2.88,3.41],"ns":[2.83,3.35]},{"j":"ib","c":"CH","s":15,"t":"Managing Director","q":"B","lo":430.0,"hi":860.0,"nlo":266.1,"nhi":495.9,"src":["S1","S2"],"note":"Ballpark: US managing director pay x Switzerland/US ratio observed at 10 yrs (0.52, in EUR at 2025 FX)","ga":[4.83,9.66],"gs":[4.74,9.47],"na":[3.79,7.06],"ns":[3.73,6.95]},{"j":"ib","c":"CH","s":20,"t":"Senior MD","q":"B","lo":430.0,"hi":860.0,"nlo":266.1,"nhi":495.9,"src":["S1","S2"],"note":"Ballpark: same as 15 yrs. No source separates pay by tenure at this level","ga":[4.83,9.66],"gs":[4.74,9.47],"na":[3.79,7.06],"ns":[3.73,6.95]},{"j":"ib","c":"DE","s":0,"t":"Analyst, year 1","q":"T","lo":85,"hi":130,"nlo":50.8,"nhi":74.1,"src":["S6"],"note":"National figures; bank-level analyst totals ~€68-155k","ga":[1.59,2.43],"gs":[2.37,3.62],"na":[1.49,2.17],"ns":[2.07,3.02]},{"j":"ib","c":"DE","s":3,"t":"Associate, year 1","q":"T","lo":110,"hi":150,"nlo":63.5,"nhi":85.2,"src":["S6"],"note":"Associate ~€120k average","ga":[2.06,2.81],"gs":[3.07,4.18],"na":[1.86,2.5],"ns":[2.59,3.47]},{"j":"ib","c":"DE","s":6,"t":"Vice President","q":"T","lo":160,"hi":220,"nlo":90.8,"nhi":124.2,"src":["S6"],"note":"VP ~€175k","ga":[3.0,4.12],"gs":[4.46,6.13],"na":[2.66,3.64],"ns":[3.7,5.06]},{"j":"ib","c":"DE","s":10,"t":"Director","q":"T","lo":185,"hi":260,"nlo":104.7,"nhi":146.5,"src":["S6"],"note":"Director €185-200k+","ga":[3.46,4.87],"gs":[3.29,4.62],"na":[3.07,4.3],"ns":[2.94,4.12]},{"j":"ib","c":"DE","s":15,"t":"Managing Director","q":"B","lo":280.0,"hi":560.0,"nlo":157.6,"nhi":305.2,"src":["S1","S2"],"note":"Ballpark: US managing director pay x Germany/US ratio observed at 10 yrs (0.31, in EUR at 2025 FX)","ga":[5.24,10.49],"gs":[4.97,9.95],"na":[4.62,8.95],"ns":[4.43,8.57]},{"j":"ib","c":"DE","s":20,"t":"Senior MD","q":"B","lo":280.0,"hi":560.0,"nlo":157.6,"nhi":305.2,"src":["S1","S2"],"note":"Ballpark: same as 15 yrs. No source separates pay by tenure at this level","ga":[5.24,10.49],"gs":[4.97,9.95],"na":[4.62,8.95],"ns":[4.43,8.57]},{"j":"ib","c":"FR","s":0,"t":"Analyst, year 1","q":"T","lo":90,"hi":125,"nlo":58.5,"nhi":77.8,"src":["S7","S8"],"note":"2021 survey (a record bonus year); analyst range €103-147k across years","ga":[2.44,3.39],"gs":[3.6,4.99],"na":[2.12,2.82],"ns":[2.99,3.97]},{"j":"ib","c":"FR","s":3,"t":"Associate, year 1","q":"T","lo":200,"hi":290,"nlo":114.1,"nhi":153.7,"src":["S7"],"note":"2021 survey: first-year associate from €202k, up to €289k on average","ga":[5.42,7.86],"gs":[7.99,11.59],"na":[4.14,5.58],"ns":[5.83,7.85]},{"j":"ib","c":"FR","s":6,"t":"Vice President","q":"T","lo":250,"hi":410,"nlo":136.6,"nhi":204.4,"src":["S7","S8"],"note":"2021 survey: VP up to €410k; 2022 fixed €100-200k + up to 100% bonus","ga":[6.77,11.11],"gs":[9.99,16.38],"na":[4.96,7.42],"ns":[6.98,10.44]},{"j":"ib","c":"FR","s":10,"t":"Director","q":"B","lo":400.0,"hi":650.0,"nlo":199.9,"nhi":312.8,"src":["S5"],"note":"Ballpark: UK director pay x France/UK ratio observed at 6 yrs (0.97, in EUR at 2025 FX)","ga":[10.84,17.61],"gs":[10.66,17.32],"na":[7.25,11.35],"ns":[7.15,11.18]},{"j":"ib","c":"FR","s":15,"t":"Managing Director","q":"-"},{"j":"ib","c":"FR","s":20,"t":"Senior MD","q":"-"},{"j":"ib","c":"IT","s":0,"t":"Analyst, year 1","q":"T","lo":45,"hi":90,"nlo":29.8,"nhi":51.8,"src":["S10"],"note":"RAL €30-45k (lower half of <5 yrs band) x (1 + 50-100% bonus); market-wide, not elite-only","ga":[1.3,2.59],"gs":[1.76,3.52],"na":[1.15,2.01],"ns":[1.44,2.5]},{"j":"ib","c":"IT","s":3,"t":"Associate, year 1","q":"T","lo":68,"hi":110,"nlo":41.0,"nhi":61.6,"src":["S10"],"note":"RAL €45-55k x (1 + 50-100% bonus)","ga":[1.96,3.17],"gs":[2.66,4.3],"na":[1.59,2.39],"ns":[1.98,2.97]},{"j":"ib","c":"IT","s":6,"t":"Vice President","q":"T","lo":83,"hi":160,"nlo":48.4,"nhi":88.2,"src":["S10"],"note":"RAL €55-80k (5-10 yrs band) x (1 + 50-100% bonus)","ga":[2.39,4.61],"gs":[3.24,6.25],"na":[1.87,3.42],"ns":[2.33,4.25]},{"j":"ib","c":"IT","s":10,"t":"Director","q":"B","lo":150.0,"hi":240.0,"nlo":82.8,"nhi":131.8,"src":["S5"],"note":"Ballpark: UK director pay x Italy/UK ratio observed at 6 yrs (0.36, in EUR at 2025 FX)","ga":[4.32,6.91],"gs":[4.46,7.14],"na":[3.21,5.11],"ns":[3.27,5.21]},{"j":"ib","c":"IT","s":15,"t":"Managing Director","q":"-"},{"j":"ib","c":"IT","s":20,"t":"Senior MD","q":"-"},{"j":"ib","c":"ES","s":0,"t":"Analyst, year 1","q":"T","lo":48,"hi":75,"nlo":35.0,"nhi":51.1,"src":["S9"],"note":"International banks: base €45-65k + bonus; own estimates of the source","ga":[1.56,2.43],"gs":[2.11,3.3],"na":[1.46,2.13],"ns":[1.9,2.78]},{"j":"ib","c":"ES","s":3,"t":"Associate, year 1","q":"T","lo":85,"hi":130,"nlo":56.8,"nhi":82.4,"src":["S9"],"note":"Associate (3-5 yrs)","ga":[2.75,4.21],"gs":[3.74,5.72],"na":[2.36,3.43],"ns":[3.09,4.48]},{"j":"ib","c":"ES","s":6,"t":"Vice President","q":"B","lo":130.0,"hi":190.0,"nlo":82.4,"nhi":116.5,"src":["S5"],"note":"Ballpark: UK vice president pay x Spain/UK ratio observed at 3 yrs (0.48, in EUR at 2025 FX)","ga":[4.21,6.16],"gs":[5.72,8.36],"na":[3.43,4.85],"ns":[4.48,6.33]},{"j":"ib","c":"ES","s":10,"t":"Director","q":"-"},{"j":"ib","c":"ES","s":15,"t":"Managing Director","q":"-"},{"j":"ib","c":"ES","s":20,"t":"Senior MD","q":"-"},{"j":"mbb","c":"US","s":0,"t":"Entry hire (BA / AC / Junior Associate)","q":"S","lo":120,"hi":150,"nlo":82.1,"nhi":99.3,"src":["S13","S14","S15"],"note":"Undergrad BA/AC; Levels.fyi McKinsey BA avg $124k (n=48)","ga":[1.92,2.4],"gs":[2.31,2.89],"na":[1.73,2.1],"ns":[2.06,2.5]},{"j":"mbb","c":"US","s":3,"t":"Consultant / Associate","q":"S","lo":160,"hi":240,"nlo":105.0,"nhi":152.3,"src":["S13","S14"],"note":"Senior BA / direct-promote associate","ga":[2.56,3.83],"gs":[3.08,4.63],"na":[2.22,3.22],"ns":[2.64,3.83]},{"j":"mbb","c":"US","s":6,"t":"Engagement Manager","q":"S","lo":270,"hi":380,"nlo":167.6,"nhi":224.8,"src":["S13","S14"],"note":"EM / CTL; Levels.fyi McKinsey EM avg $304k (n=31)","ga":[4.31,6.07],"gs":[5.21,7.33],"na":[3.54,4.75],"ns":[4.22,5.65]},{"j":"mbb","c":"US","s":10,"t":"Principal / Associate Partner","q":"S","lo":320,"hi":480,"nlo":193.6,"nhi":276.7,"src":["S13","S14","S15"],"note":"Principal / AP; Levels.fyi AP avg $414k (n=12)","ga":[5.11,7.67],"gs":[4.7,7.05],"na":[4.09,5.85],"ns":[3.81,5.44]},{"j":"mbb","c":"US","s":15,"t":"Partner","q":"B","lo":800,"hi":2000,"nlo":439.7,"nhi":983.0,"src":["S14","S15","S17"],"note":"Partner; sources' own modeled range $0.5-5M+; cross-checked against BCG UK LLP average partner profit (~£1.08M, ~$1.4M)","ga":[12.78,31.94],"gs":[11.75,29.37],"na":[9.29,20.77],"ns":[8.65,19.34]},{"j":"mbb","c":"US","s":20,"t":"Senior Partner","q":"B","lo":1000,"hi":3000,"nlo":539.5,"nhi":1454.2,"src":["S14","S15"],"note":"Senior partner; up to ~$5M in some reports","ga":[15.97,47.92],"gs":[14.68,44.05],"na":[11.4,30.73],"ns":[10.62,28.62]},{"j":"mbb","c":"UK","s":0,"t":"Entry hire (BA / AC / Junior Associate)","q":"S","lo":56,"hi":75,"nlo":43.0,"nhi":54.1,"src":["S16","S13"],"note":"Master's entry £56-63k; Levels.fyi Bain AC £74k (n=11)","ga":[1.43,1.92],"gs":[1.73,2.32],"na":[1.36,1.71],"ns":[1.61,2.02]},{"j":"mbb","c":"UK","s":3,"t":"Consultant / Associate","q":"S","lo":110,"hi":160,"nlo":72.4,"nhi":96.6,"src":["S16","S13"],"note":"Post-MBA / consultant; Levels.fyi consultant/associate £157-160k (n=9-14)","ga":[2.82,4.1],"gs":[3.4,4.95],"na":[2.29,3.05],"ns":[2.7,3.6]},{"j":"mbb","c":"UK","s":6,"t":"Engagement Manager","q":"T","lo":180,"hi":200,"nlo":107.2,"nhi":117.8,"src":["S13"],"note":"Levels.fyi Bain manager £198k (n=8), McKinsey EM £185k (n=5)","ga":[4.61,5.12],"gs":[5.56,6.18],"na":[3.39,3.72],"ns":[4.0,4.39]},{"j":"mbb","c":"UK","s":10,"t":"Principal / Associate Partner","q":"B","lo":190.0,"hi":280.0,"nlo":112.5,"nhi":160.2,"src":["S13","S14","S15"],"note":"Ballpark: US principal / associate partner pay x United Kingdom/US ratio observed at 6 yrs (0.77, in EUR at 2025 FX)","ga":[4.87,7.17],"gs":[4.48,6.6],"na":[3.56,5.06],"ns":[3.3,4.7]},{"j":"mbb","c":"UK","s":15,"t":"Partner","q":"T","lo":700,"hi":1100,"nlo":382.8,"nhi":594.8,"src":["S17"],"note":"BCG UK LLP: (£173.0M - £51.7M corporate member) / 112 members = ~£1.08M average profit per partner, all tenures","ga":[17.93,28.18],"gs":[16.51,25.94],"na":[12.1,18.81],"ns":[11.24,17.47]},{"j":"mbb","c":"UK","s":20,"t":"Senior Partner","q":"B","lo":700,"hi":1100,"nlo":382.8,"nhi":594.8,"src":["S17"],"note":"Ballpark: same as 15 yrs. No source separates pay by tenure at this level","ga":[17.93,28.18],"gs":[16.51,25.94],"na":[12.1,18.81],"ns":[11.24,17.47]},{"j":"mbb","c":"CH","s":0,"t":"Entry hire (BA / AC / Junior Associate)","q":"T","lo":110,"hi":135,"nlo":85.0,"nhi":101.4,"src":["S13"],"note":"Levels.fyi Bain AC CHF 133k (n=2); forum reports Zurich ~2x Milan","ga":[1.24,1.52],"gs":[1.68,2.06],"na":[1.21,1.44],"ns":[1.57,1.88]},{"j":"mbb","c":"CH","s":3,"t":"Consultant / Associate","q":"T","lo":150,"hi":180,"nlo":110.9,"nhi":129.3,"src":["S13"],"note":"Levels.fyi McKinsey associate CHF 163k (n=5)","ga":[1.68,2.02],"gs":[2.29,2.74],"na":[1.58,1.84],"ns":[2.05,2.39]},{"j":"mbb","c":"CH","s":6,"t":"Engagement Manager","q":"B","lo":220.0,"hi":240.0,"nlo":152.8,"nhi":164.0,"src":["S13"],"note":"Ballpark: UK engagement manager pay x Switzerland/UK ratio observed at 3 yrs (1.12, in EUR at 2025 FX)","ga":[2.47,2.69],"gs":[3.35,3.66],"na":[2.18,2.34],"ns":[2.83,3.04]},{"j":"mbb","c":"CH","s":10,"t":"Principal / Associate Partner","q":"-"},{"j":"mbb","c":"CH","s":15,"t":"Partner","q":"-"},{"j":"mbb","c":"CH","s":20,"t":"Senior Partner","q":"-"},{"j":"mbb","c":"DE","s":0,"t":"Entry hire (BA / AC / Junior Associate)","q":"T","lo":70,"hi":100,"nlo":42.8,"nhi":58.2,"src":["S18","S19","S13"],"note":"Bachelor €63-82k / Master €86-111k (estimates); BCG entry base €68.5k (2024)","ga":[1.31,1.87],"gs":[1.95,2.79],"na":[1.25,1.71],"ns":[1.74,2.37]},{"j":"mbb","c":"DE","s":3,"t":"Consultant / Associate","q":"T","lo":105,"hi":135,"nlo":60.9,"nhi":76.9,"src":["S18","S13"],"note":"Associate/consultant, MBA level; Levels.fyi McKinsey associate €106k (n=9)","ga":[1.97,2.53],"gs":[2.93,3.76],"na":[1.79,2.25],"ns":[2.48,3.13]},{"j":"mbb","c":"DE","s":6,"t":"Engagement Manager","q":"T","lo":135,"hi":200,"nlo":76.9,"nhi":113.1,"src":["S18"],"note":"Project leader / EM (estimates)","ga":[2.53,3.75],"gs":[3.76,5.57],"na":[2.25,3.32],"ns":[3.13,4.6]},{"j":"mbb","c":"DE","s":10,"t":"Principal / Associate Partner","q":"T","lo":190,"hi":280,"nlo":107.5,"nhi":157.6,"src":["S18"],"note":"Principal / AP (estimates)","ga":[3.56,5.24],"gs":[3.38,4.97],"na":[3.15,4.62],"ns":[3.02,4.43]},{"j":"mbb","c":"DE","s":15,"t":"Partner","q":"B","lo":300,"hi":700,"nlo":168.6,"nhi":378.7,"src":["S18"],"note":"Partner, 'highly variable' (estimates)","ga":[5.62,13.11],"gs":[5.33,12.44],"na":[4.95,11.11],"ns":[4.74,10.64]},{"j":"mbb","c":"DE","s":20,"t":"Senior Partner","q":"B","lo":300,"hi":700,"nlo":168.6,"nhi":378.7,"src":["S18"],"note":"Ballpark: same as 15 yrs. No source separates pay by tenure at this level","ga":[5.62,13.11],"gs":[5.33,12.44],"na":[4.95,11.11],"ns":[4.74,10.64]},{"j":"mbb","c":"FR","s":0,"t":"Entry hire (BA / AC / Junior Associate)","q":"T","lo":60,"hi":90,"nlo":41.1,"nhi":58.5,"src":["S20"],"note":"Job ads: base €60-85k + bonus up to €10-16k","ga":[1.63,2.44],"gs":[2.4,3.6],"na":[1.49,2.12],"ns":[2.1,2.99]},{"j":"mbb","c":"FR","s":3,"t":"Consultant / Associate","q":"T","lo":110,"hi":135,"nlo":70.0,"nhi":82.7,"src":["S19"],"note":"Bain Paris post-MBA base €112k (2024)","ga":[2.98,3.66],"gs":[4.4,5.39],"na":[2.54,3.0],"ns":[3.58,4.23]},{"j":"mbb","c":"FR","s":6,"t":"Engagement Manager","q":"B","lo":160.0,"hi":180.0,"nlo":95.1,"nhi":104.8,"src":["S13"],"note":"Ballpark: UK engagement manager pay x France/UK ratio observed at 3 yrs (0.78, in EUR at 2025 FX)","ga":[4.34,4.88],"gs":[6.39,7.19],"na":[3.45,3.8],"ns":[4.86,5.36]},{"j":"mbb","c":"FR","s":10,"t":"Principal / Associate Partner","q":"-"},{"j":"mbb","c":"FR","s":15,"t":"Partner","q":"-"},{"j":"mbb","c":"FR","s":20,"t":"Senior Partner","q":"-"},{"j":"mbb","c":"IT","s":0,"t":"Entry hire (BA / AC / Junior Associate)","q":"T","lo":45,"hi":55,"nlo":29.8,"nhi":34.7,"src":["S22"],"note":"Bain Italy: Associate Consultant RAL €45k + up to 22% bonus","ga":[1.3,1.58],"gs":[1.76,2.15],"na":[1.15,1.34],"ns":[1.44,1.67]},{"j":"mbb","c":"IT","s":3,"t":"Consultant / Associate","q":"T","lo":85,"hi":122,"nlo":49.3,"nhi":67.5,"src":["S22"],"note":"Consultant RAL €85k + up to 44%","ga":[2.45,3.51],"gs":[3.32,4.77],"na":[1.91,2.62],"ns":[2.38,3.26]},{"j":"mbb","c":"IT","s":6,"t":"Engagement Manager","q":"T","lo":115,"hi":228,"nlo":64.0,"nhi":125.3,"src":["S22"],"note":"Senior Manager RAL €115k + up to 98%","ga":[3.31,6.57],"gs":[4.5,8.91],"na":[2.48,4.85],"ns":[3.09,6.04]},{"j":"mbb","c":"IT","s":10,"t":"Principal / Associate Partner","q":"B","lo":170.0,"hi":250.0,"nlo":93.7,"nhi":137.2,"src":["S13","S14","S15"],"note":"Ballpark: US principal / associate partner pay x Italy/US ratio observed at 6 yrs (0.60, in EUR at 2025 FX)","ga":[4.9,7.2],"gs":[5.06,7.44],"na":[3.63,5.32],"ns":[3.7,5.43]},{"j":"mbb","c":"IT","s":15,"t":"Partner","q":"-"},{"j":"mbb","c":"IT","s":20,"t":"Senior Partner","q":"-"},{"j":"mbb","c":"ES","s":0,"t":"Entry hire (BA / AC / Junior Associate)","q":"T","lo":45,"hi":60,"nlo":33.2,"nhi":42.2,"src":["S21"],"note":"Estimates; Levels.fyi Bain AC €41k (n=2)","ga":[1.46,1.94],"gs":[1.98,2.64],"na":[1.38,1.76],"ns":[1.8,2.29]},{"j":"mbb","c":"ES","s":3,"t":"Consultant / Associate","q":"T","lo":65,"hi":110,"nlo":45.4,"nhi":71.0,"src":["S21"],"note":"Pre-MBA €65-90k; post-MBA €100-140k","ga":[2.11,3.56],"gs":[2.86,4.84],"na":[1.89,2.96],"ns":[2.47,3.86]},{"j":"mbb","c":"ES","s":6,"t":"Engagement Manager","q":"T","lo":120,"hi":180,"nlo":76.7,"nhi":110.8,"src":["S21"],"note":"","ga":[3.89,5.83],"gs":[5.28,7.92],"na":[3.19,4.61],"ns":[4.17,6.02]},{"j":"mbb","c":"ES","s":10,"t":"Principal / Associate Partner","q":"T","lo":180,"hi":300,"nlo":110.8,"nhi":179.1,"src":["S21"],"note":"","ga":[5.83,9.72],"gs":[5.89,9.82],"na":[4.61,7.46],"ns":[4.66,7.52]},{"j":"mbb","c":"ES","s":15,"t":"Partner","q":"B","lo":300,"hi":800,"nlo":179.1,"nhi":453.9,"src":["S21"],"note":"Partner (source's own rough estimate)","ga":[9.72,25.92],"gs":[9.82,26.19],"na":[7.46,18.89],"ns":[7.52,19.06]},{"j":"mbb","c":"ES","s":20,"t":"Senior Partner","q":"B","lo":300,"hi":800,"nlo":179.1,"nhi":453.9,"src":["S21"],"note":"Ballpark: same as 15 yrs. No source separates pay by tenure at this level","ga":[9.72,25.92],"gs":[9.82,26.19],"na":[7.46,18.89],"ns":[7.52,19.06]},{"j":"swe","c":"US","s":0,"t":"L3 / E3 / SDE I (new grad)","q":"S","lo":181,"hi":210,"nlo":117.6,"nhi":136.3,"src":["S23"],"note":"n=178","ga":[2.89,3.35],"gs":[3.49,4.05],"na":[2.48,2.88],"ns":[2.96,3.43]},{"j":"swe","c":"US","s":3,"t":"L4 / E4 / SDE II","q":"S","lo":275,"hi":302,"nlo":170.2,"nhi":184.3,"src":["S23"],"note":"n=255","ga":[4.39,4.82],"gs":[5.3,5.82],"na":[3.6,3.89],"ns":[4.28,4.64]},{"j":"swe","c":"US","s":6,"t":"L5 / E5 (Senior)","q":"S","lo":389,"hi":457,"nlo":229.4,"nhi":264.7,"src":["S23"],"note":"n=156","ga":[6.21,7.3],"gs":[7.5,8.81],"na":[4.85,5.59],"ns":[5.77,6.66]},{"j":"swe","c":"US","s":10,"t":"L6 / E6 (Staff)","q":"S","lo":622,"hi":778,"nlo":350.4,"nhi":428.7,"src":["S23"],"note":"n=64","ga":[9.93,12.43],"gs":[9.13,11.42],"na":[7.4,9.06],"ns":[6.9,8.44]},{"j":"swe","c":"US","s":15,"t":"L7 / E7 (Senior Staff)","q":"T","lo":852,"hi":1804,"nlo":465.6,"nhi":890.6,"src":["S23"],"note":"n=18","ga":[13.61,28.81],"gs":[12.51,26.49],"na":[9.84,18.82],"ns":[9.16,17.53]},{"j":"swe","c":"US","s":20,"t":"L8 / E8 (Principal)","q":"S","lo":1327,"hi":3000,"nlo":665.8,"nhi":1454.2,"src":["S23"],"note":"n=28","ga":[21.2,47.92],"gs":[19.49,44.05],"na":[14.07,30.73],"ns":[13.1,28.62]},{"j":"swe","c":"UK","s":0,"t":"L3 / E3 / SDE I (new grad)","q":"S","lo":107,"hi":163,"nlo":71.2,"nhi":98.2,"src":["S23"],"note":"n=87","ga":[2.74,4.18],"gs":[3.31,5.04],"na":[2.25,3.1],"ns":[2.66,3.66]},{"j":"swe","c":"UK","s":3,"t":"L4 / E4 / SDE II","q":"S","lo":179,"hi":217,"nlo":106.7,"nhi":126.8,"src":["S23"],"note":"n=70","ga":[4.59,5.56],"gs":[5.53,6.71],"na":[3.37,4.01],"ns":[3.98,4.73]},{"j":"swe","c":"UK","s":6,"t":"L5 / E5 (Senior)","q":"S","lo":245,"hi":340,"nlo":141.6,"nhi":192.0,"src":["S23"],"note":"n=87","ga":[6.28,8.71],"gs":[7.57,10.51],"na":[4.48,6.07],"ns":[5.28,7.16]},{"j":"swe","c":"UK","s":10,"t":"L6 / E6 (Staff)","q":"T","lo":349,"hi":503,"nlo":196.8,"nhi":278.4,"src":["S23"],"note":"n=19","ga":[8.94,12.88],"gs":[8.23,11.86],"na":[6.22,8.8],"ns":[5.78,8.18]},{"j":"swe","c":"UK","s":15,"t":"L7 / E7 (Senior Staff)","q":"T","lo":573,"hi":846,"nlo":315.5,"nhi":460.2,"src":["S23"],"note":"n=16","ga":[14.68,21.67],"gs":[13.51,19.95],"na":[9.97,14.55],"ns":[9.27,13.52]},{"j":"swe","c":"UK","s":20,"t":"L8 / E8 (Principal)","q":"B","lo":573,"hi":846,"nlo":315.5,"nhi":460.2,"src":["S23"],"note":"Ballpark: same as 15 yrs. No source separates pay by tenure at this level","ga":[14.68,21.67],"gs":[13.51,19.95],"na":[9.97,14.55],"ns":[9.27,13.52]},{"j":"swe","c":"CH","s":0,"t":"L3 / E3 / SDE I (new grad)","q":"T","lo":234,"hi":324,"nlo":160.6,"nhi":210.0,"src":["S23"],"note":"n=14","ga":[2.63,3.64],"gs":[3.57,4.94],"na":[2.29,2.99],"ns":[2.97,3.89]},{"j":"swe","c":"CH","s":3,"t":"L4 / E4 / SDE II","q":"S","lo":224,"hi":319,"nlo":155.1,"nhi":207.3,"src":["S23"],"note":"n=46","ga":[2.52,3.58],"gs":[3.41,4.86],"na":[2.21,2.95],"ns":[2.87,3.84]},{"j":"swe","c":"CH","s":6,"t":"L5 / E5 (Senior)","q":"S","lo":395,"hi":492,"nlo":248.0,"nhi":299.8,"src":["S23"],"note":"n=25","ga":[4.44,5.52],"gs":[6.02,7.5],"na":[3.53,4.27],"ns":[4.59,5.55]},{"j":"swe","c":"CH","s":10,"t":"L6 / E6 (Staff)","q":"T","lo":531,"hi":776,"nlo":320.0,"nhi":451.0,"src":["S23"],"note":"n=18","ga":[5.96,8.71],"gs":[5.85,8.55],"na":[4.56,6.42],"ns":[4.48,6.32]},{"j":"swe","c":"CH","s":15,"t":"L7 / E7 (Senior Staff)","q":"T","lo":1002,"hi":1058,"nlo":573.6,"nhi":604.4,"src":["S23"],"note":"n=6","ga":[11.25,11.88],"gs":[11.04,11.65],"na":[8.17,8.61],"ns":[8.04,8.47]},{"j":"swe","c":"CH","s":20,"t":"L8 / E8 (Principal)","q":"B","lo":1002,"hi":1058,"nlo":573.6,"nhi":604.4,"src":["S23"],"note":"Ballpark: same as 15 yrs. No source separates pay by tenure at this level","ga":[11.25,11.88],"gs":[11.04,11.65],"na":[8.17,8.61],"ns":[8.04,8.47]},{"j":"swe","c":"DE","s":0,"t":"L3 / E3 / SDE I (new grad)","q":"S","lo":99,"hi":139,"nlo":57.7,"nhi":79.1,"src":["S23"],"note":"n=48","ga":[1.85,2.6],"gs":[2.76,3.87],"na":[1.69,2.32],"ns":[2.35,3.22]},{"j":"swe","c":"DE","s":3,"t":"L4 / E4 / SDE II","q":"S","lo":140,"hi":209,"nlo":79.6,"nhi":118.1,"src":["S23"],"note":"n=40","ga":[2.62,3.91],"gs":[3.9,5.82],"na":[2.34,3.46],"ns":[3.24,4.81]},{"j":"swe","c":"DE","s":6,"t":"L5 / E5 (Senior)","q":"S","lo":196,"hi":287,"nlo":110.8,"nhi":161.5,"src":["S23"],"note":"n=68","ga":[3.67,5.38],"gs":[5.46,8.0],"na":[3.25,4.74],"ns":[4.51,6.58]},{"j":"swe","c":"DE","s":10,"t":"L6 / E6 (Staff)","q":"T","lo":312,"hi":514,"nlo":174.9,"nhi":281.0,"src":["S23"],"note":"n=15","ga":[5.84,9.63],"gs":[5.54,9.13],"na":[5.13,8.24],"ns":[4.91,7.89]},{"j":"swe","c":"DE","s":15,"t":"L7 / E7 (Senior Staff)","q":"B","lo":560.0,"hi":820.0,"nlo":305.2,"nhi":441.7,"src":["S23"],"note":"Ballpark: UK l7 / e7 (senior staff) pay x Germany/UK ratio observed at 10 yrs (0.83, in EUR at 2025 FX)","ga":[10.49,15.36],"gs":[9.95,14.57],"na":[8.95,12.96],"ns":[8.57,12.41]},{"j":"swe","c":"DE","s":20,"t":"L8 / E8 (Principal)","q":"B","lo":560.0,"hi":820.0,"nlo":305.2,"nhi":441.7,"src":["S23"],"note":"Ballpark: same as 15 yrs. No source separates pay by tenure at this level","ga":[10.49,15.36],"gs":[9.95,14.57],"na":[8.95,12.96],"ns":[8.57,12.41]},{"j":"swe","c":"FR","s":0,"t":"L3 / E3 / SDE I (new grad)","q":"S","lo":78,"hi":113,"nlo":51.5,"nhi":71.8,"src":["S23"],"note":"n=36","ga":[2.11,3.06],"gs":[3.12,4.51],"na":[1.87,2.6],"ns":[2.63,3.67]},{"j":"swe","c":"FR","s":3,"t":"L4 / E4 / SDE II","q":"S","lo":109,"hi":223,"nlo":69.5,"nhi":124.6,"src":["S23"],"note":"n=40","ga":[2.95,6.04],"gs":[4.36,8.91],"na":[2.52,4.52],"ns":[3.55,6.37]},{"j":"swe","c":"FR","s":6,"t":"L5 / E5 (Senior)","q":"S","lo":167,"hi":278,"nlo":98.6,"nhi":148.6,"src":["S23"],"note":"n=36","ga":[4.53,7.53],"gs":[6.67,11.11],"na":[3.58,5.39],"ns":[5.04,7.59]},{"j":"swe","c":"FR","s":10,"t":"L6 / E6 (Staff)","q":"T","lo":314,"hi":411,"nlo":164.0,"nhi":204.9,"src":["S23"],"note":"n=9","ga":[8.51,11.14],"gs":[8.37,10.95],"na":[5.95,7.43],"ns":[5.86,7.32]},{"j":"swe","c":"FR","s":15,"t":"L7 / E7 (Senior Staff)","q":"B","lo":490.0,"hi":720.0,"nlo":240.7,"nhi":343.9,"src":["S23"],"note":"Ballpark: UK l7 / e7 (senior staff) pay x France/UK ratio observed at 10 yrs (0.73, in EUR at 2025 FX)","ga":[13.28,19.51],"gs":[13.06,19.19],"na":[8.73,12.48],"ns":[8.6,12.29]},{"j":"swe","c":"FR","s":20,"t":"L8 / E8 (Principal)","q":"B","lo":490.0,"hi":720.0,"nlo":240.7,"nhi":343.9,"src":["S23"],"note":"Ballpark: same as 15 yrs. No source separates pay by tenure at this level","ga":[13.28,19.51],"gs":[13.06,19.19],"na":[8.73,12.48],"ns":[8.6,12.29]},{"j":"swe","c":"IT","s":0,"t":"L3 / E3 / SDE I (new grad)","q":"T","lo":57,"hi":68,"nlo":35.6,"nhi":41.0,"src":["S23"],"note":"n=6 incl. Microsoft","ga":[1.64,1.96],"gs":[2.23,2.66],"na":[1.38,1.59],"ns":[1.72,1.98]},{"j":"swe","c":"IT","s":3,"t":"L4 / E4 / SDE II","q":"T","lo":85,"hi":91,"nlo":49.3,"nhi":52.3,"src":["S23"],"note":"n=9 incl. Microsoft","ga":[2.45,2.62],"gs":[3.32,3.56],"na":[1.91,2.03],"ns":[2.38,2.52]},{"j":"swe","c":"IT","s":6,"t":"L5 / E5 (Senior)","q":"T","lo":150,"hi":154,"nlo":82.8,"nhi":84.9,"src":["S23"],"note":"n=10","ga":[4.32,4.44],"gs":[5.86,6.02],"na":[3.21,3.29],"ns":[3.99,4.1]},{"j":"swe","c":"IT","s":10,"t":"L6 / E6 (Staff)","q":"B","lo":180.0,"hi":260.0,"nlo":99.1,"nhi":142.7,"src":["S23"],"note":"Ballpark: UK l6 / e6 (staff) pay x Italy/UK ratio observed at 6 yrs (0.45, in EUR at 2025 FX)","ga":[5.19,7.49],"gs":[5.35,7.73],"na":[3.84,5.53],"ns":[3.92,5.64]},{"j":"swe","c":"IT","s":15,"t":"L7 / E7 (Senior Staff)","q":"-"},{"j":"swe","c":"IT","s":20,"t":"L8 / E8 (Principal)","q":"-"},{"j":"swe","c":"ES","s":0,"t":"L3 / E3 / SDE I (new grad)","q":"S","lo":68,"hi":156,"nlo":47.1,"nhi":97.2,"src":["S23"],"note":"n=28, mostly Amazon","ga":[2.2,5.05],"gs":[2.99,6.87],"na":[1.96,4.05],"ns":[2.56,5.28]},{"j":"swe","c":"ES","s":3,"t":"L4 / E4 / SDE II","q":"S","lo":105,"hi":123,"nlo":68.2,"nhi":78.4,"src":["S23"],"note":"n=39","ga":[3.4,3.99],"gs":[4.62,5.41],"na":[2.84,3.26],"ns":[3.7,4.26]},{"j":"swe","c":"ES","s":6,"t":"L5 / E5 (Senior)","q":"S","lo":157,"hi":207,"nlo":97.8,"nhi":126.2,"src":["S23"],"note":"n=39","ga":[5.09,6.71],"gs":[6.91,9.11],"na":[4.07,5.25],"ns":[5.31,6.86]},{"j":"swe","c":"ES","s":10,"t":"L6 / E6 (Staff)","q":"B","lo":220.0,"hi":310.0,"nlo":133.6,"nhi":184.8,"src":["S23"],"note":"Ballpark: UK l6 / e6 (staff) pay x Spain/UK ratio observed at 6 yrs (0.53, in EUR at 2025 FX)","ga":[7.13,10.04],"gs":[7.2,10.15],"na":[5.56,7.69],"ns":[5.61,7.76]},{"j":"swe","c":"ES","s":15,"t":"L7 / E7 (Senior Staff)","q":"-"},{"j":"swe","c":"ES","s":20,"t":"L8 / E8 (Principal)","q":"-"}],"den":{"US":{"all":{"g":62608,"n":47330},"young":{"g":51873,"n":39749},"mid":{"g":68101,"n":50819}},"UK":{"all":{"g":39039,"n":31628},"young":{"g":32347,"n":26809},"mid":{"g":42398,"n":34046}},"CH":{"all":{"g":89063,"n":70209},"young":{"g":65601,"n":54031},"mid":{"g":90794,"n":71389}},"DE":{"all":{"g":53395,"n":34086},"young":{"g":35889,"n":24557},"mid":{"g":56289,"n":35594}},"FR":{"all":{"g":36903,"n":27559},"young":{"g":25028,"n":19576},"mid":{"g":37524,"n":27977}},"IT":{"all":{"g":34709,"n":25814},"young":{"g":25581,"n":20734},"mid":{"g":33619,"n":25282}},"ES":{"all":{"g":30863,"n":24024},"young":{"g":22717,"n":18399},"mid":{"g":30547,"n":23810}}},"sources":{"S1":["Mergers & Inquisitions, Investment Banking Salary (2026 update, end-2025 bonuses)","https://mergersandinquisitions.com/investment-banking-salary/","2025"],"S2":["Wall Street Prep, Investment Banking Analyst Salary Guide (2024 update)","https://wallstreetprep.com/knowledge/investment-banking-analyst-salary-guide/","2023-24"],"S3":["Prospect Rock Partners, IB Analyst Compensation Report 2025","https://prospectrockpartners.com/investment-banking-analyst-compensation-report-2025-market-analysis/","2025"],"S4":["eFinancialCareers, Analyst bonuses in 2025 (WSO self-reported data)","https://www.efinancialcareers.com/news/banking-analyst-bonuses","2025"],"S5":["PrepLounge, Investment Banking Salaries in the UK 2026","https://www.preplounge.com/de/articles/salary-investment-banking-uk","2026"],"S6":["PrepLounge, Investment Banking Gehalt Deutschland (Gehaltsreport 2026)","https://www.preplounge.com/de/blog/finance/investment-banking/gehalt/deutschland","2026"],"S7":["eFinancialCareers, Junior banker pay in France (Dartmouth Partners survey)","https://www.efinancialcareers.com/news/2021/06/junior-banker-pay-france","2021"],"S8":["Business Cool, M&A: salaire, hiérarchie","https://business-cool.com/decryptage/analyse/ma-salaire-hierarchie-definition/","2022"],"S9":["JobRise, Analista financiero sueldo Madrid 2026 (own estimates)","https://jobrise.io/es/blog/analista-financiero-sueldo-madrid/","2026"],"S10":["Michael Page Italy, Studi di retribuzione 2026 (Banking & FS)","https://www.qualenergia.it/wp-content/uploads/2026/05/Studi-di-retribuzione-2026-Michael-Page-Italy.pdf","2026"],"S11":["Michael Page Switzerland, Salary Guide 2026 (fixed salary, kCHF)","https://static.ie.edu/CMC/Career%20Education/Career%20Website/MARKET%20OVERVIEW/Salary%20guides%202026/Switzerland%20Salary%20Guide%202026%20-%20Michael%20Page.pdf","2026"],"S12":["Michael Page Switzerland, Banking & Financial Services factsheet (average bonus; undated)","https://www.michaelpage.ch/sites/michaelpage.ch/files/banking_factsheet_en.pdf","undated"],"S13":["Levels.fyi, McKinsey and Bain management consultant pay by level and country","https://www.levels.fyi/companies/mckinsey/salaries/management-consultant","accessed Oct 2026"],"S14":["MyConsultingCoach, Consulting salaries 2026 (US; DOL LCA filings + school reports)","https://www.myconsultingcoach.com/consulting-salaries","2026"],"S15":["RoadToOffer, McKinsey Salary 2026 (Management Consulted 2026 + Levels.fyi)","https://www.roadtooffer.com/blog/mckinsey-salary","2026"],"S16":["PrepLounge, Consulting salaries UK 2026","https://www.preplounge.com/en/blog/consulting/salary/uk","2026"],"S17":["The Boston Consulting Group UK LLP, financial statements, year to 31 March 2025","https://web-assets.bcg.com/48/7a/0216055e4f7f91e24330fe6531f4/bcg-uk-llp-ye-31-march-2025.pdf","FY2025"],"S18":["JobRise, Consultant McKinsey BCG Deutschland 2026 (own estimates)","https://jobrise.io/de/blog/consultant-mckinsey-bcg-deutschland/","2026"],"S19":["PrepLounge, Gehälter bei MBB","https://www.preplounge.com/de/blog/consulting/gehalt/mbb","2024"],"S20":["PrepLounge, Consulting salaries in France 2025 (job advertisements)","https://www.preplounge.com/en/blog/consulting/salary/france","2025"],"S21":["JobRise, Consultor McKinsey Bain BCG Madrid 2026 (own estimates)","https://jobrise.io/es/blog/consultor-mckinsey-bain-bcg-madrid/","2026"],"S22":["Ticonsiglio, Bain & Company assunzioni Italia (published pay bands)","https://www.ticonsiglio.com/bain-company-assunzioni-italia-piano-crescita/","2026"],"S23":["Levels.fyi, Google / Meta / Amazon software engineer pay by level and country","https://www.levels.fyi/companies/google/salaries/software-engineer","accessed Oct 2026"],"D1":["BLS, CPS Table 37: median weekly earnings of full-time wage and salary workers, annual averages 2025","https://www.bls.gov/cps/cpsaat37.htm","2025"],"D2":["BLS, Usual Weekly Earnings Table 3, by age, Q2 2026 (age profile only)","https://www.bls.gov/news.release/wkyeng.t03.htm","2026 Q2"],"D3":["ONS, ASHE 2025 provisional, Table 6.7a: annual gross pay, full-time, by age","https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/agegroupashetable6","2025"],"D4":["Eurostat, Structure of Earnings Survey 2022, earn_ses22_adeci (median annual earnings, full-time)","https://ec.europa.eu/eurostat/databrowser/view/earn_ses22_adeci/default/table","2022"],"D5":["Eurostat, Structure of Earnings Survey 2022, earn_ses22_27 (mean annual earnings by age; age profile only)","https://ec.europa.eu/eurostat/databrowser/view/earn_ses22_27/default/table","2022"],"D6":["Eurostat, Labour cost index, wages and salaries, lc_lci_r2_a (uprating 2022 to 2025)","https://ec.europa.eu/eurostat/databrowser/view/lc_lci_r2_a/default/table","2025"],"D7":["Swiss FSO wage index: +1.7% (2023), +1.8% (2024), +1.8% (2025 estimate)","https://www.kmu.admin.ch/en/real-wages-rise-in-2024","2025"],"FX":["ECB euro reference rates, 2025 annual average","https://data.ecb.europa.eu/data/datasets/EXR","2025"],"X1":["Swiss Federal Tax Administration (ESTV), tax calculator, Zurich, 2025","https://swisstaxcalculator.estv.admin.ch/","2025"],"X2":["IRS, 2025 tax inflation adjustments (brackets)","https://www.irs.gov/newsroom/irs-releases-tax-inflation-adjustments-for-tax-year-2025","2025"],"X3":["IRS, One Big Beautiful Bill provisions (2025 standard deduction)","https://www.irs.gov/newsroom/one-big-beautiful-bill-provisions","2025"],"X4":["SSA, contribution and benefit base 2025","https://www.ssa.gov/oact/cola/cbb.html","2025"],"X5":["NYS Department of Taxation, income tax rates (state and New York City)","https://www.tax.ny.gov/pit/file/tax-tables/","2025"],"X6":["GOV.UK, Income Tax rates and Personal Allowances","https://www.gov.uk/income-tax-rates","2025/26"],"X7":["GOV.UK, National Insurance rates","https://www.gov.uk/national-insurance-rates-letters","2025/26"],"X8":["Finanz-Tools, income tax formula 2025 (§32a EStG)","https://www.finanz-tools.de/einkommensteuer/berechnung-formeln/2025","2025"],"X9":["MoneyVox, income-tax scale for 2025 income (LF 2026)","https://www.moneyvox.fr/impot/actualites/107163/impot-sur-le-revenu-voici-le-nouveau-bareme-2026-propose-par-le-gouvernement","2026"],"X10":["Università del Sannio, circular on the 2025 tax-wedge relief","https://www.unisannio.it/sites/default/files/ateneo/documenti/CIRCOLARE%20riduzione%20cuneo%20fiscale%202025.pdf","2025"],"X11":["TaxDown, IRPF scales, Comunidad de Madrid","https://taxdown.es/irpf/tramos-tablas-irpf-madrid","2025"]},"names":{"US":"United States","UK":"United Kingdom","CH":"Switzerland","FR":"France","DE":"Germany","IT":"Italy","ES":"Spain"},"cities":{"US":"New York","UK":"London","CH":"Zurich","FR":"Paris","DE":"Frankfurt / Munich","IT":"Milan","ES":"Madrid"},"titles":{"ib":["Analyst, year 1","Associate, year 1","Vice President","Director","Managing Director","Senior MD"],"mbb":["Entry hire (BA / AC / Junior Associate)","Consultant / Associate","Engagement Manager","Principal / Associate Partner","Partner","Senior Partner"],"swe":["L3 / E3 / SDE I (new grad)","L4 / E4 / SDE II","L5 / E5 (Senior)","L6 / E6 (Staff)","L7 / E7 (Senior Staff)","L8 / E8 (Principal)"]},"stages":[0,3,6,10,15,20],"cur":{"US":"$","UK":"£","CH":"CHF ","FR":"€","DE":"€","IT":"€","ES":"€"}};
+const SRC_GROUPS = [["Banking pay", ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10", "S11", "S12"]], ["Consulting and Big Tech pay", ["S13", "S14", "S15", "S16", "S17", "S18", "S19", "S20", "S21", "S22", "S23"]], ["Median earnings, exchange rates and tax", ["D1", "D2", "D3", "D4", "D5", "D6", "D7", "FX", "X1", "X2", "X3", "X4", "X5", "X6", "X7", "X8", "X9", "X10", "X11"]]];
+const JOBS = {ib:"Investment banking", mbb:"Management consulting (McKinsey, BCG, Bain)", swe:"Big Tech software engineering"};
+const ORDER = ["US","UK","CH","DE","FR","IT","ES"];
+const S = {job:"ib", tax:"g", den:"a", yi:0};
+const QLAB = {S:"Sourced", T:"Thin", B:"Ballpark"};
+const LMIN = Math.log(1), LMAX = Math.log(60), TICKS = [1,2,3,5,10,20,50];
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const $ = id => document.getElementById(id);
+const rowsEl = $("rows"), plotEl = $("plot"), tip = $("tip");
+const fmtX = v => (v >= 20 ? v.toFixed(0) : v.toFixed(1)) + "x";
+function money(c, k){ // k in thousands
+  const cur = DATA.cur[c];
+  const s = k >= 1000 ? (k/1000).toFixed(k >= 10000 ? 0 : 1) + "M" : Math.round(k) + "k";
+  return cur + s;
+}
+const key = () => S.tax + S.den;
+const stage = () => DATA.stages[S.yi];
+const mid = m => Math.sqrt(m[0]*m[1]);
+
+// rows built once, then moved
+const rowEls = {};
+let lastPointer = "mouse";
+document.addEventListener("pointerdown", e => { lastPointer = e.pointerType; }, true);
+document.addEventListener("keydown", () => { lastPointer = "keyboard"; }, true);
+ORDER.forEach(c => {
+  const r = document.createElement("div");
+  r.className = "row"; r.setAttribute("role","listitem"); r.tabIndex = 0;
+  r.innerHTML = `<div class="who"><b class="lg-n">${DATA.names[c]}</b><b class="sh" title="${DATA.names[c]}">${c}</b><small>${DATA.cities[c]}</small></div>
+    <div class="track"><span class="bar"></span><span class="end e1"></span><span class="end e2"></span><span class="dot"></span></div>
+    <div class="val"></div>`;
+  const notTouch = () => lastPointer !== "touch";
+  r.addEventListener("mouseenter", () => { if (notTouch()) showTip(c); });
+  r.addEventListener("mouseleave", () => { if (notTouch()) hideTip(); });
+  r.addEventListener("focus", () => { if (notTouch()) showTip(c); });
+  r.addEventListener("blur", () => { if (notTouch()) hideTip(); });
+  r.addEventListener("click", e => { e.stopPropagation(); (lastPointer === "touch" && activeC === c) ? hideTip() : showTip(c); });
+  rowsEl.appendChild(r); rowEls[c] = r;
+});
+document.addEventListener("click", hideTip);
+
+function rh(){ return innerWidth < 640 ? 46 : 50; }
+function x(v, w){ return (Math.log(Math.max(1, Math.min(60, v))) - LMIN) / (LMAX - LMIN) * w; }
+
+function cellFor(c){ return DATA.cells.find(d => d.j === S.job && d.c === c && d.s === stage()); }
+
+function render(){
+  const s = stage(), k = key(), H = rh();
+  const w = plotEl.getBoundingClientRect().width;
+  rowsEl.style.setProperty("--rh", H + "px");
+  document.querySelector(".chart").style.setProperty("--rh", H + "px");
+  rowsEl.style.height = (ORDER.length * H) + "px";
+  plotEl.style.height = "0px";
+
+  // axis and grid
+  const ax = $("axis-top");
+  ax.innerHTML = TICKS.map(t => `<span style="left:${x(t,w)}px">${t}x</span>`).join("");
+  plotEl.innerHTML = "";
+  const g = document.createElement("div");
+  g.style.cssText = `position:absolute;left:0;right:0;top:0;height:${ORDER.length*H}px;pointer-events:none`;
+  g.innerHTML = TICKS.map(t => `<span class="gridline${t===1?" one":""}" style="left:${x(t,w)}px"></span>`).join("");
+  plotEl.appendChild(g);
+
+  const cells = ORDER.map(c => ({c, d: cellFor(c)}));
+  cells.sort((a,b) => {
+    const am = a.d.q === "-" ? -1 : mid(a.d[k]), bm = b.d.q === "-" ? -1 : mid(b.d[k]);
+    return bm - am;
+  });
+  cells.forEach(({c,d}, i) => {
+    const r = rowEls[c];
+    r.style.transform = `translateY(${i*H}px)`;
+    r.dataset.rank = i;
+    const bar = r.querySelector(".bar"), dot = r.querySelector(".dot"), e1 = r.querySelector(".e1"), e2 = r.querySelector(".e2"), val = r.querySelector(".val");
+    if (d.q === "-"){
+      r.classList.add("none");
+      [bar,dot,e1,e2].forEach(el => el.style.opacity = 0);
+      val.textContent = "-";
+      r.setAttribute("aria-label", `${DATA.names[c]}: no credible data`);
+      return;
+    }
+    r.classList.remove("none");
+    const m = d[k], x0 = x(m[0], w), x1 = x(m[1], w), xm = x(mid(m), w);
+    [bar,dot,e1,e2].forEach(el => el.style.opacity = 1);
+    bar.style.transform = `translateX(${x0}px) scaleX(${Math.max(0.02,(x1-x0)/100)})`;
+    bar.classList.toggle("dash", d.q === "B");
+    e1.style.transform = `translateX(${x0}px)`; e2.style.transform = `translateX(${x1}px)`;
+    dot.style.transform = `translateX(${xm}px)`;
+    dot.classList.toggle("hollow", d.q !== "S");
+    const approx = d.q === "B" ? "≈" : "";
+    val.innerHTML = `${approx}${fmtX(mid(m))}<small>${fmtX(m[0])} to ${fmtX(m[1])}</small>`;
+    r.setAttribute("aria-label", `${DATA.names[c]}: ${approx ? "about " : ""}${fmtX(mid(m))} the median, range ${fmtX(m[0])} to ${fmtX(m[1])}, ${QLAB[d.q]}`);
+  });
+
+  // titles
+  const t = DATA.titles[S.job][S.yi];
+  $("yr-val").textContent = s === 0 ? "First year" : `${s} years`;
+  $("ctitle").textContent = `${JOBS[S.job]}, ${s === 0 ? "first year" : s + " years in"} (${t}): ${S.tax === "g" ? "pre-tax" : "after-tax"} pay as a multiple of the median ${S.den === "a" ? "full-time worker" : "full-time worker of the same age"}`;
+  const missing = cells.filter(z => z.d.q === "-").length;
+  $("csub").textContent = missing ? `${missing} of 7 countries ${missing === 1 ? "has" : "have"} no credible data at this stage.` : "All 7 countries have data at this stage.";
+  renderTable(cells);
+  if (activeC) showTip(activeC);
+}
+
+let activeC = null;
+function showTip(c){
+  const d = cellFor(c); const r = rowEls[c];
+  Object.values(rowEls).forEach(el => el.classList.remove("active"));
+  r.classList.add("active"); activeC = c;
+  const k = key(), b = stage() <= 6 ? "young" : "mid";
+  const dk = S.den === "a" ? "all" : b, field = S.tax === "g" ? "g" : "n";
+  const den = DATA.den[c][dk][field] / 1000;
+  let html = `<h4>${DATA.names[c]}, ${DATA.cities[c]}</h4><div class="lvl">${DATA.titles[S.job][S.yi]}, ${stage()} years</div>`;
+  if (d.q === "-"){
+    html += `<p class="note">No source reports pay for this stage in this country, and there is no observed data at the stage below to estimate from.</p>`;
+  } else {
+    const m = d[k];
+    html += `<dl>
+      <dt>Pay, pre-tax</dt><dd>${money(c,d.lo)} to ${money(c,d.hi)}</dd>
+      <dt>Pay, after tax</dt><dd>${money(c,d.nlo)} to ${money(c,d.nhi)}</dd>
+      <dt>Median used</dt><dd>${money(c,den)}${S.tax==="n"?" after tax":""}</dd>
+      <dt>Multiple</dt><dd>${fmtX(m[0])} to ${fmtX(m[1])}</dd></dl>
+      <div class="q">${QLAB[d.q]}${d.q==="B"?": estimate, read loosely":""}</div>
+      ${d.note ? `<p class="note">${d.note}</p>` : ""}
+      ${d.src.length ? `<div class="src">Sources: ${d.src.map(s => DATA.sources[s][0].split(",")[0]).filter((v,i,a)=>a.indexOf(v)===i).join("; ")}</div>` : ""}`;
+  }
+  tip.innerHTML = html;
+  const chart = $("chart").getBoundingClientRect(), rr = r.getBoundingClientRect();
+  const top = rr.bottom - chart.top + 6;
+  const fitsBelow = rr.bottom + tip.offsetHeight + 12 < innerHeight;
+  tip.style.top = (fitsBelow ? top : rr.top - chart.top - tip.offsetHeight - 6) + "px";
+  const left = Math.min(Math.max(8, rr.left - chart.left + (innerWidth < 640 ? 0 : 170)), chart.width - tip.offsetWidth - 8);
+  tip.style.left = left + "px";
+  tip.classList.add("on");
+}
+function hideTip(){ tip.classList.remove("on"); Object.values(rowEls).forEach(el => el.classList.remove("active")); activeC = null; }
+
+function renderTable(cells){
+  const k = key();
+  $("tbl").innerHTML = `<thead><tr><th>Country</th><th>Multiple (mid)</th><th>Range</th><th>Pay, pre-tax</th><th>Quality</th></tr></thead><tbody>` +
+    cells.map(({c,d}) => d.q === "-" ? `<tr><td>${DATA.names[c]}</td><td>-</td><td>-</td><td>-</td><td>No credible data</td></tr>` :
+      `<tr><td>${DATA.names[c]}</td><td>${d.q==="B"?"≈":""}${fmtX(mid(d[k]))}</td><td>${fmtX(d[k][0])} to ${fmtX(d[k][1])}</td><td>${money(c,d.lo)} to ${money(c,d.hi)}</td><td>${QLAB[d.q]}</td></tr>`).join("") + `</tbody>`;
+}
+
+// controls
+document.querySelectorAll(".seg").forEach(seg => {
+  seg.addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+    S[seg.dataset.key] = b.dataset.v; render();
+  });
+});
+$("yr").addEventListener("input", e => { S.yi = +e.target.value; render(); });
+new ResizeObserver(() => render()).observe(plotEl);
+
+// sources
+$("srcs").innerHTML = SRC_GROUPS.map(([title, ids]) => `<div><h3>${title}</h3><ol>${ids.map(id => {
+  const [t,u,y] = DATA.sources[id];
+  return `<li><span class="id">${id}</span><a href="${u}" target="_blank" rel="noopener">${t}</a> <span class="yr">${y}</span></li>`;
+}).join("")}</ol></div>`).join("");
+
+render();
+</script>
+</body>
+</html>
