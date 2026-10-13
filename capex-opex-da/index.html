@@ -1,0 +1,545 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Capex, Opex and D&amp;A</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single reading column (max 980px) split into Part 1 "The picture" (diagrams, two live charts)
+   and Part 2 "In depth" (text). Ledger-like: cool paper, ink, one cobalt accent; series colours from the validated chart palette. */
+:root{
+  --bg:#f4f6f8; --surface:#fbfcfd; --ink:#141b22; --ink-2:#4a5561; --ink-3:#6b7682;
+  --rule:#dbe1e7; --rule-2:#e8ecf0; --accent:#2b56c4; --accent-soft:#e3eaf9;
+  --s-capex:#2a78d6; --s-opex:#eb6834; --s-return:#1baf7a;
+  --f-display:"Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-body:"Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11161b; --surface:#161c22; --ink:#e9eef2; --ink-2:#b4bec8; --ink-3:#8c97a2;
+    --rule:#2a333c; --rule-2:#222a32; --accent:#7f9ff0; --accent-soft:#1f2a44;
+    --s-capex:#3987e5; --s-opex:#d95926; --s-return:#199e70; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11161b; --surface:#161c22; --ink:#e9eef2; --ink-2:#b4bec8; --ink-3:#8c97a2;
+  --rule:#2a333c; --rule-2:#222a32; --accent:#7f9ff0; --accent-soft:#1f2a44;
+  --s-capex:#3987e5; --s-opex:#d95926; --s-return:#199e70; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:980px;margin:0 auto;padding-inline:20px;padding-block:40px 80px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;letter-spacing:-0.02em;margin:0}
+h1{font-size:clamp(2rem,4.6vw,3.1rem);line-height:1.05;font-weight:700}
+h2{font-size:clamp(1.45rem,2.6vw,1.85rem);line-height:1.15;font-weight:650}
+h3{font-size:1.1rem;line-height:1.3;font-weight:600}
+p{margin:0}
+.lede{color:var(--ink-2);max-width:62ch;margin-top:14px;font-size:1.06rem}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.label{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+header.top{display:grid;grid-template-columns:1fr;gap:18px;padding-bottom:28px;border-bottom:1px solid var(--rule)}
+.jump{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.jump a{font-family:var(--f-mono);font-size:.82rem;text-decoration:none;border:1px solid var(--rule);background:var(--surface);color:var(--ink);padding:7px 12px;border-radius:999px;transition:transform .2s cubic-bezier(.16,1,.3,1),border-color .2s}
+.jump a:hover{border-color:var(--accent)}
+.jump a:active{transform:translateY(1px)}
+
+.part{margin-top:56px;display:grid;gap:22px}
+.part-head{display:grid;gap:8px}
+.block{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:22px;display:grid;gap:16px;min-width:0}
+.block p.note{color:var(--ink-2);max-width:68ch}
+
+/* Flow diagram */
+.flow{display:grid;grid-template-columns:1fr;gap:0;justify-items:center}
+.node{border:1px solid var(--rule);background:var(--bg);border-radius:var(--r);padding:12px 16px;text-align:center;max-width:420px;width:100%}
+.node.q{border:1.5px solid var(--accent);background:var(--accent-soft)}
+.node strong{display:block;font-family:var(--f-display)}
+.node span{color:var(--ink-2);font-size:.92rem}
+.vline{width:2px;height:22px;background:var(--rule)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:18px;width:100%;position:relative;padding-top:22px}
+.split::before{content:"";position:absolute;top:0;left:25%;right:25%;height:2px;background:var(--rule)}
+.branch{display:grid;justify-items:center;align-content:start;position:relative}
+.branch::before{content:"";position:absolute;top:-22px;left:50%;width:2px;height:22px;background:var(--rule)}
+.tag{font-family:var(--f-mono);font-size:.75rem;padding:2px 8px;border-radius:999px;margin-bottom:8px;border:1px solid var(--rule);background:var(--surface)}
+.node.opex{border-color:var(--s-opex)}
+.node.capex{border-color:var(--s-capex)}
+.swatch{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:baseline}
+
+/* Statements matrix */
+.matrix{display:grid;grid-template-columns:150px 1fr 1fr;border:1px solid var(--rule);border-radius:var(--r);overflow:hidden}
+.matrix > div{padding:12px 14px;border-top:1px solid var(--rule-2);min-width:0}
+.matrix > div:nth-child(-n+3){border-top:0;background:var(--bg);font-weight:600}
+.matrix .rowh{font-weight:600;background:var(--bg)}
+.matrix .cell{font-size:.94rem;color:var(--ink-2)}
+.matrix .cell b{color:var(--ink);font-weight:600}
+
+/* Charts */
+.controls{display:flex;flex-wrap:wrap;gap:18px 26px;align-items:end}
+.ctrl{display:grid;gap:6px;min-width:180px;flex:1 1 180px}
+.ctrl label{font-size:.85rem;color:var(--ink-2);display:flex;justify-content:space-between;gap:8px}
+.ctrl output{font-family:var(--f-mono);color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.88rem;color:var(--ink-2)}
+.chart-box{position:relative;min-width:0}
+.chart-box svg{display:block;width:100%;height:auto;overflow:visible}
+.tip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:8px 10px;font-size:.82rem;box-shadow:0 6px 24px rgba(20,27,34,.12);min-width:150px;z-index:2}
+.tip .row{display:flex;justify-content:space-between;gap:12px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.stat{border-top:2px solid var(--rule);padding-top:10px;display:grid;gap:2px}
+.stat .v{font-family:var(--f-mono);font-size:1.25rem;font-variant-numeric:tabular-nums}
+.stat .k{font-size:.84rem;color:var(--ink-2)}
+.toggle{justify-self:start;font:inherit;font-size:.85rem;background:transparent;border:1px solid var(--rule);color:var(--ink);padding:6px 12px;border-radius:999px;cursor:pointer}
+.toggle:hover{border-color:var(--accent)}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;font-size:.88rem;width:100%}
+th,td{text-align:right;padding:6px 10px;border-bottom:1px solid var(--rule-2);font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--ink-3);font-weight:500}
+.formula{font-family:var(--f-mono);font-size:clamp(.86rem,2vw,1rem);background:var(--bg);border:1px solid var(--rule);border-radius:8px;padding:12px 14px;overflow-x:auto;white-space:nowrap}
+.formula .c{color:var(--s-capex);font-weight:600}
+.formula .r{color:var(--s-return);font-weight:600}
+.formula .o{color:var(--s-opex);font-weight:600}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+
+/* Part 2 text */
+.prose{display:grid;gap:14px;max-width:70ch}
+.prose p,.prose li{color:var(--ink)}
+.prose ul{margin:0;padding-left:1.1em;display:grid;gap:6px}
+section.deep{padding-top:30px;border-top:1px solid var(--rule);display:grid;gap:14px}
+.ledger{font-family:var(--f-mono);font-size:.88rem;border:1px solid var(--rule);border-radius:8px;overflow:hidden;background:var(--surface)}
+.ledger .lh{background:var(--bg);padding:8px 12px;color:var(--ink-2);font-size:.8rem;border-bottom:1px solid var(--rule)}
+.ledger .ll{display:grid;grid-template-columns:3ch 1fr auto;gap:10px;padding:6px 12px;border-bottom:1px solid var(--rule-2)}
+.ledger .ll:last-child{border-bottom:0}
+.ledger .cr{padding-left:2ch}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.card{border:1px solid var(--rule);background:var(--surface);border-radius:var(--r);padding:16px;display:grid;gap:6px;align-content:start}
+.card h3{font-size:1rem}
+.card p{color:var(--ink-2);font-size:.95rem}
+dl.gloss{display:grid;grid-template-columns:minmax(120px,190px) 1fr;gap:10px 18px;margin:0}
+dl.gloss dt{font-weight:600}
+dl.gloss dd{margin:0;color:var(--ink-2)}
+details.q{border:1px solid var(--rule);border-radius:var(--r);background:var(--surface);padding:14px 16px}
+details.q summary{cursor:pointer;font-weight:600}
+details.q p{margin-top:10px;color:var(--ink-2)}
+.callout{border-left:3px solid var(--accent);padding:4px 0 4px 14px;color:var(--ink-2)}
+footer{margin-top:60px;color:var(--ink-3);font-size:.85rem;border-top:1px solid var(--rule);padding-top:16px}
+
+@media (max-width:720px){
+  .two,.cards{grid-template-columns:1fr}
+  .matrix{grid-template-columns:96px 1fr 1fr;font-size:.88rem}
+  .split{gap:10px}
+  dl.gloss{grid-template-columns:1fr}
+  dl.gloss dd{margin-bottom:6px}
+  .block{padding:16px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <h1>Capex, Opex and D&amp;A</h1>
+    <p class="lede">One euro spent, two ways to book it. What changes is when the cost hits profit, and for a regulated grid operator, whether that euro earns a return.</p>
+    <nav class="jump" aria-label="Sections">
+      <a href="#picture">Part 1: the picture</a>
+      <a href="#depth">Part 2: in depth</a>
+      <a href="#check">Check yourself</a>
+    </nav>
+  </header>
+
+  <!-- PART 1 -->
+  <div class="part" id="picture">
+    <div class="part-head">
+      <span class="label">Part 1</span>
+      <h2>The picture</h2>
+    </div>
+
+    <div class="block">
+      <h3>The one question accounting asks</h3>
+      <div class="flow" role="img" aria-label="Decision flow: a euro is spent. If it still produces value after this year it is capex, booked as an asset and spread over its useful life through depreciation or amortisation. If not, it is opex and hits this year's profit in full.">
+        <div class="node"><strong>A euro is spent</strong><span>salary, cable, software licence, SaaS fee</span></div>
+        <div class="vline"></div>
+        <div class="node q"><strong>Does it buy something that keeps producing value after this year?</strong><span>and does the company control it?</span></div>
+        <div class="split">
+          <div class="branch">
+            <span class="tag">No</span>
+            <div class="node opex"><strong><span class="swatch" style="background:var(--s-opex)"></span>Opex</strong><span>Full cost in this year's P&amp;L. Gone.</span></div>
+          </div>
+          <div class="branch">
+            <span class="tag">Yes</span>
+            <div class="node capex"><strong><span class="swatch" style="background:var(--s-capex)"></span>Capex</strong><span>Booked as an asset on the balance sheet.</span></div>
+            <div class="vline"></div>
+            <div class="node capex"><strong>D&amp;A</strong><span>Cost spread over the useful life. Depreciation for physical assets, amortisation for intangibles.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block" id="timing-root" aria-live="polite"></div>
+
+    <div class="block">
+      <h3>Where each route shows up</h3>
+      <div class="matrix" role="table" aria-label="How opex and capex appear in the three financial statements">
+        <div role="columnheader">Statement</div>
+        <div role="columnheader"><span class="swatch" style="background:var(--s-opex)"></span>Opex</div>
+        <div role="columnheader"><span class="swatch" style="background:var(--s-capex)"></span>Capex</div>
+        <div class="rowh" role="rowheader">P&amp;L</div>
+        <div class="cell" role="cell"><b>All of it, now.</b> Above EBITDA, so EBITDA drops by the full amount.</div>
+        <div class="cell" role="cell"><b>A slice each year</b> as D&amp;A, below EBITDA. EBITDA untouched.</div>
+        <div class="rowh" role="rowheader">Balance sheet</div>
+        <div class="cell" role="cell"><b>Nothing.</b> No asset is created.</div>
+        <div class="cell" role="cell"><b>An asset</b> that shrinks each year by the D&amp;A slice.</div>
+        <div class="rowh" role="rowheader">Cash flow</div>
+        <div class="cell" role="cell"><b>Operating</b> cash flow, when paid.</div>
+        <div class="cell" role="cell"><b>Investing</b> cash flow, when paid. Same cash, different line.</div>
+      </div>
+    </div>
+
+    <div class="block" id="reg-root" aria-live="polite"></div>
+  </div>
+
+  <!-- PART 2 -->
+  <div class="part" id="depth">
+    <div class="part-head">
+      <span class="label">Part 2</span>
+      <h2>In depth</h2>
+    </div>
+
+    <section class="deep">
+      <h3>1. The test: is it an asset?</h3>
+      <div class="prose">
+        <p>Spending becomes capex only if it creates an <b>asset</b>: a resource the company <b>controls</b>, that is expected to bring <b>future economic benefits</b>, and whose cost can be <b>measured reliably</b>. For intangibles like software, IAS 38 adds that it must be <b>identifiable</b> (separable, or arising from a contract or legal right).</p>
+        <p>Control is the word people skip. It means the power to get the benefits and to stop others getting them, usually through a legal right. You do not need to own the IP: a licence you control is an asset. A subscription you lose the day you stop paying is a service, so it is opex.</p>
+        <p class="callout">Importance, size or "strategic" labels do not make something capex. Only the asset test does.</p>
+      </div>
+    </section>
+
+    <section class="deep">
+      <h3>2. Depreciation and amortisation</h3>
+      <div class="prose">
+        <p>Same mechanism, two names. <b>Depreciation</b> spreads the cost of physical assets (cables, transformers, servers). <b>Amortisation</b> does the same for intangibles (software, licences, patents). Together: <b>D&amp;A</b>.</p>
+        <p>Straight-line is the default:</p>
+        <div class="formula">Annual D&amp;A = (Cost − Residual value) ÷ Useful life</div>
+        <ul>
+          <li><b>Useful life</b> is an estimate of how long the asset produces value, reviewed each year. A shorter life means faster cost recognition.</li>
+          <li><b>Residual value</b> is what it is worth at the end. For software it is usually zero.</li>
+          <li><b>Other methods</b> exist (declining balance, units of production) when benefits are front-loaded or usage-driven.</li>
+          <li><b>Net book value</b> = cost minus accumulated D&amp;A. It is what the balance sheet shows.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="deep">
+      <h3>3. The bookkeeping, for the €900k project</h3>
+      <div class="two">
+        <div class="ledger" aria-label="Journal entries if expensed">
+          <div class="lh">Expensed (opex), year 1</div>
+          <div class="ll"><span>Dr</span><span>Services expense (P&amp;L)</span><span>900</span></div>
+          <div class="ll"><span>Cr</span><span class="cr">Cash</span><span>900</span></div>
+        </div>
+        <div class="ledger" aria-label="Journal entries if capitalised">
+          <div class="lh">Capitalised (capex), year 1</div>
+          <div class="ll"><span>Dr</span><span>Intangible asset (balance sheet)</span><span>900</span></div>
+          <div class="ll"><span>Cr</span><span class="cr">Cash</span><span>900</span></div>
+          <div class="ll"><span>Dr</span><span>Amortisation expense (P&amp;L)</span><span>300</span></div>
+          <div class="ll"><span>Cr</span><span class="cr">Accumulated amortisation</span><span>300</span></div>
+        </div>
+      </div>
+      <p class="prose" style="color:var(--ink-2)">Figures in €k, 3-year life. Years 2 and 3 repeat only the amortisation lines. Cash leaves on the same day in both cases.</p>
+    </section>
+
+    <section class="deep">
+      <h3>4. Why managers like capitalising: EBITDA</h3>
+      <div class="prose">
+        <p>The P&amp;L runs top to bottom: revenue, minus operating costs, gives <b>EBITDA</b>; minus D&amp;A gives <b>EBIT</b>; minus interest and tax gives <b>net profit</b>.</p>
+        <p>Opex sits above EBITDA. D&amp;A sits below it. So capitalising moves cost out of EBITDA entirely, and investors, lenders and bonus schemes often watch EBITDA. It also moves the cash out of operating cash flow into investing cash flow, so "operating cash flow" looks better too.</p>
+        <p class="callout">Total profit over the asset's life is identical either way. Only the timing and the line it sits on change.</p>
+      </div>
+    </section>
+
+    <section class="deep">
+      <h3>5. Regulated grid operators: where the money is</h3>
+      <div class="prose">
+        <p>A regulated distribution operator cannot set its own prices. The regulator sets <b>allowed revenue</b>, roughly:</p>
+        <div class="formula"><span class="o">Opex allowance</span> + <span class="c">Depreciation</span> + <span class="r">RAB × WACC</span></div>
+        <ul>
+          <li><b>RAB</b> (regulated asset base): the regulator's version of the balance sheet. Capitalised spend enters it.</li>
+          <li><b>Depreciation</b> pays the investment back over its regulatory life: the <i>return of</i> capital.</li>
+          <li><b>RAB × WACC</b> pays for the money tied up: the <i>return on</i> capital. Spain sets 6.58% for 2026 to 2031.</li>
+          <li><b>Opex</b> is recovered at best, often late or cut by efficiency targets. It earns no return. In Germany it is fixed from a base year, so new opex in another year waits for the next reset.</li>
+        </ul>
+        <p>That asymmetry is the <b>capex bias</b>: capitalised spend makes money, expensed spend does not. Regulators fight it with <b>TOTEX</b> (treat all spending alike) or, in Italy, a <b>fixed share</b> of all spending capitalised regardless of its label.</p>
+        <p class="callout">The WACC is not pure margin. It compensates lenders and shareholders. The operator's real gain is the gap between the allowed rate and what its capital actually costs.</p>
+      </div>
+    </section>
+
+    <section class="deep">
+      <h3>6. Things that catch people out</h3>
+      <div class="cards">
+        <div class="card"><h3>Upkeep is never capex</h3><p>Maintaining an asset you already have is opex. Only spending that adds new capability can be added to the asset, and IAS 38 says that happens "only rarely".</p></div>
+        <div class="card"><h3>No relabelling later</h3><p>Once a cost has been expensed it can never be capitalised retroactively (IAS 38 para. 71).</p></div>
+        <div class="card"><h3>Prepayment is not capex</h3><p>Paying in advance for a service creates a short-term asset that unwinds as the service arrives. It never enters D&amp;A.</p></div>
+        <div class="card"><h3>Internal labour can be capitalised</h3><p>Staff time spent building an asset can go on the balance sheet, which is one reason companies build in-house instead of buying SaaS.</p></div>
+        <div class="card"><h3>Impairment</h3><p>If an asset loses its value early, the remaining book value is written off in one hit. The risk of capitalising.</p></div>
+        <div class="card"><h3>Three rulebooks</h3><p>Statutory accounts, tax and the regulator can each use different lives. In Germany the regulator fixes software at 3 to 5 years.</p></div>
+        <div class="card"><h3>Commitments stay off the balance sheet</h3><p>A signed but unperformed contract is not a liability, unless it turns loss-making (onerous). Then a provision is booked.</p></div>
+        <div class="card"><h3>EBITDA is not a standard</h3><p>IFRS does not define EBITDA. Each company computes its own, so compare definitions before comparing numbers.</p></div>
+      </div>
+    </section>
+
+    <section class="deep">
+      <h3>7. Glossary</h3>
+      <dl class="gloss">
+        <dt>Capex</dt><dd>Capital expenditure. Spending that creates an asset.</dd>
+        <dt>Opex</dt><dd>Operating expenditure. Spending consumed in the period.</dd>
+        <dt>D&amp;A</dt><dd>Depreciation and amortisation: the yearly slice of capex cost in the P&amp;L.</dd>
+        <dt>Net book value</dt><dd>Cost minus accumulated D&amp;A.</dd>
+        <dt>Useful life</dt><dd>The estimated period an asset produces value.</dd>
+        <dt>EBITDA</dt><dd>Earnings before interest, tax, depreciation and amortisation.</dd>
+        <dt>RAB</dt><dd>Regulated asset base: capital the regulator lets earn a return.</dd>
+        <dt>WACC</dt><dd>Weighted average cost of capital: the allowed rate of return on the RAB.</dd>
+        <dt>TOTEX</dt><dd>Total expenditure: regulating opex and capex together to remove the bias.</dd>
+        <dt>Onerous contract</dt><dd>One whose unavoidable costs exceed the benefits expected from it.</dd>
+      </dl>
+    </section>
+
+    <section class="deep" id="check">
+      <h3>8. Check yourself</h3>
+      <details class="q">
+        <summary>A company buys a perpetual software licence for €1.2m and expects to use it for 4 years. What happens to year-1 EBITDA and net profit?</summary>
+        <p>EBITDA: no change, because the licence is capitalised and amortisation sits below EBITDA. Net profit: down €300k (1.2m ÷ 4), before tax. Cash: down €1.2m in investing cash flow.</p>
+      </details>
+      <details class="q">
+        <summary>A German grid operator pays €200k a year for reserved support capacity. Capex or opex, and how is it treated in a year that is not the base year?</summary>
+        <p>Opex: it buys a service consumed over time, not an asset. Outside the base year it is not in the allowance, so the operator carries it until the next base-year reset. Bought in the base year itself, it is built into the following period's allowance.</p>
+      </details>
+      <details class="q">
+        <summary>Why is a 6.58% WACC not 6.58% profit for the operator?</summary>
+        <p>Because it pays for the capital tied up: interest to lenders and a return to shareholders. The operator only gains where the allowed rate exceeds its real cost of capital. It is also paid on a shrinking balance, so over a 3-year life it adds up to about 13% of the original cost, not 6.58% a year on the full amount.</p>
+      </details>
+    </section>
+  </div>
+
+  <footer>A personal reference. IFRS terms (IAS 16, IAS 36, IAS 37, IAS 38). Regulatory figures as of October 2026: Spain's 6.58% from CNMC Circular 8/2025; German software lives from StromNEV Anlage 1.</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/htm@3.1.1/dist/htm.umd.js"></script>
+<script>
+(function(){
+  const { useState, useMemo } = React;
+  const html = htm.bind(React.createElement);
+
+  const fmt = v => {
+    const a = Math.abs(v), s = v < 0 ? "-" : "";
+    if (a >= 1e6) return s + "€" + (a/1e6).toFixed(2).replace(/\.?0+$/,"") + "m";
+    return s + "€" + Math.round(a/1e3) + "k";
+  };
+
+  // Bar path with 4px rounded top, square at baseline
+  const bar = (x, y, w, h, r=4) => {
+    if (h <= 0) return "";
+    r = Math.min(r, h, w/2);
+    return `M${x},${y+h} V${y+r} Q${x},${y} ${x+r},${y} H${x+w-r} Q${x+w},${y} ${x+w},${y+r} V${y+h} Z`;
+  };
+
+  function Slider({ id, label, value, min, max, step, onChange, display }){
+    return html`<div class="ctrl">
+      <label for=${id}><span>${label}</span><output for=${id}>${display(value)}</output></label>
+      <input id=${id} type="range" min=${min} max=${max} step=${step} value=${value}
+        onInput=${e => onChange(Number(e.target.value))} onChange=${e => onChange(Number(e.target.value))} />
+    </div>`;
+  }
+
+  function Tip({ tip }){
+    if (!tip) return null;
+    return html`<div class="tip" style=${{left: tip.left + "px", top: tip.top + "px"}} role="status">
+      <div style=${{fontWeight:600, marginBottom:4}}>${tip.title}</div>
+      ${tip.rows.map(r => html`<div class="row"><span><span class="swatch" style=${{background:r.c}}></span>${r.k}</span><span class="mono">${r.v}</span></div>`)}
+    </div>`;
+  }
+
+  // Generic grouped/stacked bar chart drawn to one scale
+  function BarChart({ years, series, maxV, ariaLabel, tipFor }){
+    const W = 640, H = 250, m = {t:14, r:10, b:30, l:54};
+    const iw = W - m.l - m.r, ih = H - m.t - m.b;
+    const [tip, setTip] = useState(null);
+    const ticks = [0, .25, .5, .75, 1].map(f => f * maxV);
+    const y = v => m.t + ih - (v / maxV) * ih;
+    const band = iw / years.length;
+    const groups = series.groups; // array of arrays of {stack:[{v,c,k}]}
+    const nG = groups[0].length; // bars per year
+    const gap = 2;
+    const bw = Math.min(46, (band * 0.7 - gap*(nG-1)) / nG);
+    const gw = bw*nG + gap*(nG-1);
+
+    const onMove = (i, evt) => {
+      const box = evt.currentTarget.ownerSVGElement.getBoundingClientRect();
+      const scale = box.width / W;
+      const cx = (m.l + band*i + band/2) * scale;
+      const left = Math.min(Math.max(cx - 80, 0), box.width - 170);
+      setTip({ left, top: 4, ...tipFor(i) });
+    };
+
+    return html`<div class="chart-box" onMouseLeave=${() => setTip(null)}>
+      <svg viewBox=${`0 0 ${W} ${H}`} role="img" aria-label=${ariaLabel}>
+        ${ticks.map(t => html`<g>
+          <line x1=${m.l} x2=${W-m.r} y1=${y(t)} y2=${y(t)} stroke="var(--rule-2)" stroke-width="1" />
+          <text x=${m.l-8} y=${y(t)+4} text-anchor="end" font-size="11" fill="var(--ink-3)" font-family="var(--f-mono)">${fmt(t)}</text>
+        </g>`)}
+        ${years.map((yr, i) => {
+          const x0 = m.l + band*i + (band - gw)/2;
+          return html`<g>
+            ${groups[i].map((stack, j) => {
+              let acc = 0;
+              const x = x0 + j*(bw+gap);
+              const segs = stack.filter(s => s.v > 0);
+              return segs.map((s, k) => {
+                const yTop = y(acc + s.v), hgt = y(acc) - yTop;
+                acc += s.v;
+                const isTop = k === segs.length - 1;
+                const hh = Math.max(0, hgt - (k > 0 ? gap : 0));
+                return isTop
+                  ? html`<path d=${bar(x, yTop, bw, hh)} fill=${s.c} />`
+                  : html`<rect x=${x} y=${yTop} width=${bw} height=${hh} fill=${s.c} />`;
+              });
+            })}
+            <text x=${m.l + band*i + band/2} y=${H-10} text-anchor="middle" font-size="11.5" fill="var(--ink-2)" font-family="var(--f-mono)">${yr}</text>
+            <rect x=${m.l + band*i} y=${m.t} width=${band} height=${ih} fill="transparent"
+              onMouseMove=${e => onMove(i, e)} onMouseEnter=${e => onMove(i, e)} onFocus=${e => onMove(i, e)} tabindex="0" aria-label=${"Year " + yr} />
+          </g>`;
+        })}
+        <line x1=${m.l} x2=${W-m.r} y1=${y(0)} y2=${y(0)} stroke="var(--ink-3)" stroke-width="1" />
+      </svg>
+      <${Tip} tip=${tip} />
+    </div>`;
+  }
+
+  function LineChart({ points, maxV, ariaLabel }){
+    const W = 640, H = 170, m = {t:14, r:16, b:28, l:54};
+    const iw = W - m.l - m.r, ih = H - m.t - m.b;
+    const n = points.length - 1;
+    const x = i => m.l + (i / n) * iw;
+    const y = v => m.t + ih - (v / maxV) * ih;
+    const ticks = [0, .5, 1].map(f => f*maxV);
+    const capexPath = points.map((p,i) => `${i?"L":"M"}${x(i)},${y(p.capex)}`).join(" ");
+    const opexPath = points.map((p,i) => `${i?"L":"M"}${x(i)},${y(0)}`).join(" ");
+    return html`<div class="chart-box"><svg viewBox=${`0 0 ${W} ${H}`} role="img" aria-label=${ariaLabel}>
+      ${ticks.map(t => html`<g>
+        <line x1=${m.l} x2=${W-m.r} y1=${y(t)} y2=${y(t)} stroke="var(--rule-2)" />
+        <text x=${m.l-8} y=${y(t)+4} text-anchor="end" font-size="11" fill="var(--ink-3)" font-family="var(--f-mono)">${fmt(t)}</text>
+      </g>`)}
+      ${points.map((p,i) => html`<text x=${x(i)} y=${H-8} text-anchor="middle" font-size="11.5" fill="var(--ink-2)" font-family="var(--f-mono)">${i === 0 ? "Start" : "End Y" + i}</text>`)}
+      <path d=${opexPath} fill="none" stroke="var(--s-opex)" stroke-width="2" stroke-dasharray="5 4" />
+      <path d=${capexPath} fill="none" stroke="var(--s-capex)" stroke-width="2" />
+      ${points.map((p,i) => html`<circle cx=${x(i)} cy=${y(p.capex)} r="4.5" fill="var(--s-capex)" stroke="var(--surface)" stroke-width="2"><title>${(i===0?"Start":"End of year "+i) + ": " + fmt(p.capex)}</title></circle>`)}
+      <text x=${x(0)+8} y=${y(points[0].capex)-8} font-size="11.5" fill="var(--ink)" font-family="var(--f-mono)">${fmt(points[0].capex)}</text>
+    </svg></div>`;
+  }
+
+  function Timing(){
+    const [amount, setAmount] = useState(900000);
+    const [life, setLife] = useState(3);
+    const [showTable, setShowTable] = useState(false);
+    const years = Array.from({length: life}, (_, i) => "Y" + (i+1));
+    const dep = amount / life;
+    const groups = years.map((_, i) => [
+      [{ v: i === 0 ? amount : 0, c: "var(--s-opex)", k: "Expensed" }],
+      [{ v: dep, c: "var(--s-capex)", k: "Capitalised" }]
+    ]);
+    const points = Array.from({length: life+1}, (_, i) => ({ capex: amount - dep*i }));
+    return html`
+      <h3>Same euros, different timing</h3>
+      <p class="note">A software integration project paid in cash on day one. Move the sliders: the total cost never changes, only the year it lands in.</p>
+      <div class="controls">
+        <${Slider} id="t-amt" label="Project cost" value=${amount} min=${100000} max=${2000000} step=${50000} onChange=${setAmount} display=${fmt} />
+        <${Slider} id="t-life" label="Useful life" value=${life} min=${1} max=${8} step=${1} onChange=${setLife} display=${v => v + (v===1?" year":" years")} />
+      </div>
+      <div class="legend" aria-hidden="true">
+        <span><span class="swatch" style=${{background:"var(--s-opex)"}}></span>Expensed (opex)</span>
+        <span><span class="swatch" style=${{background:"var(--s-capex)"}}></span>Capitalised (capex): yearly amortisation</span>
+      </div>
+      <${BarChart} years=${years} series=${{groups}} maxV=${amount}
+        ariaLabel=${`Cost hitting profit each year. Expensed: ${fmt(amount)} in year 1. Capitalised: ${fmt(dep)} per year for ${life} years.`}
+        tipFor=${i => ({ title: "Year " + (i+1) + ": cost in the P&L", rows: [
+          { k: "Expensed", v: fmt(i===0?amount:0), c: "var(--s-opex)" },
+          { k: "Capitalised", v: fmt(dep), c: "var(--s-capex)" } ] })} />
+      <div class="stats">
+        <div class="stat"><span class="v">${fmt(-amount)} / €0k</span><span class="k">Year-1 EBITDA impact, expensed vs capitalised</span></div>
+        <div class="stat"><span class="v">${fmt(-amount)} / ${fmt(-dep)}</span><span class="k">Year-1 net profit impact (before tax)</span></div>
+        <div class="stat"><span class="v">${fmt(-amount)}</span><span class="k">Year-1 cash out, both routes</span></div>
+        <div class="stat"><span class="v">${fmt(amount)}</span><span class="k">Total cost over the life, both routes</span></div>
+      </div>
+      <h3 style=${{fontSize:"1rem", marginTop:4}}>What sits on the balance sheet</h3>
+      <div class="legend" aria-hidden="true">
+        <span><span class="swatch" style=${{background:"var(--s-capex)"}}></span>Net book value, capitalised</span>
+        <span><span class="swatch" style=${{background:"var(--s-opex)"}}></span>Expensed: no asset at all</span>
+      </div>
+      <${LineChart} points=${points} maxV=${amount} ariaLabel=${`Net book value falls from ${fmt(amount)} to zero over ${life} years; the expensed route never creates an asset.`} />
+      <button class="toggle" onClick=${() => setShowTable(!showTable)} aria-expanded=${showTable}>${showTable ? "Hide numbers" : "Show numbers"}</button>
+      ${showTable && html`<div class="tbl-wrap"><table>
+        <thead><tr><th>Year</th><th>Expensed: P&L cost</th><th>Capitalised: amortisation</th><th>Book value at year end</th></tr></thead>
+        <tbody>${years.map((yr, i) => html`<tr><td>${yr}</td><td>${fmt(i===0?amount:0)}</td><td>${fmt(dep)}</td><td>${fmt(amount - dep*(i+1))}</td></tr>`)}</tbody>
+      </table></div>`}
+    `;
+  }
+
+  function Regulated(){
+    const [amount, setAmount] = useState(900000);
+    const [life, setLife] = useState(3);
+    const [wacc, setWacc] = useState(6.58);
+    const [showTable, setShowTable] = useState(false);
+    const dep = amount / life;
+    const rows = Array.from({length: life}, (_, i) => {
+      const open = amount - dep*i;
+      return { yr: "Y" + (i+1), dep, ret: open * wacc/100, open };
+    });
+    const totalRet = rows.reduce((a,r) => a + r.ret, 0);
+    const maxV = Math.max(amount, dep + rows[0].ret);
+    const groups = rows.map((r, i) => [
+      [{ v: i === 0 ? amount : 0, c: "var(--s-opex)", k: "Opex recovered" }],
+      [{ v: r.dep, c: "var(--s-capex)", k: "Depreciation" }, { v: r.ret, c: "var(--s-return)", k: "Return" }]
+    ]);
+    return html`
+      <h3>Why a grid operator prefers capex</h3>
+      <p class="note">Allowed revenue for a regulated operator, for the same spend booked two ways. Capex comes back as depreciation plus a return on the shrinking balance. Opex comes back once at best, with nothing on top.</p>
+      <div class="formula"><span class="o">Opex allowance</span> + <span class="c">Depreciation</span> + <span class="r">RAB × WACC</span> = allowed revenue</div>
+      <div class="controls">
+        <${Slider} id="r-amt" label="Spend" value=${amount} min=${100000} max=${2000000} step=${50000} onChange=${setAmount} display=${fmt} />
+        <${Slider} id="r-life" label="Regulatory life" value=${life} min=${1} max=${10} step=${1} onChange=${setLife} display=${v => v + (v===1?" year":" years")} />
+        <${Slider} id="r-wacc" label="Allowed return (WACC)" value=${wacc} min=${2} max=${10} step=${0.01} onChange=${setWacc} display=${v => v.toFixed(2) + "%"} />
+      </div>
+      <div class="legend" aria-hidden="true">
+        <span><span class="swatch" style=${{background:"var(--s-opex)"}}></span>Opex: recovered at best</span>
+        <span><span class="swatch" style=${{background:"var(--s-capex)"}}></span>Capex: depreciation (return of capital)</span>
+        <span><span class="swatch" style=${{background:"var(--s-return)"}}></span>Capex: RAB × WACC (return on capital)</span>
+      </div>
+      <${BarChart} years=${rows.map(r => r.yr)} series=${{groups}} maxV=${maxV}
+        ariaLabel=${`Revenue recovered per year. Opex: ${fmt(amount)} at best in year 1. Capex: ${fmt(dep)} depreciation per year plus a return totalling ${fmt(totalRet)}.`}
+        tipFor=${i => ({ title: "Year " + (i+1) + ": revenue allowed", rows: [
+          { k: "Opex recovered", v: fmt(i===0?amount:0), c: "var(--s-opex)" },
+          { k: "Depreciation", v: fmt(rows[i].dep), c: "var(--s-capex)" },
+          { k: "Return on RAB", v: fmt(rows[i].ret), c: "var(--s-return)" } ] })} />
+      <div class="stats">
+        <div class="stat"><span class="v">${fmt(amount)}</span><span class="k">Opex route: recovered at most</span></div>
+        <div class="stat"><span class="v">${fmt(amount + totalRet)}</span><span class="k">Capex route: depreciation plus return</span></div>
+        <div class="stat"><span class="v">${fmt(totalRet)} (${(totalRet/amount*100).toFixed(1)}%)</span><span class="k">The difference: return earned over the life</span></div>
+      </div>
+      <p class="note mono" style=${{fontSize:".86rem"}}>Shortcut: total return ≈ WACC × spend × (life + 1) ÷ 2 = ${fmt(wacc/100*amount*(life+1)/2)}</p>
+      <button class="toggle" onClick=${() => setShowTable(!showTable)} aria-expanded=${showTable}>${showTable ? "Hide numbers" : "Show numbers"}</button>
+      ${showTable && html`<div class="tbl-wrap"><table>
+        <thead><tr><th>Year</th><th>Opening RAB</th><th>Depreciation</th><th>Return</th><th>Capex total</th></tr></thead>
+        <tbody>${rows.map(r => html`<tr><td>${r.yr}</td><td>${fmt(r.open)}</td><td>${fmt(r.dep)}</td><td>${fmt(r.ret)}</td><td>${fmt(r.dep + r.ret)}</td></tr>`)}</tbody>
+      </table></div>`}
+    `;
+  }
+
+  ReactDOM.createRoot(document.getElementById("timing-root")).render(html`<${Timing} />`);
+  ReactDOM.createRoot(document.getElementById("reg-root")).render(html`<${Regulated} />`);
+})();
+</script>
+
+</body></html>

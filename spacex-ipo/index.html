@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpaceX IPO Video — Real vs. Hype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#100f0c;
+    --ink-2:#17150f;
+    --panel:#1b1813;
+    --line:#332e24;
+    --bone:#ece3d2;
+    --bone-dim:#b3a890;
+    --muted:#8a7f6a;
+    --verified:#7bb87f;
+    --distort:#e0a93f;
+    --hype:#d96a52;
+    --signal:#e4673a;
+    --link:#c9a55f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--ink);
+    color:var(--bone);
+    font-family:"Newsreader",Georgia,serif;
+    font-size:18px;
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.045;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:0 26px}
+  a{color:var(--link);text-decoration:none;border-bottom:1px solid rgba(201,165,95,.35)}
+  a:hover{border-color:var(--link)}
+
+  /* ---------- masthead ---------- */
+  header{padding:72px 0 26px;border-bottom:2px solid var(--line)}
+  .kicker{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.32em;
+    text-transform:uppercase;color:var(--signal);margin-bottom:22px;
+    display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+  }
+  .kicker::after{content:"";flex:1;height:1px;background:var(--line);min-width:30px}
+  h1{
+    font-family:"Fraunces",serif;font-weight:900;font-size:clamp(38px,7.4vw,74px);
+    line-height:.97;letter-spacing:-.02em;margin-bottom:20px;
+  }
+  h1 em{font-style:italic;font-weight:500;color:var(--signal)}
+  .dek{font-size:21px;color:var(--bone-dim);max-width:62ch;font-weight:400}
+  .source-bar{
+    font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--muted);
+    margin-top:26px;display:flex;gap:8px 22px;flex-wrap:wrap;letter-spacing:.02em;
+  }
+  .source-bar b{color:var(--bone-dim);font-weight:500}
+
+  /* reveal */
+  .rv{opacity:0;transform:translateY(16px);animation:rise .8s cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  header .rv:nth-child(1){animation-delay:.05s}
+  header .rv:nth-child(2){animation-delay:.16s}
+  header .rv:nth-child(3){animation-delay:.28s}
+  header .rv:nth-child(4){animation-delay:.4s}
+
+  /* ---------- BLUF ---------- */
+  .bluf{
+    margin:42px 0;padding:30px 32px;background:var(--ink-2);
+    border:1px solid var(--line);border-left:4px solid var(--signal);position:relative;
+  }
+  .bluf .lab{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.3em;
+    text-transform:uppercase;color:var(--signal);margin-bottom:14px}
+  .bluf p{font-size:20px;line-height:1.55}
+  .bluf p+p{margin-top:14px}
+  .bluf strong{color:var(--bone);font-weight:600}
+
+  /* ---------- sections ---------- */
+  section{padding:50px 0;border-bottom:1px solid var(--line)}
+  h2{
+    font-family:"Fraunces",serif;font-weight:600;font-size:clamp(26px,4.2vw,38px);
+    letter-spacing:-.015em;line-height:1.04;margin-bottom:10px;
+  }
+  h2 .num{font-family:"IBM Plex Mono",monospace;font-size:14px;color:var(--signal);
+    display:block;letter-spacing:.2em;margin-bottom:12px;font-weight:500}
+  .sub{color:var(--muted);font-size:16px;margin-bottom:30px;font-style:italic}
+  p.body{margin-bottom:18px;max-width:68ch}
+  p.body strong{color:var(--bone);font-weight:600}
+
+  /* ---------- verdict tags ---------- */
+  .tag{
+    font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;padding:3px 9px;border-radius:2px;
+    white-space:nowrap;display:inline-block;
+  }
+  .t-ver{background:rgba(123,184,127,.13);color:var(--verified);border:1px solid rgba(123,184,127,.4)}
+  .t-dis{background:rgba(224,169,63,.13);color:var(--distort);border:1px solid rgba(224,169,63,.4)}
+  .t-hyp{background:rgba(217,106,82,.13);color:var(--hype);border:1px solid rgba(217,106,82,.45)}
+
+  /* ---------- ledger ---------- */
+  .ledger{display:flex;flex-direction:column;gap:0;margin-top:8px}
+  .row{
+    display:grid;grid-template-columns:118px 1fr;gap:20px;
+    padding:20px 0;border-top:1px solid var(--line);align-items:start;
+  }
+  .row:last-child{border-bottom:1px solid var(--line)}
+  .row .v{padding-top:2px}
+  .claim{font-size:17px;line-height:1.5}
+  .claim .h{display:block;font-weight:500;color:var(--bone);margin-bottom:3px}
+  .claim .d{color:var(--bone-dim);font-size:15.5px}
+  .claim .d b{color:var(--bone);font-weight:600}
+  .num-hi{font-family:"IBM Plex Mono",monospace;color:var(--verified);font-size:14.5px}
+
+  /* ---------- mechanic cards ---------- */
+  .mech{margin-top:18px;border:1px solid var(--line);background:var(--ink-2)}
+  .mech .m-row{padding:22px 26px;border-top:1px solid var(--line)}
+  .mech .m-row:first-child{border-top:none}
+  .m-head{display:flex;gap:14px;align-items:baseline;margin-bottom:10px;flex-wrap:wrap}
+  .m-head .mn{font-family:"IBM Plex Mono",monospace;color:var(--signal);font-size:13px}
+  .m-head h3{font-family:"Fraunces",serif;font-weight:600;font-size:21px;letter-spacing:-.01em}
+  .m-row p{font-size:16.5px;color:var(--bone-dim);max-width:66ch}
+  .m-row p b{color:var(--bone);font-weight:600}
+  .m-row p.flag{margin-top:10px;color:var(--bone);font-size:15.5px;
+    padding-left:14px;border-left:2px solid var(--distort)}
+
+  /* float diagram */
+  .floatviz{margin:26px 0 6px;border:1px solid var(--line);background:var(--ink-2);padding:26px}
+  .floatviz .cap{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+  .bar{margin-bottom:18px}
+  .bar .bl{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;
+    font-size:12.5px;margin-bottom:6px;color:var(--bone-dim)}
+  .bar .track{height:26px;background:#0c0b08;border:1px solid var(--line);position:relative;overflow:hidden}
+  .bar .fill{height:100%;display:flex;align-items:center;padding-left:10px;
+    font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:#0c0b08;font-weight:600;
+    width:0;animation:grow 1.1s cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes grow{to{width:var(--w)}}
+  .f-actual .fill{background:var(--muted)}
+  .f-old .fill{background:var(--hype)}
+  .f-new .fill{background:var(--distort)}
+  .floatviz .note{font-size:14.5px;color:var(--bone-dim);margin-top:8px;font-style:italic}
+
+  /* ---------- watch list ---------- */
+  .watch{counter-reset:w;margin-top:10px}
+  .witem{position:relative;padding:22px 0 22px 60px;border-top:1px solid var(--line)}
+  .witem:last-child{border-bottom:1px solid var(--line)}
+  .witem::before{
+    counter-increment:w;content:counter(w,decimal-leading-zero);
+    position:absolute;left:0;top:26px;
+    font-family:"IBM Plex Mono",monospace;color:var(--signal);font-size:14px;
+  }
+  .witem h4{font-family:"Fraunces",serif;font-weight:600;font-size:19px;margin-bottom:6px;letter-spacing:-.01em}
+  .witem p{font-size:16px;color:var(--bone-dim);max-width:66ch}
+  .witem p b{color:var(--bone);font-weight:600}
+
+  /* pull */
+  .pull{font-family:"Fraunces",serif;font-style:italic;font-weight:500;
+    font-size:clamp(22px,3.6vw,30px);line-height:1.32;color:var(--bone);
+    margin:34px 0;padding-left:24px;border-left:3px solid var(--signal);max-width:24ch}
+
+  footer{padding:46px 0 90px;color:var(--muted);font-size:13.5px}
+
+  /* ---------- unlock timeline ---------- */
+  .tl{position:relative;margin:22px 0 6px 8px;padding-left:28px}
+  .tl::before{content:"";position:absolute;left:0;top:8px;bottom:20px;width:2px;background:var(--line)}
+  .tli{position:relative;padding-bottom:24px}
+  .tli:last-child{padding-bottom:0}
+  .tli::before{content:"";position:absolute;left:-33px;top:7px;width:10px;height:10px;border-radius:50%;
+    background:var(--signal);box-shadow:0 0 0 3px var(--ink)}
+  .tli.lock::before{background:var(--verified)}
+  .tli .d{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--signal);
+    letter-spacing:.06em;margin-bottom:4px;text-transform:uppercase}
+  .tli.lock .d{color:var(--verified)}
+  .tli h4{font-family:"Fraunces",serif;font-weight:600;font-size:18px;margin-bottom:4px;letter-spacing:-.01em}
+  .tli p{font-size:15.5px;color:var(--bone-dim);max-width:64ch}
+  .tli p b{color:var(--bone);font-weight:600}
+  footer .sl{font-family:"IBM Plex Mono",monospace;letter-spacing:.02em;line-height:1.62;
+    font-size:13px;color:var(--bone-dim);max-width:64ch}
+  footer .disc{margin-top:22px;font-style:italic;font-size:13px;max-width:60ch;line-height:1.6}
+
+  /* ---------- tabs ---------- */
+  .tabbar{position:sticky;top:0;z-index:50;display:flex;gap:0;
+    background:rgba(16,15,12,.92);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);margin:0 -26px 0;padding:0 26px}
+  .tabbar button{
+    flex:0 0 auto;background:none;border:none;cursor:pointer;color:var(--muted);
+    font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    padding:18px 4px;margin-right:28px;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+  .tabbar button:hover{color:var(--bone-dim)}
+  .tabbar button.active{color:var(--signal);border-bottom-color:var(--signal)}
+  .tabpane{display:none;animation:fade .5s ease}
+  .tabpane.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* ---------- summary pane ---------- */
+  .sum-head{padding:54px 0 8px}
+  .sum-head h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(34px,6.6vw,60px);
+    line-height:1;letter-spacing:-.02em;margin-bottom:16px}
+  .sum-head h1 em{font-style:italic;font-weight:500;color:var(--signal)}
+  .sum-head .dek{font-size:19px;color:var(--bone-dim);max-width:60ch}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+    border:1px solid var(--line);margin:34px 0}
+  .stat{background:var(--ink-2);padding:20px 18px}
+  .stat .n{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(22px,3.4vw,30px);
+    color:var(--bone);letter-spacing:-.01em;line-height:1}
+  .stat .n.sig{color:var(--signal)}
+  .stat .l{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--muted);margin-top:9px;line-height:1.4}
+  .pts{counter-reset:p;margin:30px 0 10px}
+  .pt{position:relative;padding:18px 0 18px 44px;border-top:1px solid var(--line)}
+  .pt:last-child{border-bottom:1px solid var(--line)}
+  .pt::before{counter-increment:p;content:counter(p);position:absolute;left:0;top:18px;
+    font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--signal);
+    border:1px solid var(--line);width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%}
+  .pt h4{font-family:"Fraunces",serif;font-weight:600;font-size:18px;margin-bottom:4px;letter-spacing:-.01em}
+  .pt p{font-size:16px;color:var(--bone-dim);max-width:66ch}
+  .pt p b{color:var(--bone);font-weight:600}
+  .pt .vtag{margin-left:8px;vertical-align:middle}
+  .digg{margin:30px 0 70px;padding:22px 26px;border:1px dashed var(--line);background:var(--ink-2);
+    font-size:16px;color:var(--bone-dim)}
+  .digg b{color:var(--bone)}
+  .digg button{background:none;border:none;color:var(--signal);cursor:pointer;font:inherit;
+    border-bottom:1px solid var(--signal);padding:0}
+
+  /* ---------- sim flow table ---------- */
+  .simtbl{width:100%;border-collapse:collapse;margin:18px 0 6px;font-size:15px}
+  .simtbl th{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--muted);text-align:left;padding:0 12px 10px 0;border-bottom:1px solid var(--line);font-weight:500}
+  .simtbl th.r,.simtbl td.r{text-align:right;padding-right:0}
+  .simtbl td{padding:11px 12px 11px 0;border-bottom:1px solid var(--line);color:var(--bone-dim)}
+  .simtbl td.nm{color:var(--bone);font-weight:500}
+  .simtbl td.r{font-family:"IBM Plex Mono",monospace;font-size:14px;color:var(--hype)}
+  .simtbl tr.tot td{border-bottom:none;color:var(--bone);font-weight:600;padding-top:14px}
+  .simtbl tr.tot td.r{color:var(--bone)}
+  .simtbl td.rn{text-align:right;padding-right:0;font-family:"IBM Plex Mono",monospace;font-size:13.5px;color:var(--bone-dim)}
+  .simtbl th.r{text-align:right;padding-right:0}
+  .simtbl .barcell{position:relative}
+  .simtbl .minibar{height:7px;background:var(--hype);opacity:.55;border-radius:1px;margin-top:5px}
+  .splitgrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);
+    border:1px solid var(--line);margin:24px 0 6px}
+  .splitcol{background:var(--ink-2);padding:22px 22px 24px}
+  .splitcol h4{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;margin-bottom:14px}
+  .splitcol.out h4{color:var(--hype)}
+  .splitcol.in h4{color:var(--verified)}
+  .splitcol ul{list-style:none}
+  .splitcol li{font-size:15px;color:var(--bone-dim);padding:7px 0;border-top:1px solid var(--line);line-height:1.45}
+  .splitcol li:first-child{border-top:none}
+  .splitcol li b{color:var(--bone);font-weight:600}
+
+  ::selection{background:var(--signal);color:var(--ink)}
+
+  @media(max-width:620px){
+    body{font-size:17px}
+    .row{grid-template-columns:1fr;gap:8px}
+    .row .v{padding-top:0}
+    .source-bar{font-size:11px}
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .splitgrid{grid-template-columns:1fr}
+    .tabbar{margin:0 -26px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="tabbar">
+    <button data-tab="summary" class="active">Executive Summary</button>
+    <button data-tab="full">Full Teardown</button>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- ===================== SUMMARY PANE ========================= -->
+  <!-- ============================================================ -->
+  <div id="summary" class="tabpane active">
+
+    <div class="sum-head">
+      <div class="kicker">The shareable version · ~3 min read</div>
+      <h1>SpaceX's IPO, <em>without the spin</em></h1>
+      <p class="dek">A viral video says your retirement account is about to be force-fed an unprofitable $1.75T company. Most of it is true. The one mechanism it blames is described backwards. Here's the honest version — then dig into the Full Teardown for receipts.</p>
+    </div>
+
+    <div class="bluf">
+      <div class="lab">The one-paragraph version</div>
+      <p>SpaceX is going public at <strong>~$1.75 trillion</strong> while losing <strong>~$4.9B a year</strong>. New Nasdaq rules let it enter the Nasdaq-100 just <strong>~15 trading days</strong> after listing, which forces every index fund to buy it — and since those funds are fully invested, they pay for it by <strong>selling a slice of everything they already own</strong>. The video gets that real mechanism right. Where it's wrong: it calls the "3× weighting rule" a demand amplifier, when it's actually a <strong>cap that limits</strong> how much of the stock funds must hold. The genuine catch is structural — if you own an index fund, you'll own SpaceX and can't opt out.</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="n sig">$1.75T</div><div class="l">Target valuation — largest IPO ever</div></div>
+      <div class="stat"><div class="n">$4.9B</div><div class="l">2025 net loss on $18.7B revenue</div></div>
+      <div class="stat"><div class="n">~$80B</div><div class="l">Actually tradable (just ~4–5% float)</div></div>
+      <div class="stat"><div class="n">0</div><div class="l">Ways a passive holder can opt out</div></div>
+    </div>
+
+    <div class="pts">
+      <div class="pt">
+        <h4>What SpaceX actually is</h4>
+        <p>Three businesses in a trench coat: <b>Starlink</b> (the real engine — $11.4B revenue, 63% margins, cash-generative), a <b>rocket business</b> (~$4B, fine but small), and <b>xAI</b> (the Grok/X AI lab it bought for $250B, burning ~$1B a month). Net result: an $18.7B-revenue company that still lost $4.9B.</p>
+      </div>
+      <div class="pt">
+        <h4>What the video gets right <span class="tag t-ver vtag">Verified</span></h4>
+        <p>Index funds will be <b>forced to buy</b> SpaceX the moment it joins the Nasdaq-100, at whatever price the market sets — because that's how passive investing works. The rules were changed to make this happen fast (15 days vs. up to a year) and to let a tiny-float company qualify at all. Insiders sell into that forced demand later. "Your 401(k) is the exit liquidity" is a fair description of the mechanism.</p>
+      </div>
+      <div class="pt">
+        <h4>What it gets wrong <span class="tag t-hyp vtag">Inverted</span></h4>
+        <p>It frames the "3× multiplier" as <i>manufacturing</i> demand. The rule actually <b>caps</b> a low-float stock's index weight <i>below</i> its full market value — it's a brake, not an accelerator. The video also understates xAI's revenue and uses a stale Anthropic valuation. The thesis survives; the dramatized details don't.</p>
+      </div>
+      <div class="pt">
+        <h4>The simulation, in one line</h4>
+        <p>Only <b>~$75–87B</b> of stock is actually tradable, yet forced index buying of roughly <b>$7B (conservative) to $22–27B</b> chases it — that's <b>10–35% of the entire float</b>, price-insensitive, in days. The money is pulled <b>out of the existing Nasdaq-100</b> — overwhelmingly the giants (Nvidia, Apple, Microsoft, Amazon, Alphabet) — and rotated <b>into SpaceX</b>. Every incumbent gets the <i>same %</i> trim; the small names are dwarfed, not spared. And it's not one event — <b>SpaceX, OpenAI and Anthropic all list within ~5 months</b>, stacking three rotations into one half-year (Section 08).</p>
+      </div>
+      <div class="pt">
+        <h4>What you're actually buying</h4>
+        <p>Class A shares carry one vote; Musk's Class B carry ten. He keeps <b>~85% of the vote on ~42% of the equity</b>, claims "controlled company" status to skip independent-board rules, and — via a mandatory-arbitration clause — leaves holders with <b>no voice, no exit (the index forces it on you), and little legal recourse</b>. You get the economics and almost nothing else.</p>
+      </div>
+      <div class="pt">
+        <h4>Bottom line for an ordinary holder</h4>
+        <p>If you hold a Nasdaq-100 fund, you'll own SpaceX automatically and <b>can't exclude it</b> — that's the real, unfixable catch. The silver lining: the much-maligned 3× cap is the very thing that <b>limits your exposure</b> to ~4–5% instead of 10%+, and Musk staying locked up removes the biggest early seller.</p>
+      </div>
+    </div>
+
+    <div class="digg">
+      Want the receipts — every number checked against the S-1, the full Nasdaq mechanics, the unlock simulation, and the winner/loser flow map for formulating trades? <b>Open the <button onclick="gotoFull()">Full Teardown</button>.</b>
+    </div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- ===================== FULL TEARDOWN ======================== -->
+  <!-- ============================================================ -->
+  <div id="full" class="tabpane">
+
+  <header>
+    <div class="kicker rv">Forensic Read · Markets · June 2026</div>
+    <h1 class="rv">The SpaceX IPO video, <em>fact-checked</em></h1>
+    <p class="dek rv">Most of the numbers are right. The framing of the one mechanism the whole thesis hangs on — the Nasdaq weighting rule — is pointed the wrong way. Here's the separation of signal from theatre.</p>
+    <div class="source-bar rv">
+      <span><b>Source:</b> "The SpaceX IPO… It's Worse Than You Think" — Casual Finance</span>
+      <span><b>Checked against:</b> SpaceX S-1, Nasdaq methodology FAQ, Reuters/CNBC/FT</span>
+    </div>
+  </header>
+
+  <div class="bluf">
+    <div class="lab">Bottom line up front</div>
+    <p>The video's <strong>factual spine is largely accurate</strong>: the three-business structure, Starlink's economics, the consolidated loss, the fast-entry rule, the float-minimum removal, and the 30% retail allocation all check out against primary sources.</p>
+    <p>Its <strong>central analytical claim is inverted</strong>. The "3× multiplier" is presented as a demand <em>amplifier</em> ("manufactured demand"). In the actual rule it is a <em>cap that reduces</em> a low-float stock's index weight relative to full market cap. The forced buying is real — but it comes from <strong>inclusion + speed</strong>, not from the multiplier the video blames.</p>
+    <p>The genuinely sound takeaway survives all of this: <strong>passive mechanics convert index membership into price-insensitive, mandatory buying</strong>, and the offering is structured so insiders sell into that demand. That part is not hype.</p>
+  </div>
+
+  <!-- ===================== CLAIM LEDGER ===================== -->
+  <section>
+    <h2><span class="num">01 — THE CLAIM LEDGER</span>What holds up, line by line</h2>
+    <p class="sub">Every checkable assertion, graded. Green = accurate. Amber = distorted or stale. Red = wrong / overstated.</p>
+
+    <div class="ledger">
+
+      <div class="row">
+        <div class="v"><span class="tag t-ver">Verified</span></div>
+        <div class="claim">
+          <span class="h">Three stacked businesses: Starlink, launch, xAI</span>
+          <span class="d">The S-1 confirms exactly three segments — <b>Connectivity (Starlink)</b>, <b>Space (launch)</b>, and <b>AI (xAI/X)</b>. The framing is correct.</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="v"><span class="tag t-ver">Verified</span></div>
+        <div class="claim">
+          <span class="h">Starlink ≈ $11.4B revenue, ~63% EBITDA margin, ~61% of total</span>
+          <span class="d"><span class="num-hi">$11.4B rev · 63% adj. EBITDA · ~$4.4B operating income</span>. Up ~50% YoY. The "crown jewel that prints cash" read is correct — and the margin really did expand sharply.</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="v"><span class="tag t-ver">Verified</span></div>
+        <div class="claim">
+          <span class="h">Launch business ≈ $4B revenue, ~a quarter of total</span>
+          <span class="d">S-1 Space segment: <span class="num-hi">$4B revenue</span>, with ~$3B plowed back into Starship R&D. "Doing fine, valued like it colonized Mars" is fair.</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="v"><span class="tag t-ver">Verified</span></div>
+        <div class="claim">
+          <span class="h">Consolidated 2025: ~$18.5B revenue, ~$5B loss</span>
+          <span class="d">Actual S-1: <span class="num-hi">$18.7B revenue, $4.9B net loss</span> (operating loss $2.6B). The video's figures were essentially right before the filing dropped.</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="v"><span class="tag t-ver">Verified</span></div>
+        <div class="claim">
+          <span class="h">xAI bought by SpaceX, $250B inside a $1.25T combined deal</span>
+          <span class="d">All-stock, Feb 2 2026. SpaceX $1T + xAI $250B. It is the <b>largest M&A deal ever recorded</b>, passing Vodafone–Mannesmann (2000). The "one Elon company buys another" oddity is real.</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="v"><span class="tag t-ver">Verified</span></div>
+        <div class="claim">
+          <span class="h">xAI burns ~$1B/month; founders left; "rebuild from foundations"</span>
+          <span class="d">Burn rate corroborated by Bloomberg. The co-founder exodus and Musk's public "rebuild" admission are documented. The valuation-vs-substance tension is legitimate.</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="v"><span class="tag t-ver">Verified</span></div>
+        <div class="claim">
+          <span class="h">30% retail allocation vs. 5–10% norm; CFO's loyalty quote</span>
+          <span class="d">Up to <span class="num-hi">30% (~$22.5B of a $75B raise)</span>. CFO <b>Bret Johnsen</b> (video spells it "Johnson") told the 21-bank syndicate retail would be bigger than any IPO in history, framed as recognition of Elon's loyal base. Quote accurate.</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="v"><span class="tag t-dis">Stale / loose</span></div>
+        <div class="claim">
+          <span class="h">"xAI does ~$1B revenue" → "priced like Spirit Airlines"</span>
+          <span class="d">The S-1 reports the AI segment at <b>$3.2B</b> in 2025 (it now folds in X). Still richly valued and loss-making — but ~3× the revenue the video used, so the "Spirit Airlines" jab is overcooked. Direction right, magnitude wrong.</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="v"><span class="tag t-hyp">Wrong / stale</span></div>
+        <div class="claim">
+          <span class="h">"Anthropic: over $30B annually, valued ~$400B"</span>
+          <span class="d">$30B was a <b>run-rate</b>, not annual revenue (2025 actuals were far lower), and the valuation is badly out of date: Anthropic's late-May raise put it near <b>~$965B</b>, with run-rate already past $47B. Using it as the "cheap" comparison no longer works.</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="v"><span class="tag t-ver">Mostly fair</span></div>
+        <div class="claim">
+          <span class="h">"OpenAI ~$24B revenue, ~$850B valuation"</span>
+          <span class="d">$24B is a run-rate (April 2026); valuation ~$852B after its $122B raise. Reasonable, with the same run-rate-vs-annual caveat.</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== NASDAQ DEEP DIVE ===================== -->
+  <section>
+    <h2><span class="num">02 — THE NASDAQ MACHINERY</span>The part the whole video hangs on</h2>
+    <p class="sub">Three rule changes, effective May 1 2026 (announced March 30, after a public Feb consultation). Two are accurately described. One is described backwards.</p>
+
+    <p class="body">The thesis is: Nasdaq rewrote the Nasdaq-100 rulebook so an unprofitable, low-float mega-cap can be force-fed into every index fund. The index matters because <strong>200+ products tracking ~$600B in assets</strong> must buy whatever the index holds. Get in, and demand is automatic. That structural claim is sound. The question is which rule does the work.</p>
+
+    <div class="mech">
+
+      <div class="m-row">
+        <div class="m-head"><span class="mn">RULE 1</span><h3>Fast entry — 15 trading days</h3><span class="tag t-ver">Accurate</span></div>
+        <p>Old path: a new listing waited through a <b>seasoning period</b> and was typically only added at the <b>December annual reconstitution</b>. New path: eligibility is checked as early as the 7th trading day and inclusion can happen <b>~15 trading days</b> after IPO.</p>
+        <p class="flag">The video undersells its own case. It says the old wait was "three months." The realistic wait was <b>up to ~12 months</b> (you had to catch the annual rebalance). The compression is more dramatic than stated — but the video also drops the gate: fast entry requires ranking in the <b>top ~40 constituents</b> (~$100B). Irrelevant for a $1.75T company, but it means this isn't open to "any IPO."</p>
+      </div>
+
+      <div class="m-row">
+        <div class="m-head"><span class="mn">RULE 2</span><h3>Minimum free-float requirement removed</h3><span class="tag t-ver">Accurate</span></div>
+        <p>A <b>10% minimum float</b> rule — only introduced in <b>June 2024</b> — would have disqualified SpaceX outright at a 3–5% float. The May 2026 update <b>eliminates the minimum</b>. So "it would have been an automatic disqualification six months ago" is literally true.</p>
+      </div>
+
+      <div class="m-row">
+        <div class="m-head"><span class="mn">RULE 3</span><h3>The "3× multiplier"</h3><span class="tag t-hyp">Described backwards</span></div>
+        <p>The video: ETFs are "legally required to treat SpaceX's float as if it were 3× larger… <b>manufactured demand</b>." This points the mechanism the wrong way.</p>
+        <p>What the rule actually does: securities with a free float below <b>~33.3%</b> (the video says 20% — it mixed the draft's 20%/5× with the final 33.3%/3×) are <b>weighted down</b>, capped at 3× their float. Nasdaq's stated purpose is to <em>align index weight with tradable float</em> — i.e. to <b>reduce</b> the weight a thin-float giant would otherwise command, not inflate it.</p>
+        <p class="flag">The defensible kernel: relative to its <em>actual</em> 4–5% tradable float, a 3× cap still lets the index assign weight as if ~12–15% were floating. So ETFs do end up holding <b>more than the free float can liquidly support</b> — which is a real <b>liquidity / price-impact</b> problem. But that's the opposite framing from "the multiplier manufactures extra demand." It's a brake the video sells as an accelerator.</p>
+      </div>
+
+    </div>
+
+    <div class="floatviz">
+      <div class="cap">How a ~4% float gets weighted (illustrative)</div>
+      <div class="bar f-actual">
+        <div class="bl"><span>Actual tradable float</span><span>~4%</span></div>
+        <div class="track"><div class="fill" style="--w:8%">4%</div></div>
+      </div>
+      <div class="bar f-new">
+        <div class="bl"><span>New rule — capped at 3× float</span><span>~12%</span></div>
+        <div class="track"><div class="fill" style="--w:24%">12%</div></div>
+      </div>
+      <div class="bar f-old">
+        <div class="bl"><span>Pre-2024 rule — full market-cap weight</span><span>100%</span></div>
+        <div class="track"><div class="fill" style="--w:100%">100% of market cap</div></div>
+      </div>
+      <p class="note">The 3× cap sits between full exclusion (the 2024–2026 rule) and full weight (the old regime). It limits weight versus market cap, while still over-representing the stock versus its real float. Both readings are true — the video only tells the second.</p>
+    </div>
+
+    <p class="pull">The rule wasn't "quietly" slipped in — it went through a published consultation. The fair worry isn't secrecy; it's that the consulted parties are the same asset managers who benefit.</p>
+  </section>
+
+  <!-- ===================== THE SOUND CORE ===================== -->
+  <section>
+    <h2><span class="num">03 — THE THESIS THAT SURVIVES</span>Why "your 401(k) is the exit" isn't just a slogan</h2>
+    <p class="body">Strip the loose numbers and the inverted multiplier, and a coherent mechanism remains. <strong>Insiders and early VCs</strong> — Founders Fund, a16z, the Saudi PIF and others — hold positions at a cost basis that is a tiny fraction of $1.75T. For them the IPO is a finish line, not a starting gun.</p>
+    <p class="body">The structure routes their exit through buyers who can't say no. <strong>Passive funds buy on inclusion regardless of price</strong> — that's the whole point of indexing. Fast entry compresses the price-discovery window before that mandatory bid arrives. The 30% retail tranche adds a second pool of price-insensitive, sentiment-driven demand. Buyers are pulled in early; insider lock-ups release later. That sequencing — <strong>forced buyers early, sellers unlocked late</strong> — is the actual engine, and the video describes it correctly.</p>
+    <p class="body">The irony it lands is real: the convenience of passive investing (set-and-forget, low fees) is the <strong>same machinery</strong> that buys whatever squeezes into the index, without asking you. You can agree with that and still notice the video reached for the wrong rule to dramatize it.</p>
+  </section>
+
+  <!-- ===================== WATCH LIST ===================== -->
+  <section>
+    <h2><span class="num">04 — WHAT TO ACTUALLY WATCH</span>The signals that matter, not the theatre</h2>
+    <p class="sub">If you're tracking this for real, these are the load-bearing variables.</p>
+
+    <div class="watch">
+      <div class="witem">
+        <h4>The inclusion date and the float math</h4>
+        <p>Fast entry lands ~15 trading days post-IPO (likely late June / early July). With a <b>3–5% float</b> and mandatory passive buying, expect outsized price impact and volatility around the rebalance — exactly the low-float-meets-forced-flow setup. The thin float cuts both ways: easy to squeeze up, brutal to unwind.</p>
+      </div>
+      <div class="witem">
+        <h4>Lock-up expiry calendar</h4>
+        <p>The "exit liquidity" thesis only completes when insiders can sell. <b>Watch when lock-ups unlock</b> relative to peak passive inflows. The gap between forced buying (early) and insider selling (later) is where the risk concentrates for anyone holding through it.</p>
+      </div>
+      <div class="witem">
+        <h4>Starlink ARPU, not just revenue</h4>
+        <p>The video celebrates Starlink's margins but omits that <b>revenue per user is falling</b> (~$99 → ~$66–81/mo) as the base globalizes. Volume is masking price erosion. The margin story is real; whether it holds as the easy markets saturate is the open question.</p>
+      </div>
+      <div class="witem">
+        <h4>xAI as the consolidated drag</h4>
+        <p>Starlink + launch generated ~$8B in profit; the group still <b>lost $4.9B</b>. The delta is xAI's burn. Any IPO-narrative premium rides on the "orbital data center / Grok-on-Starlink" story — watch whether that's substance or a multiple-justification device. Also note <b>~$29B of long-term debt</b> by March 2026.</p>
+      </div>
+      <div class="witem">
+        <h4>This is a template, not a one-off</h4>
+        <p>The video's strongest forward point: the rules were rewritten for a <b>class</b> of companies. OpenAI and Anthropic are both eyeing listings with similar low-float configurations. If the SpaceX mechanism works, expect it repeated — that's the systemic story worth more than any single ticker.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FIVE: CAPACITY ===================== -->
+  <section>
+    <h2><span class="num">05 — IS THERE ENOUGH MONEY FOR THREE?</span>SpaceX, OpenAI and Anthropic, same window</h2>
+    <p class="sub">Your instinct is half-right. There are two separate "money" questions, and they behave in opposite directions.</p>
+
+    <p class="body">The fear — "everything's already invested, so the third IPO gets no demand" — treats the market as a closed jar. It isn't. Capital rotates, new savings flow in monthly, sovereign funds and foreign buyers participate, and leverage exists. But within a tight clustered window, the <strong>marginal</strong> pool of allocation appetite <em>is</em> finite, so the effect is real — just softer than "no demand." Split it into the two channels:</p>
+
+    <div class="mech">
+      <div class="m-row">
+        <div class="m-head"><span class="mn">CHANNEL A</span><h3>The primary raise (discretionary money)</h3><span class="tag t-dis">Crowdable</span></div>
+        <p>SpaceX wants to raise <b>~$75B</b>. If OpenAI and Anthropic each chase tens of billions in the same months, they compete for the same institutional checkbooks and the same retail enthusiasm. This is genuine <b>crowding-out</b>: the third or weakest deal doesn't get "zero demand," it gets a <b>thinner book and softer pricing</b>. Demand here is elastic, not fixed — but it has a ceiling per quarter.</p>
+      </div>
+      <div class="m-row">
+        <div class="m-head"><span class="mn">CHANNEL B</span><h3>Index flows (forced money)</h3><span class="tag t-hyp">Funded by selling incumbents</span></div>
+        <p>This is the part you intuited, and it's the more important one. The Nasdaq-100 is <b>cap-weighted</b>, and index funds hold <b>almost no cash</b> — they're fully invested by design. So when SpaceX enters, a QQQ-type fund can't buy it with idle money. It funds the purchase by <b>selling a slice of every existing constituent pro-rata</b> — Apple, Microsoft, Nvidia, the lot.</p>
+        <p class="flag">So yes: index inclusion <b>rotates money out of the existing Nasdaq-100 and into the newcomers.</b> With ~$600B tracking the index and a capped ~4–5% weight, that's roughly <b>$15–30B of forced rotation per name</b> — sold from incumbents, bought into SpaceX. Three entrants compound the drain on everyone already in the index.</p>
+      </div>
+    </div>
+
+    <p class="body" style="margin-top:26px">The crucial detail that resolves your either/or: the fast-entry rule lets the index <strong>temporarily exceed 100 names</strong> rather than kicking one out for each newcomer. So it isn't "one in, one out" — it's <strong>dilution of everyone's weight</strong>. And because each newcomer's forced bid is triggered by <em>its own</em> inclusion, the third IPO still gets its mandatory passive bid — it does <strong>not</strong> get starved by the first two. What gets squeezed is (a) discretionary demand in the primary market, and (b) the incumbent mega-caps that get trimmed to fund all three. The passive bid isn't a shared finite pool per name; the rotation cost is borne by the rest of the index.</p>
+
+    <p class="pull">Each of the three gets its own forced buyer. The bill is paid by Apple, Microsoft and Nvidia holders — quietly, through rebalancing.</p>
+  </section>
+
+  <!-- ===================== SIX: FLOW MAP ===================== -->
+  <section>
+    <h2><span class="num">06 — THE FLOW MAP, QUANTIFIED</span>How much is freed to buy, and where the money moves</h2>
+    <p class="sub">You asked the right question. The public isn't buying half the company — here's what's actually tradable, how much forced money chases it, and who pays.</p>
+
+    <p class="body"><strong>First: how much is actually buyable.</strong> SpaceX lists ~$75B of <em>new</em> shares — and that $75B is just <strong>4.3% of a $1.75T valuation</strong>. At a 5% float it's ~$87B. That's the whole tradable pool at the start; <strong>~95% of the company is locked up</strong> (60%+ on extended lock, including Musk). The public can buy roughly <strong>one-twentieth</strong> of SpaceX. Everything below collides with that sliver.</p>
+
+    <p class="body"><strong>Second: how much forced money chases it.</strong> Passive funds tracking the Nasdaq-100 hold ~<strong>$587B</strong> (QQQ ~$450B + QQQM ~$80B + the rest); the wider ecosystem with derivatives tops $1.4T. Estimates of the mechanical buy when SpaceX is added:</p>
+
+    <div class="mech">
+      <div class="m-row">
+        <div class="m-head"><span class="mn">CONSERVATIVE</span><h3>~$7B in a single day</h3><span class="tag t-ver">NDX trackers</span></div>
+        <p>At a standard float-driven weight (~0.5–0.9%), Nasdaq-100 funds buy roughly <b>$7B of SpaceX on rebalance day</b> (estimate: Dave Nadig). That alone is ~<b>9% of the entire tradable float</b> bought at once.</p>
+      </div>
+      <div class="m-row">
+        <div class="m-head"><span class="mn">INSTITUTIONAL</span><h3>$22–27B</h3><span class="tag t-dis">Physical funds</span></div>
+        <p>Multiple desks model <b>$22–27B</b> of forced buying from physically-backed index funds once the 3× float multiplier and the broader fund base are included — <b>roughly a third of the float</b>.</p>
+      </div>
+      <div class="m-row">
+        <div class="m-head"><span class="mn">CEILING</span><h3>If it were full-cap weighted</h3><span class="tag t-hyp">Not the rule</span></div>
+        <p>Weighted on raw market cap (no float adjustment), SpaceX would be <b>&gt;4% of the Nasdaq-100 — the 7th-largest holding, just ahead of Tesla</b>. The 3× cap is precisely what stops this. The "feared" number is the one the maligned rule prevents.</p>
+      </div>
+    </div>
+
+    <p class="body" style="margin-top:26px"><strong>Third: where the money comes from.</strong> The index is cap-weighted and the funds are fully invested, so buying SpaceX means selling a pro-rata slice of every existing name. Crucially, that means a <strong>uniform percentage haircut</strong> on all 100 — but the <strong>dollars come overwhelmingly from the giants</strong>, because they <em>are</em> the index. At a ~$7B rebalance:</p>
+
+    <table class="simtbl">
+      <thead><tr><th>Money pulled from (sold)</th><th>Index weight</th><th class="r">≈ $ trimmed</th></tr></thead>
+      <tbody>
+        <tr><td class="nm">NVIDIA</td><td>8.7%</td><td class="r barcell">$610M<div class="minibar" style="width:16%"></div></td></tr>
+        <tr><td class="nm">Apple</td><td>7.1%</td><td class="r barcell">$500M<div class="minibar" style="width:13%"></div></td></tr>
+        <tr><td class="nm">Alphabet (A+C)</td><td>7.6%</td><td class="r barcell">$530M<div class="minibar" style="width:14%"></div></td></tr>
+        <tr><td class="nm">Microsoft</td><td>5.3%</td><td class="r barcell">$370M<div class="minibar" style="width:9%"></div></td></tr>
+        <tr><td class="nm">Amazon</td><td>4.9%</td><td class="r barcell">$345M<div class="minibar" style="width:9%"></div></td></tr>
+        <tr><td class="nm">Broadcom · Meta · Tesla (approx.)</td><td>~10.7%</td><td class="r barcell">$750M<div class="minibar" style="width:19%"></div></td></tr>
+        <tr><td class="nm">The other ~92 names, combined</td><td>~55.7%</td><td class="r barcell">$3.9B<div class="minibar" style="width:100%"></div></td></tr>
+        <tr class="tot"><td>Total raised → bought into SpaceX</td><td>100%</td><td class="r">~$7.0B</td></tr>
+      </tbody>
+    </table>
+    <p class="body" style="font-size:15px;color:var(--muted);font-style:italic;margin-bottom:0">Weights approximate, mid-2026. The bottom ~92 names supply about half the dollars <em>collectively</em>, but per name that's tiny — a ~0.1%-weight constituent contributes ~$7M. Scale every figure ~3–4× for the $22–27B institutional case.</p>
+
+    <p class="pull">Same percentage cut for everyone. The dollars come from the Mag-7. The small names aren't hammered — they're rounding error.</p>
+
+    <p class="body"><strong>So who actually gets hurt — and where's the edge?</strong> Your instinct was that the small constituents might get crushed. The mechanics say the opposite: the percentage trim is identical across all 100, the <em>dollars</em> are dominated by the mega-caps, and even those barely move because a ~$0.5B sell is a rounding error against Nvidia's or Apple's tens-of-billions daily volume. The incumbent "loss" is a small, one-time, non-fundamental weight dilution — a tax, not a crash. The genuine asymmetry isn't in the names being sold; <strong>it's in SpaceX itself</strong>, where forced demand slams into a $75–87B float.</p>
+
+    <div class="splitgrid">
+      <div class="splitcol out">
+        <h4>↓ Money pulled out of</h4>
+        <ul>
+          <li><b>The Nasdaq-100 incumbents</b> — dollar-weighted to Nvidia, Apple, Alphabet, Microsoft, Amazon (they supply ~half the sell)</li>
+          <li><b>Forced passive holders</b> — your 401(k) buys SpaceX at peak, price-insensitively</li>
+          <li><b>Late retail</b> chasing the pop after insiders are already positioned</li>
+        </ul>
+      </div>
+      <div class="splitcol in">
+        <h4>↑ Money flowing into</h4>
+        <ul>
+          <li><b>SpaceX</b> — $7–27B of mandatory demand vs. a ~$80B float = upward pressure, then reversal as unlocks expand supply</li>
+          <li><b>Index front-runners / arbs</b> who buy ahead of the known inclusion date</li>
+          <li><b>Nasdaq</b> (listing win), <b>underwriters & brokers</b> (fees), and eventually <b>insiders</b> exiting into the bid</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="font-family:'Fraunces',serif;font-weight:600;font-size:23px;margin:34px 0 6px;letter-spacing:-.01em">What to track to formulate the trade</h3>
+    <p class="body" style="margin-bottom:8px">The whole setup is governed by one ratio — <strong>forced buying ÷ tradable float</strong>. These are the inputs that move it, and the dislocations to watch (mechanics, not advice — you run your own book):</p>
+
+    <div class="watch">
+      <div class="witem">
+        <h4>The disclosed float and the announced index weight</h4>
+        <p>The single biggest unknown. A larger float (the staggered unlocks widen it fast) means a <b>higher</b> index weight and more forced buying — but also more supply to absorb it. Watch the prospectus float figure and Nasdaq's announced weight; that pins the dollar demand.</p>
+      </div>
+      <div class="witem">
+        <h4>The inclusion timeline</h4>
+        <p>Eligibility checked ~day 7; addition ~15 trading days post-IPO (<b>≈ July 6</b> for a June 12 listing). The rebalance date is the mechanical-demand spike. It's <b>fully telegraphed</b>, so front-running tends to pull the move forward — the pop may be largely in by inclusion day.</p>
+      </div>
+      <div class="witem">
+        <h4>The unlock calendar + the 30%-above-offer trigger</h4>
+        <p>From section 07: a price &gt;30% over offer <b>releases extra insider supply</b>. So a forced-buying pop can trigger the very selling that caps it. The 70/90/105/120/135-day tranches and the post-Q2/Q3 unlocks are scheduled supply waves — map them against expected passive inflows.</p>
+      </div>
+      <div class="witem">
+        <h4>Dealer / options positioning into the rebalance</h4>
+        <p>Low float + mechanical buying + heavy options interest is the textbook setup where <b>dealer hedging flows dictate the path</b>. Gamma positioning into the inclusion date is where the short-term asymmetry lives.</p>
+      </div>
+      <div class="witem">
+        <h4>The low-ADV tail — only if weight resolves high</h4>
+        <p>If SpaceX's weight lands near the full-cap ceiling, the uniform % sell becomes a meaningful fraction of <b>daily volume for the least-liquid Nasdaq-100 names</b> (not the mega-caps). That's the only place the incumbent sell creates a tradable mechanical dip — a mean-reversion candidate. At the realistic ~0.8% weight it's muted.</p>
+      </div>
+    </div>
+    <p class="body" style="margin-top:18px;font-style:italic;color:var(--bone-dim)">This is the most-telegraphed rebalance in years. Everyone can see it, which compresses the edge and can invert the obvious trade — the "buy the forced-buying" move may already be priced. Mechanics described here are not investment advice; size and structure are your call.</p>
+  </section>
+
+  <!-- ===================== SEVEN: PREDICTIONS ===================== -->
+  <section>
+    <h2><span class="num">07 — THE UNLOCK, SIMULATED</span>What the lock-up actually is, and what happens when they sell</h2>
+    <p class="sub">Forward-looking scenario analysis, not certainty — but anchored to SpaceX's real, filed lock-up terms, which are stranger than the hypothetical.</p>
+
+    <p class="body">First, the correction: there's <strong>no one-year cap and no standard 180-day cliff.</strong> The S-1 lays out a <strong>staggered, earnings- and price-triggered release</strong> explicitly engineered to widen the float fast — which feeds straight into the index-weight machinery from section 02. Critically, <strong>no insiders cash out at the listing itself</strong>; the IPO sells only new (primary) shares from the company. Insiders exit later, on this schedule:</p>
+
+    <div class="tl">
+      <div class="tli">
+        <div class="d">Listing day</div>
+        <h4>Friends &amp; family carve-out — no lock-up</h4>
+        <p>Directed-share / "friends and family" recipients are <b>exempt from lock-up entirely</b> and can sell immediately. Everyone else is restricted.</p>
+      </div>
+      <div class="tli">
+        <div class="d">After Q2 2026 earnings (≈ weeks in)</div>
+        <h4>Up to 20% unlocks — plus a price trigger</h4>
+        <p>First results as a public company release up to <b>20%</b> of eligible insider shares. A <b>further 10%</b> unlocks <b>if the stock is trading ≥30% above the offer price</b> by then. That trigger is the dangerous part — see the simulation.</p>
+      </div>
+      <div class="tli">
+        <div class="d">Days 70 · 90 · 105 · 120 · 135</div>
+        <h4>Five tranches of 7% each (= 35%)</h4>
+        <p>A rolling schedule frees another <b>7% at each date</b>, steadily metering supply into the market through the autumn.</p>
+      </div>
+      <div class="tli">
+        <div class="d">After Q3 2026 earnings</div>
+        <h4>Additional 28% unlocks</h4>
+        <p>Second public earnings release frees a large additional block.</p>
+      </div>
+      <div class="tli lock">
+        <div class="d">Day 180 · and Musk</div>
+        <h4>Remainder released — but Musk stays locked</h4>
+        <p>Whatever's left comes off restriction at 180 days. <b>Musk is excluded from the accelerated schedule</b> and holds the full period; <b>60%+ of pre-IPO shares</b> (including his) stay under extended lock-up. The single largest seller is removed from the early window — a real stabiliser.</p>
+      </div>
+    </div>
+
+    <h3 style="font-family:'Fraunces',serif;font-weight:600;font-size:23px;margin:38px 0 6px;letter-spacing:-.01em">The simulation: what happens when big holders sell</h3>
+    <p class="body" style="margin-bottom:22px">Assume a June listing, fast-entry index inclusion ~15 trading days later, a 3–5% float, and the staggered unlocks above. Three paths:</p>
+
+    <div class="mech">
+      <div class="m-row">
+        <div class="m-head"><span class="mn">SCENARIO A</span><h3>Orderly grind</h3><span class="tag t-ver">Base case</span></div>
+        <p>Forced passive buying + retail loyalty drive an early pop. Staggered releases meter supply; Musk's full lock caps the overhang. Price holds, then drifts as float expands. This is the historical mega-IPO pattern: <b>pop ~15–20%, then give it back over 6–12 months</b> as supply meets a fixed-ish passive bid.</p>
+      </div>
+      <div class="m-row">
+        <div class="m-head"><span class="mn">SCENARIO B</span><h3>Pop, trigger, dump</h3><span class="tag t-hyp">Tail risk</span></div>
+        <p>Index inclusion + retail FOMO push the stock <b>&gt;30% above offer</b> → that fires the extra 10% unlock <em>on top of</em> the 20% post-Q2 release. ~30% of insider shares hit a <b>3–5% float</b> at once — analysts have floated this as potentially the <b>largest single-day insider selling event in market history</b>. Sharp reversal; the late retail and passive buyers own the top. The pop <em>causes</em> the supply that breaks it.</p>
+      </div>
+      <div class="m-row">
+        <div class="m-head"><span class="mn">SCENARIO C</span><h3>Soft tape</h3><span class="tag t-dis">If macro turns</span></div>
+        <p>If rates rise, sentiment sours, or the OpenAI/Anthropic deals drain demand (section 05), the <b>mandatory passive bid still happens</b> — but clears at a lower price. Insiders still unlock on schedule. Result: a faster, quieter slide, with passive holders marked down and unable to opt out.</p>
+      </div>
+    </div>
+
+    <h3 style="font-family:'Fraunces',serif;font-weight:600;font-size:23px;margin:38px 0 6px;letter-spacing:-.01em">Where the knife-edge sits: before, at, or after the retirement bid</h3>
+    <p class="body">The forced retirement money doesn't arrive at listing — it arrives at <strong>index inclusion, ~15 trading days later (~July 7)</strong>. There's a ~3-week gap, and the pop is built to crest right into it.</p>
+    <div class="tl">
+      <div class="tli">
+        <div class="d">Jun 12 — listing</div>
+        <h4>Trading opens at $135</h4>
+        <p>The day-one IPO pop (first trade vs. the $135 offer). The retirement money is <b>not here yet</b> — it's mandated for inclusion day, not listing day.</p>
+      </div>
+      <div class="tli">
+        <div class="d">Jun 12 → ~Jul 7 — the run-up</div>
+        <h4>Front-running the known date</h4>
+        <p>Because inclusion is dated and certain, traders buy <em>ahead</em> of the forced bid specifically to sell into it. Front-running + retail FOMO lift the price into inclusion. <b>The pop is here — before the funds buy.</b></p>
+      </div>
+      <div class="tli">
+        <div class="d">~Jul 7 — inclusion</div>
+        <h4>The retirement bid lands at the top</h4>
+        <p>Index funds buy ~$7–27B price-insensitively, at whatever the market is that day — by now elevated by the run-up. <b>The 401(k) money buys at or near the local peak.</b></p>
+      </div>
+      <div class="tli lock">
+        <div class="d">After ~Jul 7 — the fade</div>
+        <h4>The drawdown</h4>
+        <p>The forced buy is one-and-done, not a standing bid. Front-runners sell into and after it; the staggered unlocks add supply. <b>The fade is after.</b></p>
+      </div>
+    </div>
+    <p class="body">That sequence <em>is</em> "your 401(k) is the exit liquidity" stated mechanically: the pop is sold to the retirement bid. Three caveats keep it honest — if front-running is aggressive the move can be largely done <em>before</em> inclusion and "sell the news" starts right at the buy; if demand is soft the forced bid acts as a <em>floor</em> not a peak, and the drawdown comes later via lock-ups; and there are arguably two pops (day-one open, and the inclusion run-up) that can blur together. The shape is high-confidence; whether the knife-edge sits just before, at, or just after July 7 is the genuinely uncertain part — and where the money is made or lost.</p>
+
+    <h3 style="font-family:'Fraunces',serif;font-weight:600;font-size:23px;margin:38px 0 6px;letter-spacing:-.01em">Is anything protecting ordinary Americans?</h3>
+    <p class="body" style="margin-bottom:14px">Honestly: a mix of weak protections and one real structural gap.</p>
+
+    <div class="ledger">
+      <div class="row">
+        <div class="v"><span class="tag t-ver">Protection</span></div>
+        <div class="claim">
+          <span class="h">The 3× weight cap — the rule the video attacks</span>
+          <span class="d">Ironically, the maligned multiplier is the main thing <b>limiting your exposure</b>. By capping SpaceX's index weight at 3× its float (vs. full market-cap weight), it bounds a QQQ holder's single-name blast radius to ~4–5%, not 10%+. The "villain" is the consumer protection.</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="v"><span class="tag t-ver">Protection</span></div>
+        <div class="claim">
+          <span class="h">Musk's full lock-up + diversification</span>
+          <span class="d">The largest potential seller is sidelined for the full period, removing the biggest early overhang. And it's one name among 100+ — diversification limits the damage to any single 401(k).</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="v"><span class="tag t-dis">Weak / partial</span></div>
+        <div class="claim">
+          <span class="h">The staggered lock-up and disclosure law</span>
+          <span class="d">Lock-ups pace supply, but SpaceX's is <b>looser than standard</b> and the friends-and-family tranche has none. Securities law (S-1 disclosure, Rule 10b-5 anti-fraud) protects against <b>lies</b>, not against an honestly disclosed bad investment losing value.</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="v"><span class="tag t-hyp">The real gap</span></div>
+        <div class="claim">
+          <span class="h">No opt-out from passive inclusion</span>
+          <span class="d">If you hold a Nasdaq-100 index fund in a 401(k), you <b>cannot exclude SpaceX</b> once it's added. There is no mechanism that shields a passive holder from owning an unprofitable mega-cap at peak valuation. That specific point — the one the video gets right — has no fix inside the current structure.</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="v"><span class="tag t-dis">Double-edged</span></div>
+        <div class="claim">
+          <span class="h">Retail allocation will be heavily oversubscribed</span>
+          <span class="d">The 30% retail tranche is expected to be 10–20× oversubscribed, so most retail get a <b>fraction</b> of what they request — which limits direct primary exposure, but pushes them to buy in the <b>secondary market at a premium</b> instead. Protection and trap at once.</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="body" style="margin-top:28px"><strong>Net prediction:</strong> a high-probability early pop (forced demand + thin float + loyal retail); the 30%-above-offer trigger likely fires, pulling insider supply forward; elevated volatility through the first ~six months; and a medium-term path that most likely compresses toward fundamentals as lock-ups fully release — unless the orbital-compute / Grok-on-Starlink narrative converts into real revenue. The genuine systemic story isn't SpaceX's price; it's that this <strong>becomes the template</strong> the next two giants copy.</p>
+  </section>
+
+  <!-- ===================== EIGHT: THREE-BODY ===================== -->
+  <section>
+    <h2><span class="num">08 — THE THREE-BODY PROBLEM</span>What happens when SpaceX, OpenAI and Anthropic all list within months</h2>
+    <p class="sub">All three have filed. This is no longer hypothetical — it's a sequence, and the index absorbs three low-float mega-caps in a single half-year.</p>
+
+    <p class="body">As of now: SpaceX (S-1 public, ~June, $1.75T), <strong>OpenAI</strong> (confidential S-1 filed May 22, targeting ~September at ~$1T), and <strong>Anthropic</strong> (confidential S-1 filed June 1, targeting ~October at ~$965B–$1T). Goldman projects ~$160B of total US IPO proceeds for 2026 — <strong>these three alone could raise ~$175B+ and bring close to $3 trillion of market cap public within ~five months.</strong> All three are low-float and clear the top-40 bar, so all three qualify for fast entry into the Nasdaq-100.</p>
+
+    <table class="simtbl">
+      <thead><tr><th>Company</th><th class="r">IPO target</th><th class="r">Raise (≈float)</th><th class="r">2026 economics</th><th class="r">Eff. NDX wt.*</th></tr></thead>
+      <tbody>
+        <tr><td class="nm">SpaceX</td><td class="rn">$1.75T</td><td class="rn">~$75B (4.3%)</td><td class="rn">–$4.9B net</td><td class="rn">~0.6%</td></tr>
+        <tr><td class="nm">OpenAI</td><td class="rn">~$1.0T</td><td class="rn">~$60B (~6%)</td><td class="rn">–$14B proj.</td><td class="rn">~0.5%</td></tr>
+        <tr><td class="nm">Anthropic</td><td class="rn">~$1.0T</td><td class="rn">~$40–50B (~5%)</td><td class="rn">$47B run-rate</td><td class="rn">~0.4%</td></tr>
+        <tr class="tot"><td>Combined</td><td class="rn" style="color:var(--bone)">~$3.75T</td><td class="rn" style="color:var(--bone)">~$175–185B</td><td class="rn" style="color:var(--bone)">three pre-profit</td><td class="rn" style="color:var(--bone)">~1.5%</td></tr>
+      </tbody>
+    </table>
+    <p class="body" style="font-size:14.5px;color:var(--muted);font-style:italic;margin-bottom:26px">*Effective Nasdaq-100 weight under the 3× float cap, against a ~$35T index. Assumes ~$1T IPO valuations and ~5% floats — real terms will move these.</p>
+
+    <p class="body"><strong>The cap is the entire story.</strong> Strip out the 3× float rule and weight all three on raw market cap, and they would command <strong>~9–10% of the Nasdaq-100 combined</strong> — forcing index funds to rotate <strong>$55B+ out of existing holdings into three unprofitable newcomers</strong> in one half-year. The much-maligned cap compresses that to ~1.5%, roughly $9B. The rule the original video frames as "manufactured demand" is the single biggest thing <em>preventing</em> a near-10% forced rotation of the index.</p>
+
+    <div class="floatviz">
+      <div class="cap">Combined index weight of all three — capped vs. uncapped</div>
+      <div class="bar f-new">
+        <div class="bl"><span>Under the 3× float cap (the actual rule)</span><span>~1.5%</span></div>
+        <div class="track"><div class="fill" style="--w:15%">~1.5%</div></div>
+      </div>
+      <div class="bar f-old">
+        <div class="bl"><span>If full-cap weighted (no cap)</span><span>~9.7%</span></div>
+        <div class="track"><div class="fill" style="--w:97%">~9.7% of the index</div></div>
+      </div>
+      <p class="note">For scale, the current top five (Nvidia, Apple, Microsoft, Amazon, Alphabet) are ~31% of the index combined. Uncapped, three loss-making newcomers would arrive at nearly a third of <em>that</em> — overnight.</p>
+    </div>
+
+    <p class="body" style="margin-top:8px"><strong>But it ramps.</strong> The cap equals 3× float, so as lock-ups release and floats widen over the following 6–18 months, each name's <em>allowed</em> weight climbs toward full cap — roughly <strong>6–7× as float grows from ~5% to ~33%</strong>. So this isn't one shock: it's three staggered inclusions, each trailed by a months-long weight ramp. The forced rotation out of incumbents <strong>escalates</strong> through 2026–27 rather than resolving on three rebalance days.</p>
+
+    <p class="body"><strong>The deeper risk is correlation, not size.</strong> The Nasdaq-100 already leans hard on a single AI-capex factor (Nvidia, Broadcom, Microsoft). Stacking SpaceX (which now contains xAI), OpenAI and Anthropic adds three more frontier-AI bets — richly valued, two deeply loss-making — into the same index, all tied to one narrative. If the AI-capex thesis wobbles, all three deflate together, <em>inside</em> everyone's "diversified" index fund. Owning the index becomes a more concentrated AI wager, not a hedge against one.</p>
+
+    <p class="body"><strong>And you may already own them — twice.</strong> The index holds these labs indirectly today: Microsoft owns ~27% of OpenAI; Amazon and Alphabet hold large Anthropic stakes; SpaceX owns xAI. So incumbents trimmed in the rebalance may simultaneously be <em>marked up</em> on their stakes — a partial offset — while index holders end up with <strong>double exposure</strong> (Anthropic directly via the index, and again through Amazon and Alphabet).</p>
+
+    <h3 style="font-family:'Fraunces',serif;font-weight:600;font-size:23px;margin:34px 0 6px;letter-spacing:-.01em">What to track across the three</h3>
+    <div class="watch">
+      <div class="witem">
+        <h4>Three rebalance dates, not one</h4>
+        <p>SpaceX (~Jun–Jul), OpenAI (~Sep–Oct), Anthropic (~Oct–Nov) each trigger a separate mechanical-demand spike. Map them — and the combined NDX weight trajectory, which <b>climbs past ~1.5%</b> as floats expand.</p>
+      </div>
+      <div class="witem">
+        <h4>Primary-market fatigue and the first-mover race</h4>
+        <p>$175B+ of issuance in months tests finite discretionary demand. Watch whether the <b>last to price books soft</b> (order book, pricing vs. range). OpenAI and Anthropic are racing to list <b>first</b> to capture enthusiasm — the laggard likely gets a thinner reception.</p>
+      </div>
+      <div class="witem">
+        <h4>AI-factor concentration in QQQ</h4>
+        <p>Track the correlation of the three newcomers with the existing AI cluster. The cleaner read on "is this an AI bubble in the index" is the <b>combined weight of AI-narrative names</b>, not any single ticker.</p>
+      </div>
+      <div class="witem">
+        <h4>Cross-holding marks</h4>
+        <p>Microsoft, Amazon and Alphabet carry stakes that get re-marked at each listing. Their rebalance trim may be offset by stake mark-ups — a pair-trade nuance, and a warning against double-counting your own exposure.</p>
+      </div>
+    </div>
+    <p class="body" style="margin-top:18px;font-style:italic;color:var(--bone-dim)">Caveat: sequencing, floats, valuations — and whether all three even list — are unsettled. Anthropic has said publicly it hasn't decided if it will go public; OpenAI's public-benefit-corp structure is novel and could slip the timeline. The figures here assume ~$1T IPO targets and ~5% floats; the live prospectuses will move them. Mechanics, not investment advice.</p>
+  </section>
+
+  <!-- ===================== NINE: FLOAT & ROADS NOT TAKEN ===================== -->
+  <section>
+    <h2><span class="num">09 — THE FLOAT, AND THE ROADS NOT TAKEN</span>What a 5% float really is — and how else it could have been done</h2>
+    <p class="sub">The thin float is the amplifier behind Sections 06–07. Here's the mechanism, and the menu of alternatives that shows it was a choice, not a necessity.</p>
+
+    <p class="body"><strong>What "float" actually is.</strong> A company's shares split into two buckets: stock locked in insiders' hands, and stock free to trade in public hands — the <em>free float</em>. It is not the same as shares outstanding, and it's the number that governs liquidity, index weight, and price behaviour, because only floating shares can be bought and sold day to day. SpaceX has ~13.1 billion shares total; ~555.6 million go to the public — so the tradable bucket is a sliver, and a sliver moves on small pressure.</p>
+
+    <table class="simtbl">
+      <thead><tr><th>SpaceX share structure</th><th class="r">Shares</th><th class="r">% of company</th><th class="r">Dollars</th></tr></thead>
+      <tbody>
+        <tr><td class="nm">IPO float (base)</td><td class="rn">555.6M</td><td class="rn">4.24%</td><td class="rn">$75.0B</td></tr>
+        <tr><td class="nm">IPO float + greenshoe</td><td class="rn">638.9M</td><td class="rn">4.87%</td><td class="rn">$86.2B</td></tr>
+        <tr><td class="nm">Locked / insider-held</td><td class="rn">~12,470M</td><td class="rn">~95%</td><td class="rn">—</td></tr>
+        <tr class="tot"><td>Total company</td><td class="rn" style="color:var(--bone)">~13,110M</td><td class="rn" style="color:var(--bone)">100%</td><td class="rn" style="color:var(--bone)">$1.77T</td></tr>
+      </tbody>
+    </table>
+
+    <p class="body" style="margin-top:24px"><strong>How that compares to a normal IPO.</strong> A typical offering floats 10–20%. For SpaceX, matching that would mean selling ~1.31B shares (<b>$177B</b>) to ~2.62B shares (<b>$354B</b>). But $75B is <em>already</em> the largest IPO in history (Aramco's prior record was ~$29B), so a "normal" percentage would be 6–12× the all-time record — unabsorbable. That's the pattern for giants: Aramco floated just 1.5%, Meta ~15%, Alibaba ~12%. The bigger the company, the smaller the percentage it can realistically sell.</p>
+
+    <p class="body"><strong>Constraint vs. choice.</strong> Two facts feel like one. You genuinely <em>cannot</em> float 15% of a $1.75T company — that ceiling is a real constraint. But the float is also <em>structured</em> for scarcity: all-primary, fixed price, minimum viable size, staggered release, paired with forced index demand. That part is a choice. The constraint caps how much he can sell; it dictates nothing else, and they sat well below even that ceiling, then optimised the rest.</p>
+
+    <p class="body"><strong>The decoupling that dissolves the "no choice" story.</strong> Low float is <em>not required for control</em> — the dual-class shares (Section 10) already lock that in. Musk keeps ~85% of the vote regardless of how much economics he sells, so he could have floated two or three times more and still controlled the company outright. "Thin float = keeping control" is a red herring; the super-voting shares do that job. The float's remaining purpose is scarcity, price support, and minimal dilution — not control.</p>
+
+    <p class="body">So what were the roads not taken?</p>
+
+    <div class="mech">
+      <div class="m-row">
+        <div class="m-head"><span class="mn">OPTION A</span><h3>Include secondary shares</h3></div>
+        <p>This is an all-<em>primary</em> deal — every share is newly issued, no insider sells at the IPO. Adding <b>secondary</b> shares (early VCs selling into the offering) would counterintuitively produce a <em>healthier</em> float: it pre-clears insider supply at the disclosed offer price instead of dumping it post-lockup into a thin market, widening the tradable base and shrinking the overhang. Cost: it looks like insiders cashing out, and it dilutes the scarcity premium.</p>
+      </div>
+      <div class="m-row">
+        <div class="m-head"><span class="mn">OPTION B</span><h3>Auction or direct listing</h3></div>
+        <p>They set a <em>fixed</em> $135 price. Google used a Dutch auction to let demand set the price and kill the underwriting pop; Spotify and Coinbase used direct listings that float existing shares with no traditional lock-up and market-set pricing — both produce a deeper float and discovered price. Catch: a pure direct listing raises no capital, and SpaceX needs the $75B — but an auction, or a direct-listing-with-raise, were on the table.</p>
+      </div>
+      <div class="m-row">
+        <div class="m-head"><span class="mn">OPTION C</span><h3>Don't rush the index</h3></div>
+        <p>The quietest lever, maybe the most important. A thin float is only a reliable <em>pump</em> if a price-insensitive forced buyer is arranged in advance — which fast-entry does. Absent that rule, a tiny float is mostly a <em>liability</em>: illiquid, volatile, no guaranteed bid. List normally, let it season, let the float widen, then enter the index at a discovered price — and the squeeze dynamic largely disappears.</p>
+      </div>
+    </div>
+
+    <p class="pull">The thin float and the index-rule change are complements, not separate decisions. Scarcity is only safe and profitable because a forced buyer was arranged first. One without the other is just risk.</p>
+
+    <p class="body"><strong>The honest other side.</strong> A smaller float isn't purely cynical: every share dilutes existing holders, so raising only what you need is discipline; flooding supply can botch a launch (Facebook, 2012); a large insider secondary signals "the smart money is leaving." Real reasons. But notice the asymmetry — the <em>benefits</em> (price support, low dilution, the option to sell higher later) accrue to the company and insiders, while the <em>costs</em> (volatility, squeeze, pop-and-dump exposure, no liquidity cushion) land on public holders, many of whom never chose to buy because the index put it in their fund.</p>
+
+    <p class="body"><strong>So is it the only way? No.</strong> The size constraint forces a small <em>percentage</em> — full-percentage floats were genuinely impossible. Everything past that — primary-only, fixed price, minimum float, staggered release, rushed inclusion — is an optimisation stack tilted toward maximum price and minimum dilution for the issuer. A cleaner path existed: float more economics (control was never at risk), use an auction or partial direct listing for honest price discovery, include some secondary to deepen the float, let index inclusion happen on a normal timeline. Comparable capital, a more stable stock, a better deal for the public — it just leaves the scarcity premium on the table and looks less triumphant on day one.</p>
+  </section>
+
+  <!-- ===================== TEN: CONTROL & RECOURSE ===================== -->
+  <section style="border-bottom:none">
+    <h2><span class="num">10 — CONTROL &amp; RECOURSE</span>What public shareholders actually get: the economics, and almost nothing else</h2>
+    <p class="sub">The governance pillar the rest of the document implies — legal in every individual part, engineered as a whole.</p>
+
+    <p class="body"><strong>The dual-class mechanism.</strong> Two share classes: Class A (public) at one vote, Class B (insiders) at ten. That 10:1 ratio decouples ownership from control. Per the S-1, Musk holds <b>12.3% of Class A and 93.6% of Class B → ~85% of total voting power on ~42% of the equity</b> (filings range ~79–85%). A minority economic stake becomes a near-total grip on every shareholder vote. Public buyers get the price exposure and, in the filing's own logic, no practical ability to influence anything.</p>
+
+    <p class="body"><strong>Where it sits on the spectrum.</strong> Dual-class is common — Meta and Alphabet do it — and is pitched as protecting a founder's long-term vision from activist pressure. SpaceX's version is at the harsh end: CalPERS and the New York State and City comptrollers jointly called it <em>"even more restrictive than the dual-class arrangements at Meta, Alphabet, or Snap."</em> This is the aggressive version, not the routine one.</p>
+
+    <p class="body"><strong>"Controlled company" status.</strong> When one holder commands a voting majority, the exchange lets the company switch off guardrails. SpaceX is taking the exemptions, so it can skip a <b>majority-independent board</b>, an <b>independent compensation committee</b>, and an <b>independent nominating committee</b>. Only the audit committee survives (SEC-required). So the people who set pay, choose director nominees, and form the board majority need not be independent of the man they oversee — and Musk is simultaneously <b>CEO, CTO and Chair</b> on a nine-person board. The supervisor is the supervised.</p>
+
+    <p class="body"><strong>The unfireable lock.</strong> Removing Musk requires a Class B vote, which Musk controls — so, as the institutional letter put it, "as a mathematical matter, he can only be fired if he votes against himself." Public owners cannot remove him, replace the board, force a sale, or win a proxy fight. The normal levers shareholders use to discipline a CEO are, by design, unreachable.</p>
+
+    <p class="body"><strong>What it enables: related-party risk.</strong> No independent board means no structural check on deals between the company and its controller. The textbook example already happened pre-IPO: SpaceX bought Musk's xAI for ~$250B in all-stock, on terms set by boards Musk controls — folding a loss-making AI unit into what the public is now buying. There is no built-in mechanism to block the next such deal.</p>
+
+    <div class="splitgrid">
+      <div class="splitcol out">
+        <h4>What the public holder lacks</h4>
+        <ul>
+          <li><b>No voice</b> — the share class carries votes that can never be decisive.</li>
+          <li><b>No exit</b> — via index inclusion, a passive holder owns SpaceX whether they object to the governance or not.</li>
+          <li><b>No recourse</b> — a mandatory-arbitration clause blocks class actions in federal court; even a CalPERS-scale holder can hardly sue.</li>
+        </ul>
+      </div>
+      <div class="splitcol in">
+        <h4>Who is refusing it</h4>
+        <ul>
+          <li><b>AkademikerPension</b> (Denmark) blacklisted SpaceX for "catastrophic governance" and overvaluation.</li>
+          <li><b>CalPERS + NY State &amp; City comptrollers</b> filed a formal objection itemising the founder-serving provisions.</li>
+          <li>Serious institutional money is declining on governance grounds — <em>even as</em> the index forces it onto everyone else.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="pull">No voice, no exit, no recourse — every piece legal and disclosed, assembled to leave public owners the downside and none of the levers.</p>
+
+    <p class="body" style="font-style:italic;color:var(--bone-dim)">The accurate label isn't "illegal" or even quite "grey area." It's <strong>legal-but-engineered</strong>: no rule requires a minimum IPO float; dual-class voting, controlled-company exemptions and mandatory arbitration are all legal, disclosed, and individually defensible; and the index rule passed a public consultation. The controversy is who shaped the rules and who can't escape them — not whether anyone broke one. "Bend, don't break."</p>
+  </section>
+
+  <footer>
+    <p class="sl">Verdict — facts mostly solid · Nasdaq mechanics: two of three right, the key one inverted · structural thesis sound · tone more certain than the evidence warrants.</p>
+    <p class="disc">Sources cross-checked: SpaceX S-1 reporting (Via Satellite, Satellite Today, CNBC), Nasdaq-100 May 2026 methodology FAQ and consultation, Reuters / CNBC / FT, The Information, heise, SpotGamma, Nasdaq index-ecosystem data. This is an analysis of a media claim, not investment or legal advice — index inclusion, lock-up timing, float, and weight figures move, so verify against the live prospectus before acting.</p>
+  </footer>
+
+  </div><!-- /#full -->
+
+</div>
+
+<script>
+  document.querySelectorAll('.tabbar button').forEach(function(b){
+    b.addEventListener('click', function(){
+      var t = b.dataset.tab;
+      document.querySelectorAll('.tabbar button').forEach(function(x){ x.classList.toggle('active', x === b); });
+      document.querySelectorAll('.tabpane').forEach(function(p){ p.classList.toggle('active', p.id === t); });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+  function gotoFull(){ document.querySelector('.tabbar button[data-tab="full"]').click(); }
+</script>
+</body>
+</html>
