@@ -6,6 +6,7 @@ Static site. No build step. Vercel serves the folder as-is.
 index.html              home: hero, Work, Now, About
 half-line/index.html    The Half Line
 premium-ladder/index.html  The Premium Ladder (companion to The Half Line)
+bottom-wage/index.html  The Bottom Wage (minimum wage vs real bottom wage, 8 US cities)
 spacex-ipo/index.html   SpaceX IPO teardown
 capex-opex-da/index.html  Capex, Opex and D&A
 archive/index.html      full list of linked work (nav: Archive)
@@ -25,6 +26,7 @@ Each piece has one source of truth. The site copy is the published version.
 | SpaceX teardown | `~/Downloads/spacex-ipo-teardown.html` | /spacex-ipo/ |
 | Capex, Opex and D&A | Claude artifact RU9kPwZPtANiyG2pynjb5G | /capex-opex-da/ |
 | The Premium Ladder | built from scripts in a Claude session (data, tax model, page template); the page embeds all data | /premium-ladder/ |
+| The Bottom Wage | built from scripts in a Claude session (model.py, template.html); the page embeds all data | /bottom-wage/ |
 | Atlas Through Time | github.com/paul-bebear/atlas-through-time | external, already live |
 
 When a piece changes: replace its `index.html` here, refresh the thumbnail if the top of the page changed, commit, push. Vercel redeploys in about a minute. URLs never change.

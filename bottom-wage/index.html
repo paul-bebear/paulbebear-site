@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>The Bottom Wage</title>
+<meta name="description" content="On paper, New York's minimum wage is 2.3 times Utah's. In hours of work needed to pay rent and get to work, Salt Lake City's lowest-paid workers come out ahead.">
+<meta property="og:title" content="The Bottom Wage">
+<meta property="og:description" content="On paper, New York's minimum wage is 2.3 times Utah's. In hours of work needed to pay rent and get to work, Salt Lake City's lowest-paid workers come out ahead.">
+<meta property="og:image" content="https://paulbebear.com/assets/bottom-wage.webp">
+<meta property="og:url" content="https://paulbebear.com/bottom-wage/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Sibling of /half-line/: same tokens and type. One reading column: hero comparison, one ranked chart with one toggle, then method, caveats, sources. */
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#14171c; --ink-2:#4b525d; --ink-3:#6b7380;
+  --rule:#dde1e7; --grid:#e9ecf0; --accent:#2a78d6; --accent-soft:#d6e6f9; --bar:#b9c2ce;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --f-data:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111418; --panel:#181c21; --ink:#eef0f3; --ink-2:#b4bac3; --ink-3:#8f97a2;
+  --rule:#2a3038; --grid:#232930; --accent:#3987e5; --accent-soft:#1d3554; --bar:#4a525d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111418; --panel:#181c21; --ink:#eef0f3; --ink-2:#b4bac3; --ink-3:#8f97a2;
+  --rule:#2a3038; --grid:#232930; --accent:#3987e5; --accent-soft:#1d3554; --bar:#4a525d; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55}
+.wrap{max-width:980px;margin:0 auto;padding:28px 20px 72px}
+a{color:var(--accent);text-underline-offset:3px}
+h1,h2,h3{font-family:var(--f-display);margin:0;letter-spacing:-.01em;text-wrap:balance}
+h1{font-size:clamp(34px,5vw,52px);line-height:1.04;font-weight:700}
+h2{font-size:clamp(22px,3vw,28px);font-weight:700;line-height:1.15}
+h3{font-size:16px;font-weight:700}
+p{margin:0}
+.num,.data{font-family:var(--f-data);font-variant-numeric:tabular-nums}
+.small{font-size:14px;color:var(--ink-2)}
+.home{display:inline-block;font:500 13px var(--f-data);color:var(--ink-3);text-decoration:none;margin-bottom:36px}
+.home:hover{color:var(--ink)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:40px;align-items:end;margin-bottom:64px}
+.lede{font-size:19px;color:var(--ink-2);margin-top:18px;max-width:42ch}
+.cmp{background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:20px 20px 16px}
+.cmp table{width:100%;border-collapse:collapse}
+.cmp th,.cmp td{text-align:right;padding:9px 0 9px 14px;font-weight:400}
+.cmp th:first-child,.cmp td:first-child{padding-left:0}
+.cmp th:first-child,.cmp td:first-child{text-align:left}
+.cmp thead th{font:500 12px var(--f-data);color:var(--ink-3);padding-top:0}
+.cmp tbody tr+tr td{border-top:1px solid var(--grid)}
+.cmp td{font:500 17px var(--f-data);font-variant-numeric:tabular-nums}
+.cmp td:first-child{font:600 15px var(--f-body)}
+.cmp td.gap{color:var(--accent)}
+.cmp .sub{display:block;font:400 12px var(--f-data);color:var(--ink-3);margin-top:2px}
+.cmp .hrs td{font-size:15px}
+.cmp .hrs td:first-child{font-weight:400;color:var(--ink-2);font-size:14px}
+.cmp-note{font-size:13px;color:var(--ink-3);margin-top:10px;line-height:1.45}
+
+/* chart */
+.chart-head{display:grid;gap:14px;margin-bottom:22px}
+.chart-head p{max-width:62ch;color:var(--ink-2)}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:8px;overflow:hidden;background:var(--panel);justify-self:start}
+.seg button{font:500 13px var(--f-data);padding:9px 14px;border:0;background:transparent;color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.seg button+button{border-left:1px solid var(--rule)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.seg button:active{transform:translateY(1px)}
+.seg button:focus-visible,.row:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chart{position:relative;background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:18px 18px 14px}
+.axis-note{height:16px}
+.rows{position:relative}
+.row{display:grid;grid-template-columns:200px minmax(0,1fr);gap:14px;align-items:center;padding:10px 0;border:0;background:none;width:100%;text-align:left;color:inherit;font:inherit;cursor:pointer}
+.row+.row{border-top:1px solid var(--grid)}
+.who{display:grid;gap:1px;min-width:0}
+.who b{font:600 15px var(--f-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who span{font:12px var(--f-data);color:var(--ink-3)}
+.who .floor{font-size:11px}
+.track{position:relative;height:30px;margin-right:56px}
+.bar{position:absolute;left:0;top:5px;height:20px;border-radius:0 4px 4px 0;background:var(--bar);transform-origin:left center;transition:width .5s cubic-bezier(.16,1,.3,1),background-color .3s}
+.bar.over{background:var(--accent)}
+.val{position:absolute;top:5px;line-height:20px;font:500 13px var(--f-data);font-variant-numeric:tabular-nums;white-space:nowrap;margin-left:6px;padding:0 4px;background:var(--panel);border-radius:3px;z-index:2;transition:left .5s cubic-bezier(.16,1,.3,1)}
+.ftline{position:absolute;top:0;bottom:0;width:0;border-left:1.5px dashed var(--ink-2);pointer-events:none;z-index:1}
+.ftlabel{position:absolute;top:-22px;transform:translateX(-50%);font:500 11px var(--f-data);color:var(--ink-2);white-space:nowrap}
+.detail{grid-column:2;font:12px var(--f-data);color:var(--ink-2);line-height:1.5;display:none;padding-top:2px}
+.row[aria-expanded="true"] .detail{display:block}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font:12px var(--f-data);color:var(--ink-3);margin-top:12px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:6px}
+.empty{padding:28px 4px;font:14px var(--f-data);color:var(--ink-3)}
+.takeaway{margin-top:18px;max-width:64ch;color:var(--ink-2)}
+.takeaway b{color:var(--ink);font-weight:600}
+
+/* text sections */
+section{margin-top:64px}
+.prose{max-width:66ch;display:grid;gap:14px;margin-top:16px}
+.prose li{margin-bottom:8px}
+.prose ul{margin:0;padding-left:20px}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 40px;margin-top:18px}
+.cols div{display:grid;gap:4px;align-content:start}
+.cols p{font-size:15px;color:var(--ink-2)}
+.src{margin-top:18px;display:grid;gap:12px;max-width:72ch}
+.src p{font-size:14px;color:var(--ink-2)}
+.src b{color:var(--ink);font-weight:600}
+.related{margin-top:56px;padding-top:18px;border-top:1px solid var(--rule);font-size:16px}
+.stamp{margin-top:10px;font:12px var(--f-data);color:var(--ink-3)}
+
+@media (max-width:760px){
+  .wrap{padding:20px 16px 56px}
+  .hero{grid-template-columns:1fr;gap:28px;margin-bottom:48px}
+  .row{grid-template-columns:118px minmax(0,1fr);gap:10px}
+  .cmp th,.cmp td{padding-left:8px}
+  .cmp thead th{font-size:11px}
+  .who b{font-size:14px}
+  .cols{grid-template-columns:1fr}
+  .ftlabel .long{display:none}
+  .cmp td{font-size:15px}
+}
+@media (prefers-reduced-motion: reduce){
+  .bar,.val{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="home" href="/">paulbebear.com</a>
+
+  <header class="hero">
+    <div>
+      <h1 id="headline">On paper, New York pays 2.3&times; more.</h1>
+      <p class="lede" id="lede">In hours of work needed to pay rent and get to work, Salt Lake City's lowest-paid workers come out ahead.</p>
+    </div>
+    <div class="cmp" aria-label="New York City versus Salt Lake City">
+      <table>
+        <thead><tr><th></th><th>New York City</th><th>Salt Lake City</th><th>Gap</th></tr></thead>
+        <tbody id="cmp-body"></tbody>
+      </table>
+      <p class="cmp-note">Hours of full-time work a month, after tax, to pay a one-bedroom rent and get to work. A full-time month is 173 hours.</p>
+    </div>
+  </header>
+
+  <section style="margin-top:0" aria-labelledby="chart-title">
+    <div class="chart-head">
+      <h2 id="chart-title">Hours of work a month to pay rent and get to work</h2>
+      <p>Eight US cities, ranked. Bars past the dashed line need more than one full-time job. Tap a row for the breakdown.</p>
+      <div class="seg" role="group" aria-label="Which wage">
+        <button type="button" data-mode="legal" aria-pressed="true">Legal minimum</button>
+        <button type="button" data-mode="real" aria-pressed="false">Real bottom wage</button>
+      </div>
+    </div>
+    <div class="chart">
+      <div class="axis-note" aria-hidden="true"></div>
+      <div class="rows" id="rows" aria-live="polite"></div>
+      <div class="legend">
+        <span><i style="background:var(--bar)"></i>Covered by one full-time job</span>
+        <span><i style="background:var(--accent)"></i>Needs more than one full-time job</span>
+      </div>
+    </div>
+    <p class="takeaway" id="takeaway"></p>
+  </section>
+
+  <section aria-labelledby="method-title">
+    <h2 id="method-title">How it's measured</h2>
+    <div class="cols">
+      <div><h3>The worker</h3><p>One adult, no children, working 40 hours a week all year (2,080 hours). Living alone in a modest one-bedroom.</p></div>
+      <div><h3>The two wages</h3><p><b>Legal minimum</b>: the 2026 floor that applies inside the city. <b>Real bottom wage</b>: what the lowest-paid tenth of jobs in the metro area pay (10th percentile, all occupations).</p></div>
+      <div><h3>Costs</h3><p>Rent is HUD's Fair Market Rent for a one-bedroom, utilities included. Transport is a transit pass in New York City and typical car and transit costs everywhere else.</p></div>
+      <div><h3>Taxes</h3><p>2026 rules: federal income tax, Social Security and Medicare, state and city income taxes, Denver's head tax, and the federal and state Earned Income Tax Credits (assumes the worker is 25 or older).</p></div>
+    </div>
+    <p class="small" style="margin-top:18px;max-width:66ch">Hours needed = (monthly rent + monthly transport) / after-tax hourly pay. Fewer hours means more of the month left for everything else.</p>
+  </section>
+
+  <section aria-labelledby="caveat-title">
+    <h2 id="caveat-title">What this leaves out</h2>
+    <div class="prose">
+      <ul>
+        <li><b>The 10th percentile is not "the minimum-wage worker".</b> It is the pay of the lowest-paid tenth of jobs, and the mix of jobs differs by city. It also excludes the self-employed.</li>
+        <li><b>The legal-minimum view is mostly hypothetical in some places.</b> Almost nobody in Salt Lake City, Houston or Jackson earns $7.25; the market sets entry pay higher.</li>
+        <li><b>City rules, metro data.</b> Minimum wages are for the city itself, but wages, rents and transport cover the metro area. The New York numbers include New Jersey suburbs (minimum $15.92). That is also why the real bottom wage sits below the city minimum in Seattle, Denver and Miami: their metros include suburbs with lower floors, and the wage data predate the 2026 raises.</li>
+        <li><b>Transport is the biggest assumption.</b> Car costs are typical spending from the MIT Living Wage Calculator ($640 to $830 a month). A worker with a paid-off used car pays less; a Seattle or Denver worker on transit would need fewer hours. The headline result is robust to it: on the real bottom wage, Salt Lake City stays ahead of New York unless driving there costs more than $1,170 a month.</li>
+        <li><b>Rents are for people moving in now.</b> Long-time tenants, including about a million New York rent-stabilized households, pay less. Most low earners also share rather than live alone; splitting a two-bedroom roughly halves the rent.</li>
+        <li><b>Health coverage is left out, and it may matter more than taxes.</b> A full-time $7.25 earner makes about $15,100 a year, below the poverty line. In Utah, which expanded Medicaid, that means free coverage. In Texas and Mississippi, which did not, it means falling in the gap: too poor for marketplace subsidies, not eligible for Medicaid. Coverage is hard to price and federal rules are changing in 2026 and 2027, so it is not in the numbers.</li>
+        <li><b>Food, phone and everything else are left out on purpose.</b> They vary less between cities than rent does, and pricing them adds assumptions.</li>
+        <li><b>Tipped workers are excluded.</b> Their legal minimums are lower ($2.13 an hour in Utah, Texas and Mississippi).</li>
+        <li><b>The years don't line up.</b> Minimums are 2026, wages are May 2025, rents are fiscal year 2026. Wages have grown since May 2025, which slightly flatters the real-bottom-wage view.</li>
+        <li><b>This is about what a wage buys, not jobs.</b> It says nothing about whether higher minimums cost jobs, or about the career ladder a big city offers.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="src-title">
+    <h2 id="src-title">Sources</h2>
+    <div class="src" id="sources">
+      <p><b>Legal minimums, 2026.</b> Rates set by each state and city, as compiled in <a href="https://kpa.io/blog/minimum-wage-changes-for-july-1-2026/">KPA's 2026 minimum wage tracker</a> (Denver $19.29, Colorado $15.16, Florida $15.00 from 30 Sep 2026, Missouri $15.00, New York $16.00 outside the city) and <a href="https://perkinscoie.com/insights/update/washington-announces-new-minimum-wages-2026">Perkins Coie on Washington L&amp;I's 2026 rates</a> (Seattle $21.30, state $17.13). New York City, Long Island and Westchester: $17.00. Utah, Texas and Mississippi follow the federal $7.25.</p>
+      <p><b>Real bottom wage.</b> <a href="https://www.bls.gov/oes/tables.htm">BLS Occupational Employment and Wage Statistics</a>, May 2025, metropolitan areas, all occupations, 10th-percentile hourly wage.</p>
+      <p><b>Rent.</b> <a href="https://nlihc.org/oor">NLIHC, Out of Reach 2026</a>: one-bedroom Fair Market Rent by metro area, from HUD's fiscal year 2026 Fair Market Rents.</p>
+      <p><b>Transport.</b> NYC: <a href="https://www.mta.info/press-release/mta-board-adopts-fare-and-toll-increases-take-effect-january-2026">MTA</a> weekly fare cap of $35 from January 2026, times 52 weeks / 12. Other cities: <a href="https://livingwage.mit.edu/">MIT Living Wage Calculator</a>, 1 adult with no children, transportation line, data updated February 2026.</p>
+      <p><b>Taxes.</b> <a href="https://www.irs.gov/newsroom/irs-releases-tax-inflation-adjustments-for-tax-year-2026-including-amendments-from-the-one-big-beautiful-bill">IRS 2026 inflation adjustments</a> (standard deduction $16,100; brackets). EITC for workers without children, 2026: <a href="https://www.everycrsreport.com/reports/R43805.html">Congressional Research Service, R43805</a>. State rates and deductions, 2026: <a href="https://taxfoundation.org/data/all/state/state-income-tax-rates-2026/">Tax Foundation</a>. St. Louis 1% earnings tax, renewed April 2026: <a href="https://taxnews.ey.com/news/2026-0995-voters-renew-the-st-louis-missouri-earnings-tax-for-another-five-years">EY Tax News</a>. Denver's $5.75 monthly employee head tax: <a href="https://www.patriotsoftware.com/blog/payroll/occupational-privilege-tax-opt-colorado/">Patriot Software</a>. New York City resident rates (3.078% to 3.876%): NYS Department of Taxation and Finance rate schedule.</p>
+    </div>
+    <p class="stamp">Data as of October 2026. Model: one adult, full-time, standard deduction; credits under $100 a year ignored.</p>
+  </section>
+
+  <p class="related">Related: <a href="/premium-ladder/">The Premium Ladder</a>, top pay as a multiple of the median in seven countries, and <a href="/half-line/">The Half Line</a>, who holds half of all wealth.</p>
+</div>
+
+<script>
+const DATA = [{"id":"nyc","city":"New York City","st":"NY","min_wage":17.0,"state_min":16.0,"min_note":"NYC, Long Island, Westchester rate; rest of NY state $16.00","rent":2655,"rent_area":"New York HMFA","transport":152,"transport_src":"OMNY weekly fare cap ($35/wk)","oews_area":"New York-Newark-Jersey City, NY-NJ","tax_note":"Federal + NY State + NYC income tax","cost":2807,"legal":{"wage":17.0,"net_hourly":13.62,"tax_rate":0.199,"hours":206.1},"real":{"wage":17.37,"net_hourly":13.88,"tax_rate":0.201,"hours":202.2}},{"id":"slc","city":"Salt Lake City","st":"UT","min_wage":7.25,"state_min":null,"min_note":"Utah follows the federal minimum","rent":1456,"rent_area":"Salt Lake City HMFA","transport":774,"transport_src":"MIT Living Wage, Salt Lake City-Murray metro","oews_area":"Salt Lake City-Murray, UT","tax_note":"Federal + Utah 4.5% flat with taxpayer credit","cost":2230,"legal":{"wage":7.25,"net_hourly":6.86,"tax_rate":0.054,"hours":325.1},"real":{"wage":15.26,"net_hourly":13.0,"tax_rate":0.148,"hours":171.5}},{"id":"sea","city":"Seattle","st":"WA","min_wage":21.3,"state_min":17.13,"min_note":"Seattle city rate; Washington state $17.13","rent":2146,"rent_area":"Seattle-Bellevue HMFA","transport":738,"transport_src":"MIT Living Wage, Seattle-Tacoma-Bellevue metro","oews_area":"Seattle-Tacoma-Bellevue, WA","tax_note":"Federal only (no state income tax)","cost":2884,"legal":{"wage":21.3,"net_hourly":18.16,"tax_rate":0.147,"hours":158.8},"real":{"wage":20.33,"net_hourly":17.38,"tax_rate":0.145,"hours":165.9}},{"id":"den","city":"Denver","st":"CO","min_wage":19.29,"state_min":15.16,"min_note":"Denver city rate; Colorado state $15.16","rent":1754,"rent_area":"Denver-Aurora-Centennial MSA","transport":682,"transport_src":"MIT Living Wage, Denver-Aurora-Centennial metro","oews_area":"Denver-Aurora-Centennial, CO","tax_note":"Federal + Colorado 4.4% + Denver head tax","cost":2436,"legal":{"wage":19.29,"net_hourly":16.01,"tax_rate":0.17,"hours":152.2},"real":{"wage":18.02,"net_hourly":15.04,"tax_rate":0.165,"hours":162.0}},{"id":"mia","city":"Miami","st":"FL","min_wage":15.0,"state_min":null,"min_note":"Florida rate since 30 Sep 2026 (was $14.00)","rent":1995,"rent_area":"Miami-Miami Beach-Kendall HMFA","transport":642,"transport_src":"MIT Living Wage, Miami-Fort Lauderdale-West Palm Beach metro","oews_area":"Miami-Fort Lauderdale-West Palm Beach, FL","tax_note":"Federal only (no state income tax)","cost":2637,"legal":{"wage":15.0,"net_hourly":13.1,"tax_rate":0.127,"hours":201.3},"real":{"wage":14.49,"net_hourly":12.69,"tax_rate":0.124,"hours":207.8}},{"id":"stl","city":"St. Louis","st":"MO","min_wage":15.0,"state_min":null,"min_note":"Missouri state rate (ballot measure); state law bars city minimums","rent":995,"rent_area":"St. Louis HMFA (MO-IL)","transport":740,"transport_src":"MIT Living Wage, St. Louis metro","oews_area":"St. Louis, MO-IL","tax_note":"Federal + Missouri + St. Louis 1% earnings tax","cost":1735,"legal":{"wage":15.0,"net_hourly":12.71,"tax_rate":0.153,"hours":136.5},"real":{"wage":15.0,"net_hourly":12.71,"tax_rate":0.153,"hours":136.5}},{"id":"hou","city":"Houston","st":"TX","min_wage":7.25,"state_min":null,"min_note":"Texas follows the federal minimum","rent":1323,"rent_area":"Houston-The Woodlands-Sugar Land HMFA","transport":738,"transport_src":"MIT Living Wage, Houston-Pasadena-The Woodlands metro","oews_area":"Houston-Pasadena-The Woodlands, TX","tax_note":"Federal only (no state income tax)","cost":2061,"legal":{"wage":7.25,"net_hourly":6.86,"tax_rate":0.054,"hours":300.5},"real":{"wage":13.17,"net_hourly":11.62,"tax_rate":0.118,"hours":177.4}},{"id":"jac","city":"Jackson","st":"MS","min_wage":7.25,"state_min":null,"min_note":"Mississippi has no state minimum; federal applies","rent":1097,"rent_area":"Jackson HMFA","transport":826,"transport_src":"MIT Living Wage, Jackson metro","oews_area":"Jackson, MS","tax_note":"Federal + Mississippi 4% above $10k taxable","cost":1923,"legal":{"wage":7.25,"net_hourly":6.86,"tax_rate":0.054,"hours":280.3},"real":{"wage":11.12,"net_hourly":9.84,"tax_rate":0.115,"hours":195.5}}];
+const FT = 2080 / 12; // 173.3 hours in a full-time month
+const AXIS_MAX = 1.04 * Math.max(...DATA.flatMap(d => [d.legal, d.real].filter(Boolean).map(x => x.hours)));
+const fmt$ = v => "$" + v.toFixed(2);
+const fmt0 = v => "$" + Math.round(v).toLocaleString("en-US");
+const hasReal = DATA.every(d => d.real);
+let mode = "legal";
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* hero */
+(function hero(){
+  const n = DATA.find(d => d.id === "nyc"), s = DATA.find(d => d.id === "slc");
+  const body = document.getElementById("cmp-body");
+  const r = (a, b) => (a / b).toFixed(1) + "×";
+  let html = `<tr><td>Legal minimum<span class="sub">2026</span></td><td>${fmt$(n.legal.wage)}</td><td>${fmt$(s.legal.wage)}</td><td class="gap">${r(n.legal.wage, s.legal.wage)}</td></tr>`;
+  html += `<tr class="hrs"><td>Hours needed</td><td>${Math.round(n.legal.hours)} h</td><td>${Math.round(s.legal.hours)} h</td><td></td></tr>`;
+  if (n.real && s.real) {
+    html += `<tr><td>Real bottom wage<span class="sub">10th percentile, May 2025</span></td><td>${fmt$(n.real.wage)}</td><td>${fmt$(s.real.wage)}</td><td class="gap">${r(n.real.wage, s.real.wage)}</td></tr>`;
+    html += `<tr class="hrs"><td>Hours needed</td><td>${Math.round(n.real.hours)} h</td><td>${Math.round(s.real.hours)} h</td><td></td></tr>`;
+  }
+  body.innerHTML = html;
+})();
+
+/* chart */
+const rowsEl = document.getElementById("rows");
+const rowEls = {};
+DATA.forEach(d => {
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "row"; b.setAttribute("aria-expanded", "false");
+  b.innerHTML = `<span class="who"><b>${d.city}</b><span class="wage"></span><span class="floor"></span></span>
+    <span class="track"><span class="bar"></span><span class="val"></span></span>
+    <span class="detail"></span>`;
+  b.addEventListener("click", () => b.setAttribute("aria-expanded", b.getAttribute("aria-expanded") === "true" ? "false" : "true"));
+  rowsEl.appendChild(b); rowEls[d.id] = b;
+});
+const line = document.createElement("div"); line.className = "ftline";
+line.innerHTML = `<span class="ftlabel"><span class="long">1 full-time month, </span>173 h</span>`;
+rowsEl.appendChild(line);
+
+function placeLine(){
+  const first = rowsEl.querySelector(".track");
+  if (!first) return;
+  const x = first.offsetLeft + first.offsetWidth * (FT / AXIS_MAX);
+  line.style.left = x + "px";
+}
+
+function render(){
+  document.querySelectorAll(".seg button").forEach(btn => btn.setAttribute("aria-pressed", String(btn.dataset.mode === mode)));
+  if (mode === "real" && !hasReal) {
+    rowsEl.querySelectorAll(".row").forEach(r => r.style.display = "none");
+    line.style.display = "none";
+    if (!rowsEl.querySelector(".empty")) rowsEl.insertAdjacentHTML("afterbegin", `<p class="empty">Real bottom wages are still being added.</p>`);
+    document.getElementById("takeaway").textContent = "";
+    return;
+  }
+  rowsEl.querySelector(".empty")?.remove();
+  line.style.display = "";
+  const sorted = [...DATA].sort((a, b) => a[mode].hours - b[mode].hours);
+  // FLIP: record old positions, reorder, animate from old to new
+  const before = {};
+  sorted.forEach(d => before[d.id] = rowEls[d.id].getBoundingClientRect().top);
+  sorted.forEach(d => {
+    const el = rowEls[d.id], v = d[mode];
+    el.style.display = "";
+    rowsEl.insertBefore(el, line);
+    const pct = Math.min(100, v.hours / AXIS_MAX * 100);
+    const bar = el.querySelector(".bar"), val = el.querySelector(".val");
+    bar.style.width = pct + "%";
+    bar.classList.toggle("over", v.hours > FT);
+    val.style.left = pct + "%";
+    val.textContent = Math.round(v.hours) + " h";
+    const wageLabel = mode === "legal" ? "min" : "10th pct";
+    el.querySelector(".wage").textContent = `${d.st} · ${fmt$(v.wage)} ${wageLabel}`;
+    el.querySelector(".floor").textContent = (mode === "legal" && d.state_min) ? `State floor ${fmt$(d.state_min)}` : "";
+    el.querySelector(".detail").textContent =
+      `${fmt$(v.wage)} an hour is ${fmt$(v.net_hourly)} after tax (${Math.round(v.tax_rate * 100)}% net tax). ` +
+      `Rent ${fmt0(d.rent)} + transport ${fmt0(d.transport)} = ${fmt0(d.cost)} a month.`;
+    el.setAttribute("aria-label", `${d.city}: ${Math.round(v.hours)} hours a month at ${fmt$(v.wage)} an hour`);
+  });
+  if (!reduce) {
+    sorted.forEach(d => {
+      const el = rowEls[d.id], dy = before[d.id] - el.getBoundingClientRect().top;
+      if (!dy) return;
+      el.animate([{ transform: `translateY(${dy}px)` }, { transform: "translateY(0)" }],
+        { duration: 500, easing: "cubic-bezier(.16,1,.3,1)" });
+    });
+  }
+  placeLine();
+  takeaway(sorted);
+}
+
+function takeaway(sorted){
+  const over = sorted.filter(d => d[mode].hours > FT).map(d => d.city);
+  const best = sorted[0], worst = sorted[sorted.length - 1];
+  const t = document.getElementById("takeaway");
+  const lead = mode === "legal" ? "On the legal minimum" : "On the real bottom wage";
+  const overTxt = over.length === 0 ? "every city is covered by one full-time job"
+    : over.length === DATA.length ? "no city is covered by one full-time job"
+    : `${over.length} of ${DATA.length} cities need more than one full-time job`;
+  const n = DATA.find(d => d.id === "nyc"), u = DATA.find(d => d.id === "slc");
+  const nyc = mode === "legal"
+    ? ` New York City needs ${Math.round(n.legal.hours)} hours, Salt Lake City ${Math.round(u.legal.hours)}.`
+    : ` New York City needs ${Math.round(n.real.hours)} hours, Salt Lake City ${Math.round(u.real.hours)}: the ranking flips.`;
+  t.innerHTML = `<b>${lead}, ${overTxt}.</b> ${best.city} needs the fewest hours (${Math.round(best[mode].hours)}), ${worst.city} the most (${Math.round(worst[mode].hours)}).${nyc}`;
+}
+
+document.querySelectorAll(".seg button").forEach(btn => btn.addEventListener("click", () => { mode = btn.dataset.mode; render(); }));
+addEventListener("resize", placeLine);
+document.fonts?.ready.then(placeLine);
+render();
+</script>
+</body>
+</html>
