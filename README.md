@@ -37,3 +37,16 @@ Local fix carried in the site copy: `capex-opex-da` has `align-content:start` on
 
 ## Adding a piece
 Home page Work section: 4-6 pieces max. Every published piece also gets an entry in archive/index.html.
+
+Every page also carries a `<!-- seo, previews, analytics -->` block just before `</head>`. When you add or replace a piece:
+
+1. Copy that block from another piece into the new page and change the description, canonical, og:title, og:description, og:url and og:image.
+2. Make the preview image: a JPG copy of the thumbnail in `assets/og/<slug>.jpg`. LinkedIn and some chat apps ignore webp.
+3. Add the URL to `sitemap.xml`.
+4. Add an `<item>` to the top of `feed.xml`.
+
+If you replace a page's `index.html` with a fresh export, its block is gone, so re-add it.
+
+Analytics is Vercel Web Analytics (`/_vercel/insights/script.js`). It must be switched on in the Vercel dashboard (Project, Analytics, Enable). Until then the script 404s harmlessly.
+
+premium-ladder and labour-economics have no thumbnail yet. Their previews use half-line.jpg as a stand-in.
