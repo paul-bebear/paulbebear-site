@@ -255,7 +255,12 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 .sources h2{font-size:1.4rem;font-weight:650}
 .sources h2+p{margin-top:8px;color:var(--ink-2);font-size:.95rem}
 .srcgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 40px;margin-top:20px;font-size:.88rem;color:var(--ink-2)}
-.srcgrid p{padding-block:6px}
+.srcgrid .src{padding-block:6px}
+.srcgrid h3{font-size:.95rem;font-weight:600;color:var(--ink)}
+.srcgrid .src p{margin-top:4px}
+.srcgrid .lic{color:var(--ink-3)}
+.sources a{color:inherit;text-underline-offset:2px}
+.srcnote{margin-top:20px;font-size:.88rem;color:var(--ink-2)}
 .method{max-width:70ch;margin-top:28px;font-size:.92rem;color:var(--ink-2)}
 .method p+p{margin-top:10px}
 footer{border-top:1px solid var(--rule);padding-block:28px 48px;font-size:.88rem;color:var(--ink-3)}
@@ -295,7 +300,7 @@ footer .coffee:hover{border-color:var(--ink-3)}
 <meta property="og:site_name" content="Paul Bébéar">
 <link rel="alternate" type="application/rss+xml" title="Paul Bébéar" href="https://paulbebear.com/feed.xml">
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};
-/* Birth dates can sit in share links (?b=...). Strip the query and hash before anything is sent to analytics. */
+/* Share links carry a birth date in the hash (#b=...; old links used ?b=). Strip the query and hash before anything is sent to analytics. */
 window.va('beforeSend',function(e){try{var u=new URL(e.url);u.search='';u.hash='';e.url=u.toString()}catch(_){}return e});</script>
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
@@ -446,7 +451,7 @@ window.va('beforeSend',function(e){try{var u=new URL(e.url);u.search='';u.hash='
   <div class="cmp">
     <div class="box">
       <h3>Share your date</h3>
-      <p>Makes a link like <span class="num">…/light-birthday/?b=1996-06-12</span> with your birthday in it.</p>
+      <p>Makes a link like <span class="num">…/light-birthday/#b=1996-06-12</span> with your birthday in it. The part after # stays in the browser and is never sent to the server.</p>
       <div class="row"><button class="btn" type="button" id="mkLink">Create my link</button></div>
       <div id="linkOut" hidden>
         <div class="row"><input class="urlbox" id="linkUrl" readonly aria-label="Your share link"></div>
@@ -512,22 +517,58 @@ window.va('beforeSend',function(e){try{var u=new URL(e.url);u.search='';u.hash='
 
 <section class="sources" id="sources">
   <div class="wrap">
-    <h2>Sources</h2>
+    <h2>Sources and credits</h2>
+    <p>Every data source behind this page, what it is used for and its licence. The star data embedded in this page is built from CC BY-SA sources, so it is released under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">CC BY-SA 4.0</a> too: you can reuse it if you credit these sources and share alike.</p>
     <div class="srcgrid">
-      <p>Gaia Collaboration, Vallenari, A. et al. (2023). <a href="https://doi.org/10.1051/0004-6361/202243940" rel="noopener">Gaia Data Release 3: summary of the content and survey properties</a>. <i>Astronomy &amp; Astrophysics</i> 674, A1. This work uses data from the European Space Agency mission Gaia, processed by the Gaia Data Processing and Analysis Consortium.</p>
-      <p>van Leeuwen, F. (2007). <a href="https://doi.org/10.1051/0004-6361:20078357" rel="noopener">Validation of the new Hipparcos reduction</a>. <i>Astronomy &amp; Astrophysics</i> 474, 653. ESA (1997), <i>The Hipparcos and Tycho Catalogues</i>, ESA SP-1200.</p>
-      <p>Stellarium. <a href="https://github.com/Stellarium/stellarium" rel="noopener">hip_gaia3 star catalogue</a> (Hipparcos stars with Gaia DR3 astrometry where it is reliable; positions, magnitudes, colours, parallaxes and parallax errors) and the "modern" sky culture constellation figures, CC BY-SA 4.0.</p>
-      <p>Nash, D. <a href="https://codeberg.org/astronexus/hyg" rel="noopener">HYG database v4.1 and AT-HYG v3.2</a> (astronexus), CC BY-SA 4.0: star names, Bayer and Flamsteed designations, constellations and spectral types, and AT-HYG's Gaia DR3 distances used to label sources.</p>
-      <p>Kervella, P. et al. (2016). <a href="https://doi.org/10.1051/0004-6361/201629201" rel="noopener">Close stellar conjunctions of α Centauri A and B until 2050</a>. <i>Astronomy &amp; Astrophysics</i> 594, A107. Parallax of Alpha Centauri A and B.</p>
-      <p>Ballesteros, F. J. (2012). <a href="https://doi.org/10.1209/0295-5075/97/34008" rel="noopener">New insights into black bodies</a>. <i>EPL</i> 97, 34008. Temperature from B&minus;V colour; star colours on screen use Mitchell Charity's blackbody colour table.</p>
-      <p>IAU Working Group on Star Names. <a href="https://www.iau.org/public/themes/naming_stars/" rel="noopener">Naming stars</a>. Proper names such as Toliman and Helvetios.</p>
-      <p>One-line star facts: NASA, ESA and ESO press material and the papers behind them, written in plain language for this page.</p>
+      <div class="src"><h3><a href="https://github.com/Stellarium/stellarium/tree/master/stars/hip_gaia3" rel="noopener">Stellarium, hip_gaia3 star catalogue</a></h3>
+        <p><b>Used for:</b> every star's position, V magnitude, B&minus;V colour, parallax and parallax error. These are Hipparcos stars with Gaia DR3 astrometry where Stellarium judged it reliable.</p>
+        <p class="lic"><b>Licence:</b> Stellarium is GPL-2.0-or-later; the catalogue carries the Gaia DR3 and Hipparcos credits below.</p></div>
+      <div class="src"><h3><a href="https://github.com/Stellarium/stellarium/tree/master/skycultures/modern" rel="noopener">Stellarium, "modern" sky culture</a></h3>
+        <p><b>Used for:</b> the constellation lines: the 13 zodiac stick figures on the sky map and in the 3D view.</p>
+        <p class="lic"><b>Licence:</b> CC BY-SA 4.0 (text and data).</p></div>
+      <div class="src"><h3><a href="https://doi.org/10.1051/0004-6361/202243940" rel="noopener">Gaia Data Release 3</a></h3>
+        <p>Gaia Collaboration, Vallenari, A. et al. (2023), <i>Astronomy &amp; Astrophysics</i> 674, A1. This work uses data from the European Space Agency mission Gaia, processed by the Gaia Data Processing and Analysis Consortium (DPAC).</p>
+        <p><b>Used for:</b> most distances (parallaxes), through Stellarium's catalogue.</p>
+        <p class="lic"><b>Licence:</b> <a href="https://www.cosmos.esa.int/web/gaia-users/license" rel="noopener">open and free to use</a> with credit to ESA/Gaia/DPAC.</p></div>
+      <div class="src"><h3><a href="https://doi.org/10.1051/0004-6361:20078357" rel="noopener">Hipparcos (2007 reduction)</a></h3>
+        <p>van Leeuwen, F. (2007), <i>Astronomy &amp; Astrophysics</i> 474, 653; ESA (1997), <i>The Hipparcos and Tycho Catalogues</i>, ESA SP-1200.</p>
+        <p><b>Used for:</b> distances of the bright stars Gaia cannot measure well, through Stellarium's catalogue.</p>
+        <p class="lic"><b>Licence:</b> ESA public data, free to use with this credit.</p></div>
+      <div class="src"><h3><a href="https://codeberg.org/astronexus/hyg" rel="noopener">HYG database v4.1</a></h3>
+        <p>Nash, D., astronexus.</p>
+        <p><b>Used for:</b> star names, Bayer and Flamsteed designations, constellations and spectral types (the "type in plain words").</p>
+        <p class="lic"><b>Licence:</b> CC BY-SA 4.0.</p></div>
+      <div class="src"><h3><a href="https://codeberg.org/astronexus/athyg" rel="noopener">AT-HYG v3.2</a></h3>
+        <p>Nash, D., astronexus.</p>
+        <p><b>Used for:</b> its Gaia DR3 parallaxes, to label each star's distance source (Gaia DR3, Hipparcos, or either).</p>
+        <p class="lic"><b>Licence:</b> CC BY-SA 4.0.</p></div>
+      <div class="src"><h3><a href="https://doi.org/10.1051/0004-6361/201629201" rel="noopener">Kervella et al. 2016, Alpha Centauri</a></h3>
+        <p>Kervella, P. et al. (2016), "Close stellar conjunctions of &alpha; Centauri A and B until 2050", <i>Astronomy &amp; Astrophysics</i> 594, A107.</p>
+        <p><b>Used for:</b> the parallax of Alpha Centauri A and B (747.17 &plusmn; 0.61 mas), which Gaia and Hipparcos measure poorly.</p>
+        <p class="lic"><b>Licence:</b> a published measurement, cited here.</p></div>
+      <div class="src"><h3><a href="https://doi.org/10.1209/0295-5075/97/34008" rel="noopener">Ballesteros 2012, temperature from colour</a></h3>
+        <p>Ballesteros, F. J. (2012), "New insights into black bodies", <i>EPL</i> 97, 34008.</p>
+        <p><b>Used for:</b> each star's temperature from its B&minus;V colour.</p>
+        <p class="lic"><b>Licence:</b> a published formula, cited here.</p></div>
+      <div class="src"><h3><a href="http://www.vendian.org/mncharity/dir3/blackbody/" rel="noopener">Mitchell Charity, blackbody colours</a></h3>
+        <p><b>Used for:</b> the on-screen colour of each star from its temperature.</p>
+        <p class="lic"><b>Licence:</b> published table, used with credit.</p></div>
+      <div class="src"><h3><a href="https://www.iau.org/public/themes/naming_stars/" rel="noopener">IAU Working Group on Star Names</a></h3>
+        <p><b>Used for:</b> proper names such as Toliman and Helvetios (via HYG), and the IAU constellation boundaries behind the dates the Sun sits in front of each zodiac constellation.</p>
+        <p class="lic"><b>Licence:</b> names standardised by the IAU, credited here.</p></div>
+      <div class="src"><h3>One-line star facts</h3>
+        <p><b>Used for:</b> the short fact on about 90 star detail cards. Written in plain language for this page from NASA, ESA and ESO press material and the papers behind it.</p>
+        <p class="lic"><b>Licence:</b> original text, CC BY-SA 4.0 with the rest of the data.</p></div>
+      <div class="src"><h3><a href="https://vercel.com/font" rel="noopener">Geist and Geist Mono</a></h3>
+        <p><b>Used for:</b> the typefaces, served by Google Fonts.</p>
+        <p class="lic"><b>Licence:</b> SIL Open Font License 1.1.</p></div>
     </div>
+    <p class="srcnote">How the data is put together, with scripts to rebuild it: <a href="https://github.com/paul-bebear/paulbebear-site/tree/main/light-birthday/build" rel="noopener">light-birthday/build</a>.</p>
     <div class="method">
       <p><b>Stars.</b> Every star in Stellarium's hip_gaia3 catalogue (levels 0 to 2) with a parallax of at least 27.18 milliarcseconds, which is 120 light&#8209;years or closer: 3,795 stars, down to about magnitude 9 for most of the sky, plus fainter Hipparcos stars and a few fainter Gaia stars. The faintest red dwarfs and most white dwarfs nearby are not in this list, so some real stars on your shell are missing. Also drawn: the stars of the 13 zodiac figures that lie farther away, and, with "Farther stars", every star brighter than magnitude 4.5 beyond 120 light&#8209;years, for orientation.</p>
       <p><b>Distances.</b> Distance in light&#8209;years = 3,261.56 &divide; parallax in milliarcseconds. The range is the parallax plus or minus two standard errors (about 95%), with a floor of 0.02 milliarcseconds. Each star's source is labelled Gaia DR3 when its parallax matches Gaia DR3 as listed in AT-HYG, Hipparcos when it matches the 2007 Hipparcos reduction or the star has no Gaia entry, and "Gaia or Hipparcos" when Stellarium's value matches neither listing exactly. Alpha Centauri A and B use Kervella et al. (2016). Positions are for 2016; the sky map ignores the small shifts since.</p>
       <p><b>Dates.</b> A light&#8209;birthday is your birth date plus the distance in Julian years (365.25 days, the year used to define the light&#8209;year). Its range comes from the distance range. Dates shown are never more precise than a month. Your light shell is your age now, give or take half a year, and a star counts as yours when its distance range overlaps it. Stars whose range is wider than plus or minus five light&#8209;years (56 of them, mostly double stars) are never counted as anyone's: they are too uncertain to call. Star signs use the usual astrological dates; the constellation behind the Sun uses approximate dates from the IAU constellation boundaries, which drift by about a day every 70 years.</p>
-      <p><b>Privacy.</b> Your birthday stays in this browser. It is saved only if you tick "remember", and only on this device. A share link contains a birthday in the address; analytics strips the address down to the page path before anything is recorded. All data is in the page. Version 1, October 2026.</p>
+      <p><b>Privacy.</b> Your birthday stays in this browser. It is saved only if you tick "remember", and only on this device. A share link carries a birthday after the # in the address, which browsers never send to the server; analytics strips the address down to the page path before anything is recorded. All data is in the page. Version 1, October 2026.</p>
     </div>
   </div>
 </section>
@@ -536,8 +577,7 @@ window.va('beforeSend',function(e){try{var u=new URL(e.url);u.search='';u.hash='
   <div class="wrap">
     <span>Paul Bébéar, Madrid</span>
     <span><a href="/">Home</a> &nbsp; <a href="/archive/">Archive</a> &nbsp; <a href="https://www.linkedin.com/in/pbebear/" rel="noopener">LinkedIn</a></span>
-    <!-- TODO: put your Buy Me a Coffee page URL in this href -->
-    <a class="coffee" href="#TODO-buy-me-a-coffee" rel="noopener">&#9749; Buy me a coffee</a>
+    <a class="coffee" href="https://buymeacoffee.com/paulbebear" target="_blank" rel="noopener">&#9749; Buy me a coffee</a>
   </div>
 </footer>
 
@@ -742,7 +782,7 @@ function onFr(){
 }
 ['#fd', '#fm', '#fy'].forEach(id => $(id).addEventListener('input', onFr));
 $('#frClear').addEventListener('click', () => { S.fr = null; $('#fd').value = ''; $('#fy').value = ''; $('#friendBannerWrap').hidden = true;
-  const u = new URL(location.href); u.searchParams.delete('b'); history.replaceState(null, '', u.pathname + u.search + u.hash); update(); });
+  const u = new URL(location.href); u.searchParams.delete('b'); if (HASH_B.test(u.hash)) u.hash = ''; history.replaceState(null, '', u.pathname + u.search + u.hash); update(); });
 
 /* ---------- Sky map: stereographic projection, drag to pan, pinch/wheel to zoom ---------- */
 const sky = { cv: $('#sky'), ra0: 90 * RAD, dec0: 20 * RAD, fov: 110 * RAD, w: 0, h: 0, dpr: 1,
@@ -1305,7 +1345,7 @@ function drawShells(a, b){
   $('#shellCap').textContent = `A quarter-slice of space around Earth. Each dot is a star at its true distance (its direction is folded into the slice). Your shell is teal, your friend's amber. Both grow by one light-year every year, so the gap between them never changes.`;
 }
 $('#mkLink').onclick = () => {
-  const u = new URL(location.href); u.search = ''; u.hash = ''; u.searchParams.set('b', iso(S.me));
+  const u = new URL(location.href); u.search = ''; u.hash = 'b=' + iso(S.me);
   $('#linkUrl').value = u.toString(); $('#linkOut').hidden = false; $('#shareLink').hidden = !navigator.share;
   if (S.example) toast('That link has the example date. Put in yours first.');
 };
@@ -1338,18 +1378,35 @@ function toast(t){ const el = $('#toast'); el.textContent = t; el.classList.add(
   secs.forEach(s => io.observe(s)); }
 
 /* ---------- Start ---------- */
+/* Share links: #b=YYYY-MM-DD (the hash never reaches the server). Old ?b= links still open, and are rewritten to #b=
+   so the date leaves the query string. */
+const HASH_B = /^#b=\d{4}-\d{2}-\d{2}$/;
+function friendFromURL(){
+  const u = new URL(location.href), q = u.searchParams.get('b'), h = (u.hash.match(/^#b=(\d{4}-\d{2}-\d{2})$/) || [])[1];
+  const v = h || q;
+  if (q !== null) { u.searchParams.delete('b'); if (v) u.hash = 'b=' + v; history.replaceState(null, '', u.pathname + u.search + u.hash); }
+  return parseISO(v);
+}
+function showFriend(fr, haveMine){
+  S.fr = fr; setDMY('#fd', '#fm', '#fy', fr);
+  $('#friendBannerWrap').hidden = false;
+  $('#friendBanner').innerHTML = `<span>A friend shared their light&#8209;birthday: <b>born ${fmtDate(fr)}</b>. Their stars are ringed in amber. ${haveMine ? 'Scroll to Compare to see what you share.' : 'Put in your own birthday above to compare.'}</span><a class="btn ghost" href="#compare" style="display:inline-flex;align-items:center;text-decoration:none;height:36px">Compare</a>`;
+  $('#frHelp').textContent = 'From the link you opened. Edit it or clear it.';
+}
+// In-page links (section tabs, the banner's Compare) scroll without replacing a #b= hash, so a reload keeps the friend.
+document.addEventListener('click', e => {
+  const a = e.target.closest && e.target.closest('a[href^="#"]'); if (!a || !HASH_B.test(location.hash)) return;
+  const t = document.getElementById(a.getAttribute('href').slice(1)); if (!t) return;
+  e.preventDefault(); t.scrollIntoView();
+});
 (function init(){
-  const params = new URLSearchParams(location.search), hashB = (location.hash.match(/b=(\d{4}-\d{2}-\d{2})/) || [])[1];
-  const fr = parseISO(params.get('b') || hashB), saved = parseISO(store.get());
+  const fr = friendFromURL(), saved = parseISO(store.get());
   if (saved) { S.me = saved; S.example = false; $('#remember').checked = true; $('#exampleTag').hidden = true; }
   else S.me = Date.UTC(1996, 5, 12, 12);
   setDMY('#bd', '#bm', '#by', S.me);
-  if (fr) {
-    S.fr = fr; setDMY('#fd', '#fm', '#fy', fr);
-    $('#friendBannerWrap').hidden = false;
-    $('#friendBanner').innerHTML = `<span>A friend shared their light&#8209;birthday: <b>born ${fmtDate(fr)}</b>. Their stars are ringed in amber. ${saved ? 'Scroll to Compare to see what you share.' : 'Put in your own birthday above to compare.'}</span><a class="btn ghost" href="#compare" style="display:inline-flex;align-items:center;text-decoration:none;height:36px">Compare</a>`;
-    $('#frHelp').textContent = 'From the link you opened. Edit it or clear it.';
-  }
+  if (fr) showFriend(fr, !!saved);
+  // a #b= link pasted into this open tab
+  addEventListener('hashchange', () => { const f = friendFromURL(); if (f) { showFriend(f, !S.example); update(); } });
   const ro = new ResizeObserver(() => { if (resizeCanvas(sky)) drawSky(); drawTL(); drawZ(); });
   [sky.cv, tl.cv, Z.cv].forEach(c => ro.observe(c));
   resizeCanvas(sky);
