@@ -9,7 +9,7 @@ premium-ladder/index.html  The Premium Ladder (companion to The Half Line)
 bottom-wage/index.html  The Bottom Wage (minimum wage vs real bottom wage, 8 US cities)
 spacex-ipo/index.html   SpaceX IPO teardown
 capex-opex-da/index.html  Capex, Opex and D&A
-not-so-cosmic-cycles/index.html  Not-so-cosmic cycles (when beliefs and habits lock in; v1 has 6 of 9 tabs)
+not-so-cosmic-cycles/index.html  Not-so-cosmic cycles (when beliefs and habits lock in; 9 tabs, plain-language glossary)
 archive/index.html      full list of linked work (nav: Archive)
 labour-economics/index.html  Labour economics study guide
 assets/                 thumbnails (1200x750 webp)
@@ -29,7 +29,7 @@ Each piece has one source of truth. The site copy is the published version.
 | The Premium Ladder | built from scripts in a Claude session (data, tax model, page template); the page embeds all data | /premium-ladder/ |
 | The Bottom Wage | built from scripts in a Claude session (model.py, template.html); the page embeds all data | /bottom-wage/ |
 | Atlas Through Time | github.com/paul-bebear/atlas-through-time | external, already live |
-| Not-so-cosmic cycles | built from scripts in a Claude session (template, Gallup/NBER/Damodaran data, logo geometry); the page embeds all data. v2 tabs (First job, Faith, Taste and friends) are placeholders | /not-so-cosmic-cycles/ |
+| Not-so-cosmic cycles | built from scripts in a Claude session (template, Gallup/NBER/Damodaran data, logo geometry); the page embeds all data. Glossary terms live in the GLOSS object in the script | /not-so-cosmic-cycles/ |
 
 When a piece changes: replace its `index.html` here, refresh the thumbnail if the top of the page changed, commit, push. Vercel redeploys in about a minute. URLs never change.
 

@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Not-so-cosmic cycles</title>
-<meta name="description" content="When beliefs, tastes and habits set, why it is not one age, and how each generation answers the last. Interactive, with sources.">
+<meta name="description" content="When do your beliefs, tastes and habits set? Not all at 25. Pick your birth year and see, with charts and sources.">
 <meta property="og:title" content="Not-so-cosmic cycles">
-<meta property="og:description" content="When beliefs, tastes and habits set, why it is not one age, and how each generation answers the last.">
+<meta property="og:description" content="When do your beliefs, tastes and habits set? Not all at 25. Pick your birth year and see.">
 <meta property="og:image" content="https://paulbebear.com/assets/not-so-cosmic-cycles.webp">
 <meta property="og:url" content="https://paulbebear.com/not-so-cosmic-cycles/">
 <meta name="twitter:card" content="summary_large_image">
@@ -16,13 +16,14 @@
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='34' fill='none' stroke='%230e6b5c' stroke-width='11'/%3E%3C/svg%3E">
 <style>
-/* Design read: interactive editorial explainer for curious young adults arriving from LinkedIn, analytical register,
-   sibling of the portfolio home. Native CSS + vanilla JS, Geist + Geist Mono. Dials: variance 6, motion 5, density 4.
-   One accent (deep teal). Party colours are data encoding only, used inside charts. Radius: panels 12px, controls pill. */
+/* Design read: interactive explainer for 16 to 25 year olds (and up to 50) arriving from LinkedIn. Plain language,
+   chart-first. Native CSS + vanilla JS, Geist + Geist Mono. Dials: variance 6, motion 5, density 4.
+   One accent (deep teal). Party colours are data encoding only, inside charts. Radius: panels 12px, controls pill.
+   Charts are drawn at the container's real pixel width so text stays 11px+ on phones. */
 :root{
   --bg:#f6f7f8; --surface:#ffffff; --ink:#15181c; --ink-2:#4b525b; --ink-3:#6c737c;
-  --rule:#e1e4e8; --grid:#eceef1; --accent:#0e6b5c; --accent-ink:#ffffff; --accent-soft:#e2f0ed;
-  --rep:#c0453b; --dem:#2f62b5; --rec:rgba(21,24,28,.13);
+  --rule:#e1e4e8; --grid:#eceef1; --accent:#0e6b5c; --accent-ink:#ffffff; --accent-soft:#e2f0ed; --accent-mid:#8cc3b8;
+  --rep:#c0453b; --dem:#2f62b5; --rec:rgba(21,24,28,.13); --mute:#b9c0c8;
   --shadow:0 1px 2px rgba(21,24,28,.05),0 12px 32px -12px rgba(21,24,28,.14);
   --r:12px;
   --sans:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -32,13 +33,13 @@
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#111315; --surface:#181b1e; --ink:#eceef0; --ink-2:#b3b9c0; --ink-3:#8b929a;
-  --rule:#262a2f; --grid:#22262a; --accent:#4cc3ab; --accent-ink:#0b1714; --accent-soft:#16302b;
-  --rep:#e2756b; --dem:#6f9ce6; --rec:rgba(236,238,240,.12);
+  --rule:#262a2f; --grid:#22262a; --accent:#4cc3ab; --accent-ink:#0b1714; --accent-soft:#16302b; --accent-mid:#2c6f62;
+  --rep:#e2756b; --dem:#6f9ce6; --rec:rgba(236,238,240,.12); --mute:#4a5058;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 32px -12px rgba(0,0,0,.6); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#111315; --surface:#181b1e; --ink:#eceef0; --ink-2:#b3b9c0; --ink-3:#8b929a;
-  --rule:#262a2f; --grid:#22262a; --accent:#4cc3ab; --accent-ink:#0b1714; --accent-soft:#16302b;
-  --rep:#e2756b; --dem:#6f9ce6; --rec:rgba(236,238,240,.12);
+  --rule:#262a2f; --grid:#22262a; --accent:#4cc3ab; --accent-ink:#0b1714; --accent-soft:#16302b; --accent-mid:#2c6f62;
+  --rep:#e2756b; --dem:#6f9ce6; --rec:rgba(236,238,240,.12); --mute:#4a5058;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 32px -12px rgba(0,0,0,.6); color-scheme:dark}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -54,7 +55,7 @@ p{margin:0}
 .home{font:500 13px var(--mono);color:var(--ink-3);text-decoration:none}
 .home:hover{color:var(--ink)}
 
-/* Hero: title block left, birth-year control right */
+/* Hero */
 .hero{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(28px,5vw,64px);align-items:center;padding-block:clamp(28px,5vw,56px) clamp(32px,5vw,48px)}
 .title-row{display:flex;align-items:center;gap:20px}
 .ouro{width:clamp(64px,9vw,92px);height:auto;flex:none;color:var(--accent)}
@@ -81,7 +82,6 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 .tab:hover{color:var(--ink);border-color:var(--ink-3)}
 .tab:active{transform:translateY(1px)}
 .tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
-.tab .soon{font:500 11px var(--mono);margin-left:6px;opacity:.7}
 
 /* Panels */
 .panel{padding-block:clamp(36px,5vw,64px) clamp(48px,7vw,88px)}
@@ -89,20 +89,31 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 .panel h2{font-size:clamp(1.7rem,3.2vw,2.4rem);line-height:1.08;font-weight:650}
 .panel h3{font-size:1.15rem;font-weight:600;letter-spacing:-.015em}
 .intro{margin-top:14px;color:var(--ink-2);max-width:62ch;font-size:1.05rem}
-.block{margin-top:clamp(32px,4vw,48px)}
+.intro b{color:var(--ink);font-weight:600}
+.block{margin-top:clamp(36px,4.5vw,56px)}
+.block>.intro:first-of-type{margin-top:8px}
 .prose p{max-width:66ch;color:var(--ink-2)}
 .prose p+p{margin-top:12px}
 .prose b{color:var(--ink);font-weight:600}
-.chart{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:16px 16px 10px;margin-top:16px}
+.chart{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:16px;margin-top:16px}
 .chart svg{display:block;width:100%;height:auto;overflow:visible}
-.chart .cap{font-size:.86rem;color:var(--ink-3);margin-top:6px;line-height:1.45}
+.chart .cap{font-size:.86rem;color:var(--ink-3);margin-top:8px;line-height:1.45}
+.chart .cap b{color:var(--ink-2);font-weight:600}
 svg text{font-family:var(--mono);font-size:11px;fill:var(--ink-3)}
 svg .lbl{fill:var(--ink-2)}
 svg .strong{fill:var(--ink);font-weight:500}
-.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.84rem;color:var(--ink-2);margin-top:4px}
+svg .big{font-size:20px;font-weight:600;fill:var(--ink)}
+svg .row-lbl{font-family:var(--sans);font-size:13px;fill:var(--ink);font-weight:500;paint-order:stroke;stroke:var(--surface);stroke-width:4px;stroke-linejoin:round}
+svg .row-lbl.link{cursor:pointer}
+svg .row-lbl.link:hover{fill:var(--accent)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.84rem;color:var(--ink-2);margin-top:8px}
 .key{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:6px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid2 .chart{margin-top:0}
+.chart h4{margin:0 0 4px;font-size:1rem;font-weight:600;letter-spacing:-.01em}
+.chart .sub{font-size:.88rem;color:var(--ink-2);margin-bottom:6px}
 
-/* Stat tiles: 2x2, varied content */
+/* Stat tiles */
 .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
 .stat{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:16px 18px}
 .stat .k{font-size:.88rem;color:var(--ink-3)}
@@ -114,26 +125,23 @@ svg .strong{fill:var(--ink);font-weight:500}
 .pill.R{border-color:color-mix(in srgb,var(--rep) 55%,transparent);color:var(--rep)}
 .pill.D{border-color:color-mix(in srgb,var(--dem) 55%,transparent);color:var(--dem)}
 
-/* Findings list: numbered by content, sparse dividers */
+/* Findings */
 .findings{display:grid;gap:16px;margin-top:16px;max-width:760px}
 .finding{padding-left:16px;border-left:2px solid var(--accent)}
 .finding p{color:var(--ink-2)}
 .finding p b{color:var(--ink)}
 .src{font:12px var(--mono);color:var(--ink-3);margin-top:4px}
 
-/* Hypothesis callout */
 .thesis{margin-top:20px;background:var(--accent-soft);border-radius:var(--r);padding:20px 22px;max-width:760px}
 .thesis p{font-size:1.12rem;line-height:1.5;color:var(--ink)}
 .thesis .src{margin-top:10px}
 
-/* For / against: two columns */
 .versus{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,3vw,32px);margin-top:16px}
 .versus h3{display:flex;align-items:center;gap:8px}
 .versus ul{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:14px}
 .versus li{color:var(--ink-2);font-size:.98rem}
 .versus li b{color:var(--ink);font-weight:600}
 
-/* Generations: horizontal snap row */
 .gens{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(200px,1fr);gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;margin-top:16px}
 .gen{display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;scroll-snap-align:start;text-align:left;font:inherit;color:inherit;background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:14px 16px;cursor:pointer;transition:border-color .2s var(--ease),transform .2s var(--ease)}
 .gen:hover{border-color:var(--ink-3)}
@@ -143,19 +151,24 @@ svg .strong{fill:var(--ink);font-weight:500}
 .gen p{font-size:.88rem;color:var(--ink-2);margin-top:6px}
 .gen.R{border-top:3px solid var(--rep)}.gen.D{border-top:3px solid var(--dem)}
 
-/* Big Five: two-column definition grid */
-.five{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 32px;margin-top:16px;max-width:860px}
-.five div{padding-block:10px;border-bottom:1px solid var(--grid)}
-.five dt{font-weight:600}
-.five dd{margin:2px 0 0;color:var(--ink-2);font-size:.95rem}
+/* Big Five: one row per trait, low and high poles */
+.five{display:grid;gap:0;margin-top:16px;background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:4px 18px}
+.trait{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,6fr) minmax(0,3fr);gap:16px;align-items:center;padding-block:14px}
+.trait+.trait{border-top:1px solid var(--grid)}
+.trait .name{font-weight:600}
+.trait .name small{display:block;font-weight:400;color:var(--ink-2);font-size:.88rem;line-height:1.4;margin-top:2px}
+.poles{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;font-size:.86rem;color:var(--ink-2)}
+.poles .bar{height:6px;border-radius:6px;background:linear-gradient(90deg,var(--grid),var(--accent))}
+.trait .age{font-size:.86rem;color:var(--ink-2);display:flex;gap:6px;align-items:flex-start}
+.trait .age i{color:var(--accent);margin-top:3px}
+.aside{margin-top:14px;font-size:.95rem;color:var(--ink-2);max-width:70ch}
+.aside b{color:var(--ink)}
 
-/* Substance windows */
-.subs{display:grid;gap:clamp(24px,3vw,36px);margin-top:16px}
-.sub{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:clamp(16px,3vw,40px)}
-.sub .status{font:500 .82rem var(--mono);margin-top:6px;color:var(--ink-3)}
-.sub .status.open{color:var(--accent)}
-.sub .big{font:600 2rem/1.1 var(--mono);letter-spacing:-.02em;margin-top:8px}
-.sub .bigc{font-size:.88rem;color:var(--ink-3)}
+/* Substances */
+.subs{display:grid;gap:clamp(32px,4vw,48px);margin-top:20px}
+.sub h3{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.status{font:500 .82rem var(--mono);color:var(--ink-3)}
+.status.open{color:var(--accent)}
 .debate{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
 .debate div{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:12px 14px;font-size:.93rem;color:var(--ink-2)}
 .debate b{display:block;color:var(--ink);margin-bottom:2px}
@@ -177,13 +190,21 @@ svg .strong{fill:var(--ink);font-weight:500}
 .watch li i{color:var(--ink-3);margin-top:4px}
 .watch b{color:var(--ink);font-weight:600}
 
-.v2{max-width:720px}
-.v2 .teaser{margin-top:20px;font-size:1.1rem}
-.v2 .teaser b{font:600 1.1rem var(--mono)}
+/* Glossary terms: dotted underline, tap or hover for the meaning */
+.t{border:0;background:none;padding:0;font:inherit;color:inherit;cursor:help;text-decoration:underline dotted;text-decoration-color:var(--accent);text-underline-offset:4px;text-decoration-thickness:1.5px}
+.t:hover,.t[aria-expanded="true"]{color:var(--accent)}
+#pop{position:absolute;z-index:20;max-width:300px;background:var(--ink);color:var(--bg);font-size:.9rem;line-height:1.45;padding:10px 12px;border-radius:10px;box-shadow:var(--shadow);pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .15s,transform .15s}
+#pop.on{opacity:1;transform:none}
+#pop b{display:block;margin-bottom:2px}
+.gloss{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 40px;margin-top:20px}
+.gloss div{padding-block:8px;border-bottom:1px solid var(--grid);font-size:.93rem;color:var(--ink-2)}
+.gloss dt{font-weight:600;color:var(--ink)}
+.gloss dd{margin:2px 0 0}
 
 /* Sources and method */
 .sources{border-top:1px solid var(--rule);padding-block:clamp(40px,6vw,64px)}
 .sources h2{font-size:1.4rem;font-weight:650}
+.sources h2+p{margin-top:8px;color:var(--ink-2);font-size:.95rem}
 .srcgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 40px;margin-top:20px;font-size:.88rem;color:var(--ink-2)}
 .srcgrid p{padding-block:6px}
 .method{max-width:70ch;margin-top:28px;font-size:.92rem;color:var(--ink-2)}
@@ -198,18 +219,15 @@ footer a:hover{color:var(--ink)}
   @keyframes turn{to{transform:rotate(360deg)}}
   .panel:not([hidden]){animation:fade .5s var(--ease)}
   @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-  .bar-t{transition:height .4s var(--ease),y .4s var(--ease)}
 }
-
 @media (max-width:860px){
-  .hero,.cols,.agebox,.sub{grid-template-columns:1fr}
+  .hero,.cols,.agebox{grid-template-columns:1fr}
+  .trait{grid-template-columns:1fr;gap:8px}
 }
 @media (max-width:640px){
-  .stats,.versus,.five,.srcgrid,.debate{grid-template-columns:1fr}
+  .stats,.versus,.srcgrid,.debate,.grid2,.gloss{grid-template-columns:1fr}
   .title-row{gap:14px}
-  .chart{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .chart svg{min-width:720px}
-  svg text{font-size:15px}
+  .chart{padding:12px}
 }
 </style>
 </head>
@@ -231,7 +249,7 @@ footer a:hover{color:var(--ink)}
       </svg>
       <h1>Not&#8209;so&#8209;cosmic cycles</h1>
     </div>
-    <p class="lede">When beliefs, tastes and habits set, why it is not one age, and how each generation answers the last.</p>
+    <p class="lede">When do your beliefs, tastes and habits set? Not all at 25. Pick your birth year and see.</p>
   </div>
   <div class="born">
     <label for="birth">Born in</label>
@@ -245,78 +263,94 @@ footer a:hover{color:var(--ink)}
 <div class="tabs-bar">
   <div class="wrap">
     <div class="tabs" role="tablist" aria-label="Sections">
-      <button class="tab" role="tab" id="t-window" aria-controls="p-window" data-tab="window">Your window</button>
-      <button class="tab" role="tab" id="t-cycle" aria-controls="p-cycle" data-tab="cycle">The cycle</button>
-      <button class="tab" role="tab" id="t-money" aria-controls="p-money" data-tab="money">Money and risk</button>
+      <button class="tab" role="tab" id="t-window" aria-controls="p-window" data-tab="window">Your windows</button>
+      <button class="tab" role="tab" id="t-cycle" aria-controls="p-cycle" data-tab="cycle">Politics</button>
+      <button class="tab" role="tab" id="t-money" aria-controls="p-money" data-tab="money">Money</button>
+      <button class="tab" role="tab" id="t-firstjob" aria-controls="p-firstjob" data-tab="firstjob">First job</button>
       <button class="tab" role="tab" id="t-personality" aria-controls="p-personality" data-tab="personality">Personality</button>
-      <button class="tab" role="tab" id="t-substances" aria-controls="p-substances" data-tab="substances">Substances</button>
+      <button class="tab" role="tab" id="t-substances" aria-controls="p-substances" data-tab="substances">Drugs and alcohol</button>
+      <button class="tab" role="tab" id="t-faith" aria-controls="p-faith" data-tab="faith">Religion</button>
+      <button class="tab" role="tab" id="t-taste" aria-controls="p-taste" data-tab="taste">Music and friends</button>
       <button class="tab" role="tab" id="t-todo" aria-controls="p-todo" data-tab="todo">What to do, 16 to 25</button>
-      <button class="tab" role="tab" id="t-firstjob" aria-controls="p-firstjob" data-tab="firstjob">First job<span class="soon">v2</span></button>
-      <button class="tab" role="tab" id="t-faith" aria-controls="p-faith" data-tab="faith">Faith<span class="soon">v2</span></button>
-      <button class="tab" role="tab" id="t-taste" aria-controls="p-taste" data-tab="taste">Taste and friends<span class="soon">v2</span></button>
     </div>
   </div>
 </div>
 
 <main>
 
-<!-- YOUR WINDOW -->
+<!-- YOUR WINDOWS -->
 <section class="panel wrap" role="tabpanel" id="p-window" aria-labelledby="t-window">
-  <h2>No single age. Several windows.</h2>
-  <p class="intro">"The brain finishes at 25" has no single study behind it. Each thing locks on its own clock: nicotine mostly before 18, party loyalty around 18, personality ranks around 25, music taste in the early 30s. The age 18 to 25 matters most for how you think the economy and society work.</p>
+  <h2>Different things lock in at different ages</h2>
+  <p class="intro">You may have heard that "your brain finishes at 25". No single study shows that. Instead, each part of life has its own <b>window</b>: a stretch of years when it is easy to shape, after which it gets harder to change. The line on the chart is you.</p>
+  <div class="chart">
+    <svg id="clock" role="img" aria-label="Chart of the ages when habits, beliefs and tastes are most shaped"></svg>
+    <div class="legend"><span><i class="key" style="background:var(--accent)"></i>Most of the shaping happens here</span><span><i class="key" style="background:var(--accent-mid)"></i>Still possible, but harder</span></div>
+    <p class="cap">Tap a row to open its tab. Start ages for drugs and alcohol are where the studies begin measuring, not a safe age.</p>
+  </div>
 
   <div class="block">
-    <h3 id="winTitle">What your 18 to 25 window contained</h3>
+    <h3 id="winTitle">What happened in your 18 to 25 years</h3>
+    <p class="intro">These years matter most for how you think money and society work. Grey columns are <button class="t" data-k="recession">recession</button> years. Green bars show how much each year of your life shapes your politics.</p>
     <div class="chart">
-      <svg id="strip" viewBox="0 0 960 150" role="img" aria-label="Timeline of your first 40 years"></svg>
-      <div class="legend"><span><i class="key" style="background:var(--rec)"></i>US recession year</span><span><i class="key" style="background:var(--accent)"></i>How much a year's events shape party loyalty (approximate)</span></div>
+      <svg id="strip" role="img" aria-label="Timeline of your first 40 years"></svg>
+      <div class="legend"><span><i class="key" style="background:var(--rec)"></i>US recession year</span><span><i class="key" style="background:var(--accent)"></i>How much that year shapes your politics</span></div>
     </div>
     <div class="stats" id="winStats"></div>
   </div>
 
   <div class="block">
-    <h3>What the research says cohorts like yours tend to carry</h3>
+    <h3>What research says people with years like yours tend to carry</h3>
     <div class="findings" id="winFindings"></div>
-    <p class="src" style="margin-top:16px">US data. These are tendencies of whole cohorts, measured on average. They are not a reading of you.</p>
+    <p class="src" style="margin-top:16px">US data. These are averages for whole <button class="t" data-k="cohort">cohorts</button>, not a reading of you.</p>
   </div>
 </section>
 
-<!-- THE CYCLE -->
+<!-- POLITICS -->
 <section class="panel wrap" role="tabpanel" id="p-cycle" aria-labelledby="t-cycle" hidden>
-  <h2>The cycle, as a hypothesis</h2>
+  <h2>Why politics swings like a pendulum (maybe)</h2>
   <div class="thesis">
-    <p>Each generation's politics is set by what it watched work or fail between about 14 and 24. When one side's era ends badly, the young absorb the alternative, and the swing shows up in the electorate a generation later.</p>
-    <p class="src">Stated here as a claim to test. Evidence on both sides below.</p>
+    <p>The idea: each generation picks up its politics from what it sees work or fail when it is about 14 to 24. If one side runs the country badly, the teenagers watching lean the other way for life. A generation later they are the voters, and the pendulum swings back.</p>
+    <p class="src">This is a claim to test, not a fact. Evidence on both sides at the bottom.</p>
   </div>
 
   <div class="block">
-    <h3>How much each age counts</h3>
-    <p class="intro">Ghitza, Gelman and Auerbach fit 50 years of US presidential voting to a running tally of presidential approval, weighted by the voter's age at the time. Events barely register in early childhood, matter most from 14 to 24 with a peak near 18, and fade to near zero by 60.</p>
+    <h3>How much each year of your life counts</h3>
+    <p class="intro">Researchers matched 50 years of US election polls with how popular each president was. Events you live through at 14 to 24 shape your <button class="t" data-k="party">party loyalty</button> the most, peaking around 18. By 60 they barely count.</p>
     <div class="chart">
-      <svg id="weights" viewBox="0 0 960 220" role="img" aria-label="Age weights: low in childhood, peak near 18, near zero by 60"></svg>
-      <p class="cap">Shape drawn from the paper's description (peak near 18, about three times the weight of later life, zero by about 60). Not the fitted values.</p>
+      <svg id="weights" role="img" aria-label="Curve: low in childhood, peak near 18, near zero by 60"></svg>
+      <p class="cap">Shape based on the paper's description (peak near 18, about three times the weight of later life, near zero by 60). Not their exact numbers.</p>
     </div>
   </div>
 
   <div class="block">
-    <h3>The political weather each birth year grew up in</h3>
-    <p class="intro">Each bar is a birth year. It adds up Gallup approval of the sitting president for every year of that cohort's life, weighted by the curve above, through 2025. Above the line: Republican presidents rated well or Democratic presidents rated badly in the cohort's formative years. Below: the reverse. Waves, not a trend.</p>
+    <h3>How Americans rated each president</h3>
+    <p class="intro">Bars above the line: the president was popular (more than 50% <button class="t" data-k="approval">approval</button>). Below: unpopular. The shaded band is when your birth year was 14 to 24.</p>
     <div class="chart">
-      <svg id="cohorts" viewBox="0 0 960 260" role="img" aria-label="Weighted political weather by birth year, 1937 to 2008"></svg>
+      <svg id="approval" role="img" aria-label="Gallup presidential approval by year, 1945 to 2025"></svg>
+      <div class="legend"><span><i class="key" style="background:var(--rep)"></i>Republican president</span><span><i class="key" style="background:var(--dem)"></i>Democratic president</span><span><i class="key" style="background:var(--accent-soft);outline:1px solid var(--accent)"></i>Your ages 14 to 24</span></div>
+      <p class="cap">Gallup approval, yearly average. Gallup stopped asking this in 2026.</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>The result: political weather by birth year</h3>
+    <p class="intro">Combine the two charts above and you get one bar per birth year. Red: that generation grew up seeing Republican presidents do well or Democratic ones do badly. Blue: the reverse. It comes in <b>waves</b>, not a straight line.</p>
+    <div class="chart">
+      <svg id="cohorts" role="img" aria-label="Political weather by birth year, 1937 to 2008"></svg>
       <div class="legend"><span><i class="key" style="background:var(--rep)"></i>Leans Republican</span><span><i class="key" style="background:var(--dem)"></i>Leans Democratic</span><span><i class="key" style="background:var(--accent)"></i>Your birth year</span></div>
       <p class="cap" id="cohortCap"></p>
     </div>
   </div>
 
   <div class="block">
-    <h3>The five generations in the paper</h3>
+    <h3>The five generations in the study</h3>
     <p class="intro">Tap one to load that birth year.</p>
     <div class="gens">
-      <button class="gen D" data-year="1937"><div class="y">1929</div><div class="n">New Deal Democrats</div><p>Depression under Hoover, recovery and war under Roosevelt. Shown here from 1937, the earliest year in this page's data.</p></button>
-      <button class="gen R" data-year="1941"><div class="y">1941</div><div class="n">Eisenhower Republicans</div><p>Truman's Korea stalemate, then ten straight years of well-rated Republican presidents.</p></button>
-      <button class="gen D" data-year="1952"><div class="y">1952</div><div class="n">1960s Liberals</div><p>Kennedy and Johnson at 9 to 14, unusually early. Later neutralised by about 25 years of Republican-leaning events.</p></button>
-      <button class="gen R" data-year="1968"><div class="y">1968</div><div class="n">Reagan Conservatives</div><p>Carter's stagflation and the hostage crisis, then Reagan and Bush senior at 16 to 24.</p></button>
-      <button class="gen D" data-year="1985"><div class="y">1985</div><div class="n">Millennials</div><p>A popular Clinton, then Bush junior's long slide, in their peak years.</p></button>
+      <button class="gen D" data-year="1937"><div class="y">1929</div><div class="n">New Deal Democrats</div><p>Depression under Hoover, then recovery and war under Roosevelt. Shown from 1937, the first year this page has data.</p></button>
+      <button class="gen R" data-year="1941"><div class="y">1941</div><div class="n">Eisenhower Republicans</div><p>Truman's stuck war in Korea, then ten years of popular Republican presidents.</p></button>
+      <button class="gen D" data-year="1952"><div class="y">1952</div><div class="n">1960s Liberals</div><p>Kennedy and Johnson when they were only 9 to 14. Later pulled back to neutral by 25 years of Republican-leaning events.</p></button>
+      <button class="gen R" data-year="1968"><div class="y">1968</div><div class="n">Reagan Conservatives</div><p>Carter's high prices and the Iran hostage crisis, then Reagan and Bush senior at 16 to 24.</p></button>
+      <button class="gen D" data-year="1985"><div class="y">1985</div><div class="n">Millennials</div><p>A popular Clinton, then George W. Bush's long slide, in their key years.</p></button>
     </div>
   </div>
 
@@ -325,127 +359,256 @@ footer a:hover{color:var(--ink)}
       <div>
         <h3><i class="ph ph-check-circle" aria-hidden="true"></i>Evidence for</h3>
         <ul>
-          <li><b>The model fits.</b> Approval plus age weights explains 81% of the variation in US presidential voting trends over half a century.</li>
-          <li><b>Cohorts stay apart.</b> White voters born in 1952 are consistently 5 to 10 points more likely to vote Democratic than those born in 1968.</li>
-          <li><b>The 1972 gap.</b> White first-time voters under 25 backed Nixon at 53%, against 70% for those 25 and over. The largest age gap in the data.</li>
-          <li><b>Attitudes set young.</b> Krosnick and Alwin found susceptibility to change is high in late adolescence and early adulthood, then drops.</li>
-          <li><b>The public is a thermostat.</b> Across democracies, preferences move against the direction of policy: more spending makes people want less.</li>
-          <li><b>Outside the US.</b> UK cohorts that came of age in Conservative-dominated decades lean more Conservative (Tilley, 2002).</li>
+          <li><b>The model works.</b> Presidential popularity plus the age curve explains 81% of the ups and downs in US presidential voting over half a century.</li>
+          <li><b>Generations stay different.</b> White voters born in 1952 are consistently 5 to 10 points more likely to vote Democratic than those born in 1968.</li>
+          <li><b>The 1972 gap.</b> White first-time voters under 25 backed Nixon at 53%. Those 25 and over: 70%. The biggest age gap in the data.</li>
+          <li><b>Young minds move most.</b> Studies of the same people over years find views change easily in the late teens and early 20s, then much less.</li>
+          <li><b>People push back on whoever is in charge.</b> In many countries, when the government spends more, the public starts asking for less, and the reverse.</li>
+          <li><b>Not just the US.</b> In the UK, people who came of age in decades when the Conservatives dominated lean more Conservative.</li>
         </ul>
       </div>
       <div>
         <h3><i class="ph ph-x-circle" aria-hidden="true"></i>Evidence against, or limits</h3>
         <ul>
-          <li><b>Success, not only failure.</b> The paper's own conclusion: generations form over long stretches of well-rated presidents, not a single defining failure.</li>
-          <li><b>Adults change too.</b> The white South's switch to Republicans came from cohort replacement and from every cohort shifting at similar rates.</li>
-          <li><b>Labels move, policies less.</b> Young Reagan-era cohorts shifted in party and self-described ideology, but not on most specific policy opinions.</li>
-          <li><b>Weaker outside white voters.</b> The generational effect is over twice as large for non-Hispanic whites as for minorities as a whole.</li>
-          <li><b>Race, region and class split harder.</b> Generation is one divide among several, and often not the biggest.</li>
-          <li><b>Hard to identify.</b> Age, period and cohort are collinear, so any cohort model leans on assumptions. US data only.</li>
+          <li><b>Success counts, not only failure.</b> The study itself says generations form over long runs of popular presidents, not one big failure.</li>
+          <li><b>Adults change too.</b> When the white US South switched from Democrats to Republicans, every age group shifted, not only the young.</li>
+          <li><b>Labels move more than opinions.</b> Young people in the Reagan years changed their party and what they called themselves, but not most of their views on specific policies.</li>
+          <li><b>Mostly about white voters.</b> The generation effect is over twice as strong for white Americans as for minorities as a whole.</li>
+          <li><b>Other splits are bigger.</b> Race, region and class often divide voters more than age does.</li>
+          <li><b>Hard to prove.</b> Age, year and birth year move together, so any model like this needs assumptions. US data only.</li>
         </ul>
       </div>
     </div>
   </div>
 </section>
 
-<!-- MONEY AND RISK -->
+<!-- MONEY -->
 <section class="panel wrap" role="tabpanel" id="p-money" aria-labelledby="t-money" hidden>
-  <h2>The market you meet at 18 stays with you</h2>
-  <p class="intro">Two findings, same mechanism: what you live through early gets more weight than what you read about.</p>
+  <h2>The economy you see at 18 sticks with you</h2>
+  <p class="intro">What you live through counts more than what you read about. If markets crash or jobs vanish when you are young, it changes how you think about money and society for life.</p>
 
   <div class="block">
-    <h3>Real stock returns during each cohort's 18 to 25 window</h3>
+    <h3>Every year of the US stock market since 1928</h3>
+    <p class="intro">Each bar is one year's <button class="t" data-k="real">real return</button> on the <button class="t" data-k="sp500">S&amp;P 500</button>. The shaded band is your 18 to 25 years.</p>
     <div class="chart">
-      <svg id="returns" viewBox="0 0 960 260" role="img" aria-label="Annualised real S&amp;P 500 return over ages 18 to 25, by birth year"></svg>
+      <svg id="yearly" role="img" aria-label="Real S&amp;P 500 return by year, 1928 to 2025"></svg>
+      <p class="cap" id="yearlyCap"></p>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>The market each generation met at 18 to 25</h3>
+    <p class="intro">One point per birth year: the average yearly real return during those 8 years. Some generations came of age in booms, others in busts.</p>
+    <div class="chart">
+      <svg id="returns" role="img" aria-label="Average real stock return over ages 18 to 25, by birth year"></svg>
       <p class="cap" id="retCap"></p>
     </div>
   </div>
 
   <div class="block">
     <div class="findings">
-      <div class="finding"><p><b>Risk appetite.</b> Households that lived through low stock returns report less willingness to take financial risk, are less likely to own stocks, hold a smaller share in them, and expect lower returns. Recent experience weighs most, especially for the young, but early experience still shows decades later.</p><p class="src">Malmendier and Nagel, QJE 2011. US Survey of Consumer Finances, 1960 to 2007.</p></div>
-      <div class="finding"><p><b>Beliefs about how society works.</b> People who live through a recession between 18 and 25 come to believe success depends more on luck than effort, support more redistribution, and trust public institutions less. The effect is permanent. Shocks still register up to about 40, rarely after.</p><p class="src">Giuliano and Spilimbergo, Review of Economic Studies 2014 (NBER w15321).</p></div>
-      <div class="finding"><p><b>What to watch.</b> Your instincts about markets and the state are a sample of one regime. Before you act on them, check them against the long series above.</p></div>
+      <div class="finding"><p><b>Risk.</b> People who lived through bad stock markets take less risk with money, are less likely to own shares, and expect lower returns. Recent years count most, especially for the young, but early years still show up decades later.</p><p class="src">Malmendier and Nagel, QJE 2011. US data, 1960 to 2007.</p></div>
+      <div class="finding"><p><b>Beliefs about society.</b> People who live through a <button class="t" data-k="recession">recession</button> at 18 to 25 come to believe success depends more on luck than hard work, want more <button class="t" data-k="redistribution">redistribution</button>, and trust <button class="t" data-k="institutions">institutions</button> less. For life. A recession can still move people up to about 40, rarely after.</p><p class="src">Giuliano and Spilimbergo, Review of Economic Studies 2014.</p></div>
+      <div class="finding"><p><b>What to watch.</b> Your gut feeling about markets and government comes from a handful of years. Check it against the long history above before you bet on it.</p></div>
     </div>
+  </div>
+</section>
+
+<!-- FIRST JOB -->
+<section class="panel wrap" role="tabpanel" id="p-firstjob" aria-labelledby="t-firstjob" hidden>
+  <h2>Your first job leaves a mark</h2>
+  <p class="intro">Starting your career in a <button class="t" data-k="recession">recession</button> costs money for years. The good news: the gap closes, and how you move between jobs decides how fast.</p>
+
+  <div class="block">
+    <h3>Graduating into a recession: the pay gap over time</h3>
+    <p class="intro">Canadian university graduates who started work in a typical recession, compared with those who started in good times.</p>
+    <div class="chart">
+      <svg id="scar" role="img" aria-label="Earnings gap: about 9% at the start, half by year 5, gone by about year 10"></svg>
+      <p class="cap">Drawn from the study's three stated points: about 9% lower earnings at the start, half that within 5 years, gone after about 10. Oreopoulos, von Wachter and Heisz, 2012.</p>
+    </div>
+  </div>
+
+  <div class="block grid2">
+    <div class="chart">
+      <h4>In the US, it lasted longer</h4>
+      <p class="sub">US graduates of the early 1980s recession, for each 1 point rise in unemployment when they graduated.</p>
+      <svg id="kahn" role="img" aria-label="Pay 6 to 8 percent lower in the first year, still 2.5 percent lower 15 years later"></svg>
+      <p class="cap">Kahn, Labour Economics 2010.</p>
+    </div>
+    <div class="chart">
+      <h4>Who gets hit hardest</h4>
+      <p class="sub">Total losses for graduates with the weakest starting position, compared with the strongest.</p>
+      <svg id="who" role="img" aria-label="Least advantaged graduates lose 3 to 4 times more"></svg>
+      <p class="cap">Workers with two or more years of experience barely lose anything. New graduates lose the most.</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="findings" id="jobFindings"></div>
   </div>
 </section>
 
 <!-- PERSONALITY -->
 <section class="panel wrap" role="tabpanel" id="p-personality" aria-labelledby="t-personality" hidden>
-  <h2>Your rank settles. Your level keeps moving.</h2>
-  <p class="intro">Rank means your position among people your age on a trait, not social status. If you are more anxious than 70% of your peers at 20, you will probably still be around there at 40, even while everyone calms down together.</p>
+  <h2>Your place settles, but everyone keeps changing</h2>
+  <p class="intro">Think of a running race. Your <b>place</b> in the race (your <button class="t" data-k="rank">rank</button> compared with people your age) gets more fixed over time. But the whole race keeps moving: most people get calmer and more organised as they get older.</p>
 
-  <div class="block">
-    <h3>How stable your rank is, by age</h3>
+  <div class="block grid2">
     <div class="chart">
-      <svg id="persona" viewBox="0 0 960 240" role="img" aria-label="Rank-order consistency rising from .31 in childhood to .74 at 50 to 70"></svg>
-      <p class="cap">Test-retest correlation over a 6.7-year gap, from 152 longitudinal studies (Roberts and DelVecchio, 2000). A 2022 update with 178,503 people found little further rise after 25 (Bleidorn et al.).</p>
+      <h4>Place stays, level moves</h4>
+      <p class="sub">Five made-up people, measured at 20 and at 40. Everyone rises. The order barely changes.</p>
+      <svg id="race" role="img" aria-label="Illustration: five people all increase between 20 and 40 while keeping roughly the same order"></svg>
+      <p class="cap">Illustration, not data.</p>
     </div>
-  </div>
-
-  <div class="block cols" style="margin-top:clamp(32px,4vw,48px)">
-    <div class="prose">
-      <h3 style="margin-bottom:12px">Three facts that make "locked in" too strong</h3>
-      <p><b>The whole pack moves.</b> On average people gain social dominance, conscientiousness and emotional stability, most of it between 20 and 40.</p>
-      <p><b>A correlation of .64 is loose.</b> It explains about 40% of the variance in your later score. Plenty of individuals move.</p>
-      <p><b>Change can be engineered.</b> Across 207 studies, interventions shifted trait scores by d = .37 in about 24 weeks, and the change held. People who set and completed behaviour goals moved toward the trait they wanted.</p>
-      <p><b>Roles drive it.</b> Starting a first job makes people more conscientious than peers who have not started one. Experience also amplifies the traits you already have, so the environment you pick sets the direction.</p>
-    </div>
-    <div class="prose">
-      <h3 style="margin-bottom:12px">Genes</h3>
-      <p>About <b class="num">40%</b> of differences in personality trace to genes: <span class="num">.47</span> in twin studies, <span class="num">.22</span> in family and adoption studies.</p>
-      <p>The other 60% is mostly not your family home. Adopted siblings raised together end up with personality correlations near zero. What counts is the environment you do not share: friends, work, choices, luck.</p>
-      <p>Genes are a large part of why rank holds. Experience is most of why it moves.</p>
+    <div class="chart">
+      <h4>How fixed your place is, by age</h4>
+      <p class="sub">The <button class="t" data-k="correlation">correlation</button> between your score now and your score about 7 years later.</p>
+      <svg id="persona" role="img" aria-label="Stability rises from .31 in childhood to .74 at 50 to 70"></svg>
+      <p class="cap">152 studies (Roberts and DelVecchio, 2000). A 2022 update with 178,503 people found little further rise after 25.</p>
     </div>
   </div>
 
   <div class="block">
     <h3>The Big Five</h3>
-    <dl class="five">
-      <div><dt>Openness</dt><dd>Curiosity, appetite for ideas and new experience.</dd></div>
-      <div><dt>Conscientiousness</dt><dd>Discipline, organisation, follow-through.</dd></div>
-      <div><dt>Extraversion</dt><dd>Sociability and energy, plus assertiveness, which sits here.</dd></div>
-      <div><dt>Agreeableness</dt><dd>Splits into compassion (caring) and politeness (deference).</dd></div>
-      <div><dt>Neuroticism</dt><dd>How hard stress and negative emotion hit. The reverse is emotional stability.</dd></div>
-      <div><dt>Warm and firm</dt><dd>Compassion and assertiveness map onto independent axes. The tension is with politeness, not caring.</dd></div>
-    </dl>
+    <p class="intro">Psychologists describe personality with five <button class="t" data-k="trait">traits</button>. Everyone sits somewhere between the two ends of each. The right column says how the average changes as people age.</p>
+    <div class="five">
+      <div class="trait"><div class="name">Openness<small>Curiosity about new ideas, art and experiences.</small></div><div class="poles"><span>Likes the familiar</span><span class="bar"></span><span>Loves the new</span></div><div class="age"><i class="ph ph-arrow-up-right"></i><span>Rises in the teens, falls in old age.</span></div></div>
+      <div class="trait"><div class="name"><button class="t" data-k="conscientiousness">Conscientiousness</button><small>Being organised, reliable, finishing what you start.</small></div><div class="poles"><span>Spontaneous, messy</span><span class="bar"></span><span>Planned, disciplined</span></div><div class="age"><i class="ph ph-arrow-up"></i><span>Rises, mostly from 20 to 40.</span></div></div>
+      <div class="trait"><div class="name"><button class="t" data-k="extraversion">Extraversion</button><small>Energy from people, talking, taking charge.</small></div><div class="poles"><span>Quiet, reserved</span><span class="bar"></span><span>Outgoing, bold</span></div><div class="age"><i class="ph ph-arrow-up"></i><span>Taking charge rises from 20 to 40. Social energy falls in old age.</span></div></div>
+      <div class="trait"><div class="name"><button class="t" data-k="agreeableness">Agreeableness</button><small>Kind, trusting, easy to get along with.</small></div><div class="poles"><span>Tough, critical</span><span class="bar"></span><span>Warm, cooperative</span></div><div class="age"><i class="ph ph-minus"></i><span>Changes little until old age.</span></div></div>
+      <div class="trait"><div class="name"><button class="t" data-k="neuroticism">Neuroticism</button><small>How strongly stress, worry and bad moods hit you.</small></div><div class="poles"><span>Calm, steady</span><span class="bar"></span><span>Worried, moody</span></div><div class="age"><i class="ph ph-arrow-down"></i><span>Falls: people get calmer, especially 20 to 40.</span></div></div>
+    </div>
+    <p class="aside"><b>Can you be kind and still stand your ground?</b> Yes. Caring about people (part of agreeableness) and <button class="t" data-k="assertiveness">assertiveness</button> (part of extraversion) are separate. The trait that clashes with standing firm is politeness, the part of agreeableness that defers to others.</p>
+  </div>
+
+  <div class="block grid2">
+    <div class="chart">
+      <h4>Genes or environment?</h4>
+      <p class="sub">How much of the differences between people come from genes (<button class="t" data-k="heritability">heritability</button>).</p>
+      <svg id="genes" role="img" aria-label="40 percent genes, 60 percent environment"></svg>
+      <p class="cap">Over 100,000 people (Vukasović and Bratko, 2015). Twin studies give 47%, family and adoption studies 22%. The 60% is mostly not your family home: it is your own friends, work, choices and luck.</p>
+    </div>
+    <div class="chart">
+      <h4>Can you change on purpose?</h4>
+      <p class="sub">Across 207 studies, programmes like therapy shifted trait scores in about 24 weeks, and the change lasted.</p>
+      <svg id="shift" role="img" aria-label="Two bell curves: after the programme, the average moved about a third of the normal spread"></svg>
+      <p class="cap">The average moved about a third of the normal spread between people (Roberts et al., 2017). Calmness changed most, then extraversion. People who set and actually completed small behaviour goals also moved toward the trait they wanted.</p>
+    </div>
   </div>
 </section>
 
-<!-- SUBSTANCES -->
+<!-- DRUGS AND ALCOHOL -->
 <section class="panel wrap" role="tabpanel" id="p-substances" aria-labelledby="t-substances" hidden>
-  <h2>Onset age is the lever</h2>
-  <p class="intro">For substances, the windows close well before 25. The research mostly measures when people start and what that predicts. The status line on each uses the birth year above.</p>
+  <h2>For drugs and alcohol, the age you start matters most</h2>
+  <p class="intro">These windows close well before 25. The studies mostly measure when people start and what that predicts later. The status next to each title uses your birth year.</p>
 
   <div class="subs">
     <div class="sub">
-      <div><h3>Nicotine</h3><div class="big">99%</div><div class="bigc">of adults who smoke daily tried it by 26</div><div class="status" id="st-nic"></div></div>
-      <div class="prose"><p>Nearly 9 in 10 first tried by 18. In one study of 1,382 smokers, those who started before 20 were more dependent and less likely to quit than those who started later.</p><p class="src">CDC; age-of-initiation study reported by The Sentinel.</p></div>
+      <h3>Nicotine <span class="status" id="st-nic"></span></h3>
+      <div class="chart">
+        <svg id="nic" role="img" aria-label="Of adults who smoke daily, about 9 in 10 tried by 18, 99 percent by 26"></svg>
+        <p class="cap">Adults who smoke every day, by when they first tried a cigarette. CDC. In one study of 1,382 smokers, those who started before 20 were more hooked and less likely to quit.</p>
+      </div>
     </div>
+
     <div class="sub">
-      <div><h3>Alcohol</h3><div class="big">40% vs 10%</div><div class="bigc">later dependence: first drink before 15 vs at 21 or 22</div><div class="status" id="st-alc"></div></div>
-      <div class="prose"><p>About a fourfold gap in a US survey of 27,616 drinkers. Part of it is confounding: a 2008 follow-up that controlled for more risk factors still found about 50% higher odds of adult-onset dependence for a first drink before 15 than at 18 or later.</p><p>Most heavy drinkers cut down in their twenties. Leaving home tends to raise heavy drinking. Marriage, parenthood and work bring it down, most strongly for the heaviest drinkers.</p><p class="src">Grant and Dawson 1997; Dawson et al. 2008; NIAAA maturing-out reviews.</p></div>
+      <h3>Alcohol <span class="status" id="st-alc"></span></h3>
+      <div class="chart">
+        <svg id="alc" role="img" aria-label="Share who later became alcohol dependent, by age of first drink"></svg>
+        <p class="cap">US survey of 27,616 drinkers (Grant and Dawson, 1997). Part of the gap comes from other things, like family history: a 2008 follow-up that controlled for more of them still found about 50% higher odds for a first drink before 15 than at 18 or later. <button class="t" data-k="dependence">What "dependent" means.</button></p>
+      </div>
+      <div class="prose" style="margin-top:14px"><p>Many heavy drinkers cut down in their twenties. Moving out of home tends to push drinking up. Marriage, children and work bring it down, most of all for the heaviest drinkers.</p></div>
     </div>
+
     <div class="sub">
-      <div><h3>Cannabis</h3><div class="big">8 IQ points</div><div class="bigc">average decline from 13 to 38 in persistent users who started in adolescence (Dunedin study)</div><div class="status" id="st-can"></div></div>
-      <div class="prose">
-        <p>The Dunedin study followed 1,037 New Zealanders from birth. The decline was concentrated in persistent users who started as teenagers, and quitting did not fully restore function for them.</p>
+      <h3>Cannabis <span class="status" id="st-can"></span></h3>
+      <div class="prose" style="margin-top:10px">
+        <p>A study followed 1,037 New Zealanders from birth to 38. People who used cannabis heavily for years, starting as teenagers, lost about <b>8 <button class="t" data-k="iq">IQ</button> points</b>. Those who started as adults did not show the same drop, and quitting did not fully bring it back for the teen starters.</p>
         <div class="debate">
-          <div><b>The challenge</b>Rogeberg (2013) showed socioeconomic confounding could reproduce the result, and the true effect could be zero.</div>
-          <div><b>The reply</b>The Dunedin team re-ran it on middle-class children only. The decline was unchanged.</div>
+          <div><b>The challenge</b>Another researcher showed that family background could create the same result, so the true effect might be zero (<button class="t" data-k="confounding">confounding</button>).</div>
+          <div><b>The reply</b>The original team re-ran the numbers on middle-class kids only. The drop was the same.</div>
         </div>
-        <p style="margin-top:12px">Two less contested findings: daily use of high-potency cannabis carried about 4.8 times the odds of a first psychotic episode in a study across 11 European sites. And people who keep using into adulthood miss the normal rise in conscientiousness.</p>
-        <p class="src">Meier et al., PNAS 2012; Rogeberg, PNAS 2013; Di Forti et al., Lancet Psychiatry 2019; Littlefield, Sher and Wood 2010.</p>
+      </div>
+      <div class="chart" style="margin-top:16px">
+        <h4>Odds of a first <button class="t" data-k="psychosis">psychotic</button> episode, compared with never using</h4>
+        <svg id="psy" role="img" aria-label="Odds of psychosis: never 1, daily 3.2, daily high-potency 4.8"></svg>
+        <p class="cap">901 patients and 1,237 others across 11 European cities (Di Forti et al., 2019). High-potency means 10% THC or more. A separate finding: people who keep using into adulthood miss the normal rise in <button class="t" data-k="conscientiousness">conscientiousness</button>.</p>
       </div>
     </div>
   </div>
-  <p class="src" style="margin-top:32px">Facts on risk only. If use is getting hard to control, a doctor or a local service is the right next step.</p>
+  <p class="src" style="margin-top:32px">Facts about risk only. If use is getting hard to control, a doctor or a local service is the right next step.</p>
+</section>
+
+<!-- RELIGION -->
+<section class="panel wrap" role="tabpanel" id="p-faith" aria-labelledby="t-faith" hidden>
+  <h2>Religion: most changes happen before 24</h2>
+  <p class="intro">About 35% of American adults now follow a different religion (or none) than the one they were raised in. Most of the switching happens young, and once a generation has drifted, it does not drift back.</p>
+
+  <div class="block">
+    <h3>When people switch</h3>
+    <div class="chart">
+      <svg id="switch" role="img" aria-label="Most who leave their childhood faith do so before 24; most join their current religion before 36; very few switch after 50"></svg>
+      <p class="cap">Pew Research Center, Faith in Flux, 2009, based on 2,800 people who changed religion. Pew gives the cut-off ages; where the bars start is approximate.</p>
+    </div>
+  </div>
+
+  <div class="block grid2">
+    <div class="chart">
+      <h4>Young and old Americans today</h4>
+      <p class="sub">Share who are Christian or have no religion, by age.</p>
+      <svg id="faithAge" role="img" aria-label="Ages 18 to 24: 46 percent Christian, 43 percent none. 74 and over: 80 percent Christian, 13 percent none."></svg>
+      <p class="cap">Pew Religious Landscape Study, 2023 to 2024.</p>
+    </div>
+    <div class="chart">
+      <h4>A religious upbringing sticks less now</h4>
+      <p class="sub">Of people raised in very religious homes, share who are still very religious as adults.</p>
+      <svg id="sticky" role="img" aria-label="Oldest adults: 51 percent still very religious. Ages 18 to 24: 28 percent."></svg>
+      <p class="cap">Pew, 2023 to 2024.</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="chart">
+      <h4>Christian share of US adults</h4>
+      <svg id="trend" role="img" aria-label="78 percent in 2007, 71 in 2014, 62 in 2023 to 2024"></svg>
+      <p class="cap">Pew Religious Landscape Studies. The share has been roughly flat since 2019. No birth group has become more religious as it got older, so the change comes from each new generation, which fits the idea of windows.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MUSIC AND FRIENDS -->
+<section class="panel wrap" role="tabpanel" id="p-taste" aria-labelledby="t-taste" hidden>
+  <h2>Music and friends</h2>
+  <p class="intro">Taste sets early and friendship time peaks early. Both come with weaker evidence than the other tabs, so the notes under each chart say how solid they are.</p>
+
+  <div class="block">
+    <h3>The songs you love most came out when you were a young teen</h3>
+    <div class="chart">
+      <svg id="music" role="img" aria-label="Men's favourite songs came out at 13 to 16, women's at 11 to 14; most people stop exploring new music around 33"></svg>
+      <p class="cap">Favourite-song ages: Spotify plays of every US number-one hit from 1960 to 2000 (Seth Stephens-Davidowitz, New York Times, 2018). The age-33 drop-off comes from a Spotify employee's blog (Ajay Kalia, 2015), not a peer-reviewed study. Becoming a parent ages your music taste by about 4 years.</p>
+    </div>
+  </div>
+
+  <div class="block grid2">
+    <div class="chart">
+      <h4>Time alone grows all your life</h4>
+      <p class="sub">Minutes per day Americans spend alone, by age.</p>
+      <svg id="alone" role="img" aria-label="Minutes alone per day: 193 at 15, 275 at 25, 477 at 80"></svg>
+      <p class="cap">American Time Use Survey via Our World in Data. Time with friends peaks in the teens (about 109 minutes a day at 15) and drops fast through the 20s.</p>
+    </div>
+    <div class="chart">
+      <h4>Your circle is widest around 25</h4>
+      <p class="sub">People called regularly each month, from 3.2 million European phone users.</p>
+      <svg id="circle" role="img" aria-label="At 25, men called about 19 people a month and women 17.5; numbers fall after"></svg>
+      <p class="cap">Bhattacharya et al., Royal Society Open Science 2016. Phone calls only, from before smartphones took over, so treat it as a rough signal. Men have more contacts until 39, then women do.</p>
+    </div>
+  </div>
 </section>
 
 <!-- WHAT TO DO -->
 <section class="panel wrap" role="tabpanel" id="p-todo" aria-labelledby="t-todo" hidden>
   <h2>What to do with the window</h2>
-  <p class="intro">Each move below is tied to a finding on this page. Move the slider to see how the priorities change between 16 and 25.</p>
+  <p class="intro">Each move below comes from a finding on this page. Slide the age to see how the priorities change between 16 and 25.</p>
 
   <div class="agebox">
     <div>
@@ -455,6 +618,11 @@ footer a:hover{color:var(--ink)}
       <div class="ticks"><span>16</span><span>25</span></div>
     </div>
     <p class="left" id="ageLeft"></p>
+  </div>
+
+  <div class="chart">
+    <h4>Which windows are still open at your age</h4>
+    <svg id="clock2" role="img" aria-label="Windows between ages 14 and 30 with your age marked"></svg>
   </div>
 
   <div class="cols">
@@ -469,27 +637,15 @@ footer a:hover{color:var(--ink)}
   </div>
 </section>
 
-<!-- V2 PLACEHOLDERS -->
-<section class="panel wrap v2" role="tabpanel" id="p-firstjob" aria-labelledby="t-firstjob" hidden>
-  <h2>First job</h2>
-  <p class="intro">Coming in v2: what graduating into a recession does to a career, why the first employer compounds, and how mobility repairs it.</p>
-  <p class="teaser">Canadian graduates who entered a recession lost about <b>9%</b> of annual earnings at the start. The gap took 8 to 10 years to close.</p>
-  <p class="src">Oreopoulos, von Wachter and Heisz, AEJ: Applied 2012.</p>
-</section>
-<section class="panel wrap v2" role="tabpanel" id="p-faith" aria-labelledby="t-faith" hidden>
-  <h2>Faith and beliefs</h2>
-  <p class="intro">Coming in v2: when people leave or join a religion, and what moves core beliefs after 30.</p>
-  <p class="teaser">Most Americans who leave their childhood faith do so before <b>24</b>. Most join their current religion before 36. Very few switch after 50.</p>
-  <p class="src">Pew Research Center, Faith in Flux, 2009.</p>
-</section>
-<section class="panel wrap v2" role="tabpanel" id="p-taste" aria-labelledby="t-taste" hidden>
-  <h2>Taste and friends</h2>
-  <p class="intro">Coming in v2: music, food and friendship networks, and how solid each finding really is.</p>
-  <p class="teaser">In 3.2 million European phone records, people's number of regular contacts peaked around <b>25</b>. On Spotify, US listeners' share of popular new music stopped falling around <b>33</b>.</p>
-  <p class="src">Bhattacharya et al., Royal Society Open Science 2016; Ajay Kalia, Skynet and Ebert blog, 2015 (not peer-reviewed).</p>
-</section>
-
 </main>
+
+<section class="sources" id="words">
+  <div class="wrap">
+    <h2>Words used on this page</h2>
+    <p>Underlined words can also be tapped anywhere on the page.</p>
+    <dl class="gloss" id="gloss"></dl>
+  </div>
+</section>
 
 <section class="sources">
   <div class="wrap">
@@ -500,29 +656,35 @@ footer a:hover{color:var(--ink)}
       <p>Osborne, D., Sears, D. and Valentino, N. (2011). The end of the solidly Democratic South. <i>Political Psychology</i> 32(1).</p>
       <p>Wlezien, C. (1995). The public as thermostat. <i>American Journal of Political Science</i>; Soroka, S. and Wlezien, C. (2010). <i>Degrees of Democracy</i>.</p>
       <p>How impressionable were the younger Reagan cohorts? (2014). <i>The Forum</i>.</p>
-      <p>Tilley, J. (2002). Political generations and partisanship in the UK, 1964 to 1997. <i>JRSS A</i>.</p>
+      <p>Tilley, J. (2002). On political generations and partisanship in the UK. <i>Journal of the Royal Statistical Society A</i>.</p>
+      <p>Gallup. <a href="https://news.gallup.com/poll/116677/presidential-approval-ratings-gallup-historical-statistics-trends.aspx" rel="noopener">Presidential approval ratings: historical statistics and trends</a>.</p>
       <p>Giuliano, P. and Spilimbergo, A. (2014). <a href="https://www.nber.org/digest/jan10/w15321.html" rel="noopener">Growing up in a recession</a>. <i>Review of Economic Studies</i> 81(2).</p>
       <p>Malmendier, U. and Nagel, S. (2011). Depression babies: do macroeconomic experiences affect risk taking? <i>QJE</i> 126(1).</p>
-      <p>Oreopoulos, P., von Wachter, T. and Heisz, A. (2012). The short- and long-term career effects of graduating in a recession. <i>AEJ: Applied</i> 4(1).</p>
+      <p>Oreopoulos, P., von Wachter, T. and Heisz, A. (2012). <a href="https://www.nber.org/digest/nov06/w12159.html" rel="noopener">The short- and long-term career effects of graduating in a recession</a>. <i>AEJ: Applied</i> 4(1).</p>
+      <p>Kahn, L. (2010). The long-term labor market consequences of graduating from college in a bad economy. <i>Labour Economics</i> 17(2).</p>
+      <p>Specht, J., Egloff, B. and Schmukle, S. (2011). Stability and change of personality across the life course. <i>JPSP</i> 101(4).</p>
       <p>Roberts, B. and DelVecchio, W. (2000). The rank-order consistency of personality traits. <i>Psychological Bulletin</i> 126(1).</p>
       <p>Bleidorn, W. et al. (2022). Personality stability and change: a meta-analysis of longitudinal studies. <i>Psychological Bulletin</i>.</p>
       <p>Roberts, B., Walton, K. and Viechtbauer, W. (2006). Patterns of mean-level change in personality traits. <i>Psychological Bulletin</i> 132(1).</p>
       <p>Roberts, B. et al. (2017). A systematic review of personality trait change through intervention. <i>Psychological Bulletin</i> 143(2).</p>
       <p>Hudson, N. and Fraley, R. (2015); Hudson, N. et al. (2018). Volitional personality trait change. <i>JPSP</i>.</p>
-      <p>Specht, J., Egloff, B. and Schmukle, S. (2011). Stability and change of personality across the life course. <i>JPSP</i> 101(4).</p>
       <p>Vukasović, T. and Bratko, D. (2015). Heritability of personality: a meta-analysis. <i>Psychological Bulletin</i> 141(4).</p>
       <p>Plomin, R. and Daniels, D. (1987). Why are children in the same family so different from one another? <i>Behavioral and Brain Sciences</i>.</p>
       <p>DeYoung, C., Quilty, L. and Peterson, J. (2007). Between facets and domains: 10 aspects of the Big Five. <i>JPSP</i> 93(5).</p>
-      <p>Grant, B. and Dawson, D. (1997). Age at onset of alcohol use and DSM-IV alcohol abuse and dependence. <i>Journal of Substance Abuse</i> 9; Dawson, D. et al. (2008), <i>Alcoholism: Clinical and Experimental Research</i>.</p>
+      <p>CDC, youth tobacco data; Grant, B. and Dawson, D. (1997). Age at onset of alcohol use and DSM-IV alcohol abuse and dependence. <i>Journal of Substance Abuse</i> 9; Dawson, D. et al. (2008), <i>Alcoholism: Clinical and Experimental Research</i>.</p>
       <p>Meier, M. et al. (2012). Persistent cannabis users show neuropsychological decline. <i>PNAS</i> 109(40); Rogeberg, O. (2013), <i>PNAS</i> 110(11), and reply.</p>
       <p>Di Forti, M. et al. (2019). The contribution of cannabis use to variation in the incidence of psychotic disorder. <i>Lancet Psychiatry</i> 6(5).</p>
-      <p>Littlefield, A., Sher, K. and Wood, P. (2010), as cited in Lodi-Smith, J. and Roberts, B., review of social investment and personality; Lee, M. et al. (2015). Role transitions and young adult maturing out of heavy drinking. <i>Alcoholism: Clinical and Experimental Research</i>.</p>
+      <p>Littlefield, A., Sher, K. and Wood, P. (2010), as cited in Lodi-Smith and Roberts' review of social investment; Lee, M. et al. (2015). Role transitions and young adult maturing out of heavy drinking. <i>Alcoholism: Clinical and Experimental Research</i>.</p>
+      <p>Pew Research Center (2009). <a href="https://www.pewresearch.org/religion/2009/04/27/faith-in-flux/" rel="noopener">Faith in Flux</a>; Pew (2025). <a href="https://www.pewresearch.org/religion/2025/02/26/religious-landscape-study-executive-summary/" rel="noopener">Religious Landscape Study</a>; Pew Trusts (2025), The decline of Christianity has slowed.</p>
+      <p>Stephens-Davidowitz, S. (2018). The songs that bind. <i>New York Times</i>; Kalia, A. (2015), Skynet and Ebert blog.</p>
+      <p>Bhattacharya, K. et al. (2016). Sex differences in social focus across the life cycle in humans. <i>Royal Society Open Science</i>.</p>
+      <p>Our World in Data, <a href="https://ourworldindata.org/who-do-americans-spend-time-with-over-their-lives" rel="noopener">Who do Americans spend time with over their lives?</a>, from the American Time Use Survey; figures via Visual Capitalist.</p>
       <p>Quoidbach, J., Gilbert, D. and Wilson, T. (2013). The end of history illusion. <i>Science</i> 339.</p>
       <p>McGill Office for Science and Society. <a href="https://www.mcgill.ca/oss/article/critical-thinking-student-contributors/25-really-magic-number" rel="noopener">Is 25 really the magic number?</a></p>
     </div>
     <div class="method">
-      <p><b>Data.</b> S&amp;P 500 total returns and CPI inflation, 1928 to 2025: Aswath Damodaran (NYU Stern), via the Eco3min annual CSV. Recession dates: NBER business cycle chronology; none has been dated since April 2020 as of this page. Presidential approval: Gallup readings transcribed from Gallup's historical trends page and averaged by calendar year, 1945 to 2025. Trump 2017 to 2020 uses his Gallup term average (41.1); Biden 2022 to 2024 is backed out of his term average (42.2). Gallup stopped measuring presidential approval in 2026, so the series ends in 2025.</p>
-      <p><b>Model.</b> The political weather index follows the structure of Ghitza, Gelman and Auerbach: each year's approval minus 50, signed toward the president's party, weighted by your age that year. The age weights here are an approximation of their published curve, not their estimates, and the index is a weighted average in approval points, not a vote share. Years without approval data (before 1945, 2026 on) are skipped. All page data is embedded; nothing is sent anywhere. Published October 2026.</p>
+      <p><b>Data.</b> S&amp;P 500 total returns and US inflation, 1928 to 2025: Aswath Damodaran (NYU Stern), via the Eco3min yearly file. Recession dates: NBER; none has been dated since April 2020 as of this page. Presidential approval: Gallup readings copied from Gallup's historical page and averaged by year, 1945 to 2025. Trump 2017 to 2020 uses his Gallup term average (41.1); Biden 2022 to 2024 is worked out from his term average (42.2). Gallup stopped measuring presidential approval in 2026.</p>
+      <p><b>Model.</b> The political weather index copies the structure of Ghitza, Gelman and Auerbach: each year's approval minus 50, pointed toward the president's party, weighted by your age that year. The age curve here approximates theirs, and the index is in approval points, not votes. The window chart's start and end ages come from the studies named in each tab and are rounded. All data is in the page; nothing is sent anywhere. Version 2, October 2026.</p>
     </div>
   </div>
 </section>
@@ -534,6 +696,8 @@ footer a:hover{color:var(--ink)}
   </div>
 </footer>
 
+<div id="pop" role="tooltip"></div>
+
 <script>
 const DATA = {"mk":{"1928":[43.81,-1.16,45.49],"1929":[-8.3,0.58,-8.83],"1930":[-25.12,-6.4,-20.01],"1931":[-43.84,-9.32,-38.07],"1932":[-8.64,-10.27,1.82],"1933":[49.98,0.76,48.85],"1934":[-1.19,1.52,-2.66],"1935":[46.74,2.99,42.49],"1936":[31.94,1.45,30.06],"1937":[-35.34,2.86,-37.13],"1938":[29.28,-2.78,32.98],"1939":[-1.1,0.0,-1.1],"1940":[-10.67,0.71,-11.31],"1941":[-12.77,9.93,-20.65],"1942":[19.17,9.03,9.3],"1943":[25.06,2.96,21.47],"1944":[19.03,2.3,16.36],"1945":[35.82,2.25,32.84],"1946":[-8.43,18.13,-22.48],"1947":[5.2,8.84,-3.34],"1948":[5.7,2.99,2.63],"1949":[18.3,-2.07,20.81],"1950":[30.81,5.93,23.48],"1951":[23.68,6.0,16.68],"1952":[18.15,0.75,17.27],"1953":[-1.21,0.75,-1.94],"1954":[52.56,-0.74,53.71],"1955":[32.6,0.37,32.1],"1956":[7.44,2.99,4.33],"1957":[-10.46,2.9,-12.98],"1958":[43.72,1.76,41.23],"1959":[12.06,1.73,10.15],"1960":[0.34,1.36,-1.01],"1961":[26.64,0.67,25.79],"1962":[-8.81,1.33,-10.01],"1963":[22.61,1.64,20.63],"1964":[16.42,0.97,15.3],"1965":[12.4,1.92,10.28],"1966":[-9.97,3.46,-12.98],"1967":[23.8,3.04,20.15],"1968":[10.81,4.72,5.82],"1969":[-8.24,6.2,-13.6],"1970":[3.56,5.57,-1.9],"1971":[14.22,3.27,10.61],"1972":[18.76,3.41,14.84],"1973":[-14.31,8.71,-21.17],"1974":[-25.9,12.34,-34.04],"1975":[37.0,6.94,28.11],"1976":[23.83,4.86,18.09],"1977":[-6.98,6.7,-12.82],"1978":[6.51,9.02,-2.3],"1979":[18.52,13.29,4.61],"1980":[31.74,12.52,17.08],"1981":[-4.7,8.92,-12.51],"1982":[20.42,3.83,15.98],"1983":[22.34,3.79,17.87],"1984":[6.15,3.95,2.11],"1985":[31.24,3.8,26.43],"1986":[18.49,1.1,17.21],"1987":[5.81,4.43,1.32],"1988":[16.54,4.42,11.6],"1989":[31.48,4.65,25.64],"1990":[-3.06,6.11,-8.64],"1991":[30.23,3.06,26.36],"1992":[7.49,2.9,4.46],"1993":[9.97,2.75,7.03],"1994":[1.33,2.67,-1.31],"1995":[37.2,2.54,33.8],"1996":[22.68,3.32,18.74],"1997":[33.1,1.7,30.88],"1998":[28.34,1.61,26.3],"1999":[20.89,2.68,17.72],"2000":[-9.03,3.39,-12.01],"2001":[-11.85,1.55,-13.2],"2002":[-21.97,2.38,-23.78],"2003":[28.36,1.88,25.99],"2004":[10.74,3.26,7.25],"2005":[4.83,3.42,1.37],"2006":[15.61,2.54,12.75],"2007":[5.48,4.08,1.35],"2008":[-36.55,0.09,-36.61],"2009":[25.94,2.72,22.6],"2010":[14.82,1.5,13.13],"2011":[2.1,2.96,-0.84],"2012":[15.89,1.74,13.91],"2013":[32.15,1.5,30.19],"2014":[13.52,0.76,12.67],"2015":[1.38,0.73,0.64],"2016":[11.77,2.07,9.5],"2017":[21.61,2.11,19.09],"2018":[-4.23,1.91,-6.02],"2019":[31.21,2.29,28.28],"2020":[18.02,1.36,16.44],"2021":[28.47,7.04,20.02],"2022":[-18.04,6.45,-23.01],"2023":[26.06,3.35,21.97],"2024":[24.88,2.89,21.37],"2025":[17.72,2.74,14.59]},"rec":[["1929-08","1933-03","Great Depression"],["1937-05","1938-06","1937-38 recession"],["1945-02","1945-10","Postwar demobilisation"],["1948-11","1949-10","1949 recession"],["1953-07","1954-05","1953-54 recession"],["1957-08","1958-04","1958 recession"],["1960-04","1961-02","1960-61 recession"],["1969-12","1970-11","1970 recession"],["1973-11","1975-03","1973-75 oil shock"],["1980-01","1980-07","1980 recession"],["1981-07","1982-11","1981-82 Volcker recession"],["1990-07","1991-03","1990-91 recession"],["2001-03","2001-11","2001 dot-com bust"],["2007-12","2009-06","Great Recession"],["2020-02","2020-04","COVID recession"]],"ap":{"1945":["Truman","D",55.6],"1946":["Truman","D",55.6],"1947":["Truman","D",55.6],"1948":["Truman","D",55.6],"1949":["Truman","D",36.5],"1950":["Truman","D",36.5],"1951":["Truman","D",36.5],"1952":["Truman","D",36.5],"1953":["Eisenhower","R",69.6],"1954":["Eisenhower","R",69.6],"1955":["Eisenhower","R",69.6],"1956":["Eisenhower","R",69.6],"1957":["Eisenhower","R",60.5],"1958":["Eisenhower","R",60.5],"1959":["Eisenhower","R",60.5],"1960":["Eisenhower","R",60.5],"1961":["Kennedy","D",70.1],"1962":["Kennedy","D",70.1],"1963":["Kennedy","D",70.1],"1964":["Johnson","D",74.2],"1965":["Johnson","D",50.3],"1966":["Johnson","D",50.3],"1967":["Johnson","D",50.3],"1968":["Johnson","D",50.3],"1969":["Nixon","R",55.8],"1970":["Nixon","R",55.8],"1971":["Nixon","R",55.8],"1972":["Nixon","R",55.8],"1973":["Nixon","R",34.4],"1974":["Nixon/Ford","R",39.7],"1975":["Ford","R",47.2],"1976":["Ford","R",47.2],"1977":["Carter","D",45.5],"1978":["Carter","D",45.5],"1979":["Carter","D",45.5],"1980":["Carter","D",45.5],"1981":["Reagan","R",50.3],"1982":["Reagan","R",50.3],"1983":["Reagan","R",50.3],"1984":["Reagan","R",50.3],"1985":["Reagan","R",55.3],"1986":["Reagan","R",55.3],"1987":["Reagan","R",55.3],"1988":["Reagan","R",55.3],"1989":["Bush (H.W.)","R",60.9],"1990":["Bush (H.W.)","R",60.9],"1991":["Bush (H.W.)","R",60.9],"1992":["Bush (H.W.)","R",60.9],"1993":["Clinton","D",49.6],"1994":["Clinton","D",49.6],"1995":["Clinton","D",49.6],"1996":["Clinton","D",49.6],"1997":["Clinton","D",60.6],"1998":["Clinton","D",60.6],"1999":["Clinton","D",60.6],"2000":["Clinton","D",60.6],"2001":["Bush (W.)","R",62.2],"2002":["Bush (W.)","R",62.2],"2003":["Bush (W.)","R",62.2],"2004":["Bush (W.)","R",62.2],"2005":["Bush (W.)","R",36.5],"2006":["Bush (W.)","R",36.5],"2007":["Bush (W.)","R",36.5],"2008":["Bush (W.)","R",36.5],"2009":["Obama","D",49.1],"2010":["Obama","D",49.1],"2011":["Obama","D",49.1],"2012":["Obama","D",49.1],"2013":["Obama","D",46.7],"2014":["Obama","D",46.7],"2015":["Obama","D",46.7],"2016":["Obama","D",46.7],"2017":["Trump","R",41.1],"2018":["Trump","R",41.1],"2019":["Trump","R",41.1],"2020":["Trump","R",41.1],"2021":["Biden","D",42.2],"2022":["Biden","D",42.2],"2023":["Biden","D",42.2],"2024":["Biden","D",42.2],"2025":["Trump","R",41.0]}};
 const NOW = 2026, LAST = 2025;
@@ -544,7 +708,56 @@ const el = (tag, attrs = {}, text) => { const e = document.createElementNS(NS, t
 const fmt = (v, d = 1) => (v > 0 ? '+' : '') + v.toFixed(d);
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 
-/* Age weights: approximation of the Ghitza, Gelman and Auerbach curve */
+/* Glossary */
+const GLOSS = {
+  cohort: ['Cohort', 'People born in the same few years, who grew up through the same events.'],
+  recession: ['Recession', 'A period, usually months long, when the economy shrinks and jobs disappear.'],
+  real: ['Real return', 'How much an investment grew after taking out inflation (prices going up). It tells you what you could actually buy.'],
+  inflation: ['Inflation', 'How fast prices rise. 3% inflation means things cost 3% more than a year ago.'],
+  sp500: ['S&P 500', 'A measure of the shares of 500 of the biggest US companies. People use it as shorthand for "the stock market".'],
+  redistribution: ['Redistribution', 'The government taking more in tax from people with more money and giving it to people with less.'],
+  institutions: ['Institutions', 'The big organisations that run a country: government, courts, police, banks, the media.'],
+  party: ['Party loyalty', 'Which political party you usually vote for, year after year.'],
+  approval: ['Approval rating', 'The share of people in a poll who say the president is doing a good job.'],
+  rank: ['Rank', 'Your position compared with other people your age, like a place in a race. Not social status.'],
+  correlation: ['Correlation', 'A number from 0 to 1 for how closely two things move together. 1 means they always match, 0 means no link.'],
+  trait: ['Personality trait', 'A lasting tendency in how you think, feel and act, like being curious or being calm.'],
+  conscientiousness: ['Conscientiousness', 'Being organised, reliable and finishing what you start. Doing homework before it is due is conscientious.'],
+  extraversion: ['Extraversion', 'Getting energy from being around people: talkative, outgoing, happy to take charge.'],
+  agreeableness: ['Agreeableness', 'Being kind, trusting and cooperative. It has two parts: caring about people, and politeness (going along with others).'],
+  neuroticism: ['Neuroticism', 'How strongly stress, worry and bad moods hit you. The opposite is emotional stability, being calm and steady.'],
+  assertiveness: ['Assertiveness', 'Saying what you want and standing your ground, without being rude.'],
+  heritability: ['Heritability', 'How much of the differences between people come from differences in their genes. It is about groups, not how much of you comes from genes.'],
+  dependence: ['Alcohol dependence', 'When someone cannot control their drinking and needs alcohol to feel normal. Close to what people call alcoholism.'],
+  iq: ['IQ', 'A test score for reasoning and problem solving. 100 is average. Losing 8 points moves an average person from the middle of the pack to around the bottom 30%.'],
+  confounding: ['Confounding', 'When a hidden third thing makes two things look linked. Ice cream sales and sunburn rise together because of summer, not because ice cream burns you.'],
+  psychosis: ['Psychosis', 'Losing touch with reality: hearing, seeing or firmly believing things that are not real.'],
+  odds: ['Odds ratio', 'How many times more likely something is compared with a baseline. 3 means three times the odds.']
+};
+const pop = $('#pop'); let popFor = null;
+function showPop(btn){
+  const g = GLOSS[btn.dataset.k]; if (!g) return;
+  pop.innerHTML = `<b>${g[0]}</b>${g[1]}`; pop.classList.add('on'); popFor = btn;
+  document.querySelectorAll('.t[aria-expanded="true"]').forEach(b => b.setAttribute('aria-expanded', 'false'));
+  btn.setAttribute('aria-expanded', 'true');
+  const r = btn.getBoundingClientRect(), pw = Math.min(300, innerWidth - 24);
+  pop.style.maxWidth = pw + 'px';
+  let x = r.left + scrollX + r.width / 2 - pw / 2; x = Math.max(12 + scrollX, Math.min(x, scrollX + innerWidth - pw - 12));
+  pop.style.left = x + 'px';
+  const ph = pop.offsetHeight; let y = r.top + scrollY - ph - 10; if (r.top - ph - 10 < 60) y = r.bottom + scrollY + 10;
+  pop.style.top = y + 'px';
+}
+function hidePop(){ pop.classList.remove('on'); if (popFor) popFor.setAttribute('aria-expanded', 'false'); popFor = null; }
+document.addEventListener('click', e => { const b = e.target.closest('.t'); if (b){ e.stopPropagation(); popFor === b ? hidePop() : showPop(b); } else hidePop(); });
+document.addEventListener('mouseover', e => { const b = e.target.closest('.t'); if (b && matchMedia('(hover:hover)').matches) showPop(b); });
+document.addEventListener('mouseout', e => { const b = e.target.closest('.t'); if (b && matchMedia('(hover:hover)').matches) hidePop(); });
+document.addEventListener('focusin', e => { const b = e.target.closest('.t'); if (b) showPop(b); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') hidePop(); });
+addEventListener('scroll', () => { if (popFor) hidePop(); }, { passive: true });
+document.querySelectorAll('.t').forEach(b => { b.type = 'button'; b.setAttribute('aria-expanded', 'false'); b.setAttribute('aria-describedby', 'pop'); });
+$('#gloss').innerHTML = Object.values(GLOSS).sort((a, b) => a[0].localeCompare(b[0])).map(g => `<div><dt>${g[0]}</dt><dd>${g[1]}</dd></div>`).join('');
+
+/* Model */
 function w(a){
   if (a <= 1) return 0;
   if (a <= 14) return 0.85 * Math.pow((a - 1) / 13, 1.3);
@@ -555,18 +768,14 @@ function w(a){
   return 0;
 }
 const tiltYear = y => { const r = AP[y]; if (!r) return null; return (r[2] - 50) * (r[1] === 'R' ? 1 : -1); };
-function tilt(b){
-  let s = 0, ws = 0;
-  for (let a = 1; a <= 70; a++){ const x = tiltYear(b + a); if (x == null) continue; s += w(a) * x; ws += w(a); }
-  return ws ? s / ws : 0;
-}
-const recYears = r => { const a = +r[0].slice(0,4), b = +r[1].slice(0,4); return [a, b]; };
+function tilt(b){ let s = 0, ws = 0; for (let a = 1; a <= 70; a++){ const x = tiltYear(b + a); if (x == null) continue; s += w(a) * x; ws += w(a); } return ws ? s / ws : 0; }
+const recYears = r => [+r[0].slice(0, 4), +r[1].slice(0, 4)];
+const isRecYear = y => REC.some(r => { const [s, e] = recYears(r); return y >= s && y <= e; });
 function windowInfo(b){
   const ys = []; for (let y = b + 18; y <= b + 25; y++) ys.push(y);
   const known = ys.filter(y => y <= LAST);
   const recs = REC.filter(r => { const [a, e] = recYears(r); return e >= b + 18 && a <= Math.min(b + 25, LAST); });
-  let g = 1, inf = 0;
-  known.forEach(y => { g *= 1 + MK[y][2] / 100; inf += MK[y][1]; });
+  let g = 1, inf = 0; known.forEach(y => { g *= 1 + MK[y][2] / 100; inf += MK[y][1]; });
   const real = known.length ? (Math.pow(g, 1 / known.length) - 1) * 100 : null;
   const pres = []; known.forEach(y => { const r = AP[y]; if (!r) return; const last = pres[pres.length - 1];
     if (last && last.n === r[0]) { last.v.push(r[2]); last.to = y; } else pres.push({ n: r[0], p: r[1], v: [r[2]], from: y, to: y }); });
@@ -574,209 +783,421 @@ function windowInfo(b){
 }
 let LONGRUN; { let g = 1, n = 0; for (const y in MK){ g *= 1 + MK[y][2] / 100; n++; } LONGRUN = (Math.pow(g, 1 / n) - 1) * 100; }
 
-let birth = 2004;
+let birth = 2004, todoAge = 22;
 const age = () => NOW - birth;
+
+/* Chart helpers: draw at the real pixel width of the container */
+function frame(svg, H){
+  const W = Math.max(280, Math.round(svg.parentElement.clientWidth - (innerWidth <= 640 ? 24 : 32)));
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.innerHTML = ''; return W;
+}
+const narrow = W => W < 560;
+function gridY(svg, x0, x1, vals, Y, fmtL){ vals.forEach(v => { svg.append(el('line', { x1: x0, x2: x1, y1: Y(v), y2: Y(v), stroke: css('--grid') })); svg.append(el('text', { x: x0 - 6, y: Y(v) + 4, 'text-anchor': 'end' }, fmtL ? fmtL(v) : v)); }); }
+function hbars(svg, rows, opt = {}){
+  /* rows: [label, value, colorVar, valueLabel] */
+  const W = frame(svg, rows.length * (opt.rh || 44) + 8), lw = narrow(W) ? 0 : (opt.lw || 150), rh = opt.rh || 44;
+  const x0 = lw, x1 = W - 56, max = opt.max || Math.max(...rows.map(r => r[1]));
+  rows.forEach((r, i) => {
+    const y = i * rh + 4, by = narrow(W) ? y + 18 : y + 8, bh = narrow(W) ? rh - 26 : rh - 18;
+    svg.append(el('text', { x: narrow(W) ? 0 : 0, y: narrow(W) ? y + 13 : y + rh / 2 + 4, class: 'row-lbl' }, r[0]));
+    svg.append(el('rect', { x: x0, y: by, width: Math.max(2, (x1 - x0) * r[1] / max), height: bh, rx: 4, fill: css(r[2]) }));
+    svg.append(el('text', { x: x0 + (x1 - x0) * r[1] / max + 8, y: by + bh / 2 + 4, class: 'strong' }, r[3]));
+  });
+}
+
+/* Window chart (lock-in clock) */
+const WINDOWS = [
+  ['Nicotine habit', 'substances', [12, 18], [18, 26], '9 in 10 daily smokers start by 18'],
+  ['Drinking problems later', 'substances', [12, 15], [15, 21], 'riskiest if first drink is before 15'],
+  ['Cannabis and IQ', 'substances', [12, 18], null, 'the IQ finding is about teen starters'],
+  ['Music taste', 'taste', [11, 16], [16, 33], 'favourite songs from age 11 to 16'],
+  ['Party loyalty', 'cycle', [14, 24], [24, 40], 'peak near 18, mostly set by 40'],
+  ['Views on money and society', 'money', [18, 25], [25, 40], 'recessions at 18 to 25 stick'],
+  ['Religion', 'faith', [15, 24], [24, 50], 'most who leave do so before 24'],
+  ['Personality (your place)', 'personality', [10, 25], [25, 30], 'settles around 25'],
+  ['Friendship circle', 'taste', [15, 25], [25, 45], 'widest around 25'],
+  ['First job effects', 'firstjob', [21, 24], [24, 32], 'a bad start fades over about 10 years']
+];
+function drawClock(svg, a0, a1, you, compact){
+  const rows = WINDOWS;
+  const W0 = Math.max(280, Math.round(svg.parentElement.clientWidth - (innerWidth <= 640 ? 24 : 32)));
+  const nar = narrow(W0) || compact && W0 < 700;
+  const rh = nar ? 40 : 30, top = 22, H = top + rows.length * rh + 26;
+  const W = frame(svg, H);
+  const lw = nar ? 0 : 210, x0 = lw, x1 = W - 8, X = a => x0 + (Math.max(a0, Math.min(a1, a)) - a0) / (a1 - a0) * (x1 - x0);
+  for (let a = a0; a <= a1; a += (a1 - a0 > 20 ? 5 : 2)){ svg.append(el('line', { x1: X(a), x2: X(a), y1: top - 4, y2: H - 22, stroke: css('--grid') })); svg.append(el('text', { x: X(a), y: H - 6, 'text-anchor': 'middle' }, a)); }
+  svg.append(el('text', { x: x1, y: 12, 'text-anchor': 'end' }, 'age'));
+  if (you >= a0 && you <= a1){
+    svg.append(el('line', { x1: X(you), x2: X(you), y1: top - 8, y2: H - 22, stroke: css('--ink'), 'stroke-width': 2 }));
+    svg.append(el('text', { x: X(you), y: 12, 'text-anchor': 'middle', class: 'strong' }, 'you, ' + you));
+  }
+  rows.forEach((r, i) => {
+    const y = top + i * rh, bh = nar ? 12 : 14, by = nar ? y + 20 : y + (rh - bh) / 2;
+    const lbl = el('text', { x: 0, y: nar ? y + 14 : y + rh / 2 + 4, class: 'row-lbl link', 'data-tab': r[1] }, r[0]);
+    lbl.addEventListener('click', () => select(r[1], false, true)); svg.append(lbl);
+    if (r[3] && r[3][1] > a0) svg.append(el('rect', { x: X(r[3][0]), y: by, width: Math.max(0, X(r[3][1]) - X(r[3][0])), height: bh, rx: 3, fill: css('--accent-mid') }));
+    const hb = el('rect', { x: X(r[2][0]), y: by, width: Math.max(0, X(r[2][1]) - X(r[2][0])), height: bh, rx: 3, fill: css('--accent') });
+    hb.append(el('title', {}, r[0] + ': ' + r[4])); svg.append(hb);
+    if (nar){ const t = el('text', { x: x1, y: y + 14, 'text-anchor': 'end' }, r[4]); if (W > 420) svg.append(t); }
+  });
+}
 
 /* HERO */
 function renderHero(){
   $('#birthOut').textContent = birth;
   const a = age(), w0 = birth + 18, w1 = birth + 25;
-  let state = a < 18 ? 'starts in ' + w0 : a <= 25 ? 'you are in it now' : 'closed in ' + w1;
-  $('#birthFacts').innerHTML = `<span>Age in ${NOW}: <b>${a}</b></span><span>Window 18 to 25: <b>${w0} to ${w1}</b>, ${state}</span>`;
+  const state = a < 18 ? 'starts in ' + w0 : a <= 25 ? 'happening now' : 'done by ' + w1;
+  $('#birthFacts').innerHTML = `<span>Age in ${NOW}: <b>${a}</b></span><span>Your 18 to 25 years: <b>${w0} to ${w1}</b>, ${state}</span>`;
 }
 
-/* YOUR WINDOW: timeline strip, ages 0 to 40 */
+/* WINDOW TAB */
 function renderStrip(){
-  const svg = $('#strip'); svg.innerHTML = '';
-  const W = 960, L = 8, R = 8, top = 12, h = 86, span = 41, cw = (W - L - R) / span;
+  const svg = $('#strip'), W = frame(svg, 150), nar = narrow(W);
+  const L = 4, top = 22, h = 82, span = 41, cw = (W - L * 2) / span;
   for (let a = 0; a < span; a++){
     const y = birth + a, x = L + a * cw;
-    const isRec = REC.some(r => { const [s, e] = recYears(r); return y >= s && y <= e; });
-    if (isRec && y <= LAST) svg.append(el('rect', { x, y: top, width: cw - 1, height: h, fill: css('--rec') }));
-    const wh = w(a) * (h - 14);
-    svg.append(el('rect', { x: x + cw * .2, y: top + h - wh, width: cw * .6, height: Math.max(wh, 0), rx: 2, fill: css('--accent'), opacity: y > LAST ? .25 : (a >= 18 && a <= 25 ? 1 : .45) }));
-    if (a % 5 === 0) { svg.append(el('text', { x: x + cw / 2, y: top + h + 16, 'text-anchor': 'middle' }, 'age ' + a)); svg.append(el('text', { x: x + cw / 2, y: top + h + 30, 'text-anchor': 'middle', class: 'lbl' }, y)); }
+    if (isRecYear(y) && y <= LAST) svg.append(el('rect', { x, y: top, width: cw - 1, height: h, fill: css('--rec') }));
+    const wh = w(a) * (h - 12);
+    svg.append(el('rect', { x: x + cw * .18, y: top + h - wh, width: cw * .64, height: Math.max(wh, 0), rx: 1.5, fill: css('--accent'), opacity: y > LAST ? .22 : (a >= 18 && a <= 25 ? 1 : .45) }));
+    if (a % (nar ? 10 : 5) === 0){ svg.append(el('text', { x: x + cw / 2, y: top + h + 16, 'text-anchor': 'middle' }, 'age ' + a)); svg.append(el('text', { x: x + cw / 2, y: top + h + 30, 'text-anchor': 'middle', class: 'lbl' }, y)); }
   }
   const bx = L + 18 * cw, bw = 8 * cw;
   svg.append(el('rect', { x: bx, y: top - 6, width: bw, height: h + 6, fill: 'none', stroke: css('--ink'), 'stroke-width': 1.2, rx: 6 }));
-  svg.append(el('text', { x: bx + bw / 2, y: top - 10 + 2, 'text-anchor': 'middle', class: 'strong' }, '18 to 25'));
-  if (birth + 40 > LAST){ const fx = L + (LAST - birth + 1) * cw; svg.append(el('line', { x1: fx, x2: fx, y1: top, y2: top + h, stroke: css('--ink-3'), 'stroke-dasharray': '3 3' })); svg.append(el('text', { x: fx + 4, y: top + 12 }, 'not yet lived')); }
+  svg.append(el('text', { x: bx + bw / 2, y: top - 10, 'text-anchor': 'middle', class: 'strong' }, '18 to 25'));
+  if (birth + 40 > LAST){ const fx = L + (LAST - birth + 1) * cw; svg.append(el('line', { x1: fx, x2: fx, y1: top, y2: top + h, stroke: css('--ink-3'), 'stroke-dasharray': '3 3' })); if (fx < W - 70) svg.append(el('text', { x: fx + 4, y: top + h - 4 }, 'future')); }
 }
 function renderWindow(){
+  drawClock($('#clock'), 10, 50, age());
   const b = birth, info = windowInfo(b);
-  $('#winTitle').textContent = `What a ${b} birth year's 18 to 25 window contains`;
+  $('#winTitle').textContent = `What happened in your 18 to 25 years (${b + 18} to ${b + 25})`;
   renderStrip();
   const sofar = info.known.length;
   const note = sofar < 8 ? `<div class="s">${sofar} of 8 years have happened so far.</div>` : '';
   const recNames = info.recs.length ? info.recs.map(r => r[2]).join(', ') : 'None';
   const realTxt = info.real == null ? 'Not yet' : fmt(info.real) + '%';
-  const realS = info.real == null ? 'Your window starts in ' + (b + 18) + '.' : `a year, after inflation. Long-run average since 1928: ${LONGRUN.toFixed(1)}%.`;
+  const realS = info.real == null ? 'Your 18 to 25 years start in ' + (b + 18) + '.' : `per year, after inflation. The average since 1928 is ${LONGRUN.toFixed(1)}%.`;
   const presHtml = info.pres.length ? info.pres.map(p => `<span class="pill ${p.p}">${p.n} ${p.from === p.to ? p.from : p.from + '-' + String(p.to).slice(2)}: ${Math.round(p.v.reduce((s, v) => s + v, 0) / p.v.length)}%</span>`).join('') : '<span class="pill">None yet</span>';
+  const t = tilt(b);
   $('#winStats').innerHTML = `
-    <div class="stat"><div class="k">Recessions in the window</div><div class="v">${info.recs.length}</div><div class="s">${recNames}</div>${note}</div>
-    <div class="stat"><div class="k">Stocks, annualised real return</div><div class="v">${realTxt}</div><div class="s">${realS}</div></div>
-    <div class="stat"><div class="k">Average inflation</div><div class="v">${info.inf == null ? 'Not yet' : info.inf.toFixed(1) + '%'}</div><div class="s">US CPI, average of the window's years.</div></div>
-    <div class="stat"><div class="k">Political weather, ages 1 to 70 so far</div><div class="v">${fmt(tilt(b))}</div><div class="s">${tilt(b) > 0.3 ? 'Leans Republican' : tilt(b) < -0.3 ? 'Leans Democratic' : 'Close to neutral'}. Explained in The cycle.</div></div>
-    <div class="stat wide"><div class="k">Presidents in the window, average Gallup approval</div><div class="pres">${presHtml}</div></div>`;
+    <div class="stat"><div class="k">Recessions</div><div class="v">${info.recs.length}</div><div class="s">${recNames}</div>${note}</div>
+    <div class="stat"><div class="k">Stock market, average yearly <button class="t" data-k="real">real return</button></div><div class="v">${realTxt}</div><div class="s">${realS}</div></div>
+    <div class="stat"><div class="k">Average <button class="t" data-k="inflation">inflation</button></div><div class="v">${info.inf == null ? 'Not yet' : info.inf.toFixed(1) + '%'}</div><div class="s">How fast US prices rose per year.</div></div>
+    <div class="stat"><div class="k">Political weather of your life so far</div><div class="v">${fmt(t)}</div><div class="s">${t > 0.3 ? 'Leans Republican' : t < -0.3 ? 'Leans Democratic' : 'Close to neutral'}. See the Politics tab.</div></div>
+    <div class="stat wide"><div class="k">Presidents, and their average <button class="t" data-k="approval">approval</button></div><div class="pres">${presHtml}</div></div>`;
+  document.querySelectorAll('#winStats .t').forEach(x => { x.type = 'button'; x.setAttribute('aria-expanded', 'false'); });
   const f = [];
-  if (info.known.length === 0){
-    f.push(['Not started yet.', 'Your window opens in ' + (b + 18) + '. Whatever happens to the economy and politics in those 8 years will set defaults that are hard to move later.', 'Giuliano and Spilimbergo; Ghitza, Gelman and Auerbach.']);
+  if (sofar === 0){
+    f.push(['Not started yet.', 'Your 18 to 25 years begin in ' + (b + 18) + '. Whatever happens to the economy and politics then will shape views that are hard to shift later.', 'Giuliano and Spilimbergo; Ghitza, Gelman and Auerbach.']);
   } else {
-    if (info.recs.length) f.push(['A recession in the window.', 'Cohorts hit by a recession at 18 to 25 come to believe luck matters more than effort, back more redistribution, and trust public institutions less, for life.', 'Giuliano and Spilimbergo, REStud 2014.']);
-    else if (sofar >= 4) f.push(['No recession in the window' + (sofar < 8 ? ' so far.' : '.'), 'The recession effect on beliefs about luck, redistribution and trust is absent for cohorts like this.', 'Giuliano and Spilimbergo, REStud 2014.']);
+    if (info.recs.length) f.push(['A recession in these years.', 'People who live through a recession at 18 to 25 end up believing luck matters more than effort, want the government to share money out more, and trust institutions less. For life.', 'Giuliano and Spilimbergo, 2014.']);
+    else if (sofar >= 4) f.push(['No recession' + (sofar < 8 ? ' so far.' : '.'), 'So the big recession effect on beliefs about luck, fairness and trust should not apply to this group.', 'Giuliano and Spilimbergo, 2014.']);
     if (info.real != null && sofar >= 3){
-      if (info.real < LONGRUN - 2) f.push(['Weak markets in the window.', 'Households that lived through low stock returns take less financial risk and own fewer stocks, even decades later.', 'Malmendier and Nagel, QJE 2011.']);
-      else if (info.real > LONGRUN + 2) f.push(['Strong markets in the window.', 'Households that lived through high returns take more financial risk and own more stocks. Young investors in the late 1990s are the textbook case.', 'Malmendier and Nagel, QJE 2011.']);
-      else f.push(['Average markets in the window.', 'No strong push either way on risk appetite from this window alone. More recent years will weigh more.', 'Malmendier and Nagel, QJE 2011.']);
+      if (info.real < LONGRUN - 2) f.push(['Weak stock market.', 'People who lived through bad markets take less risk with money and own fewer shares, even decades later.', 'Malmendier and Nagel, 2011.']);
+      else if (info.real > LONGRUN + 2) f.push(['Strong stock market.', 'People who lived through good markets take more risk and own more shares. Young investors in the late 1990s are the classic case.', 'Malmendier and Nagel, 2011.']);
+      else f.push(['An average stock market.', 'No strong push either way on risk from these years alone. Later years will count too.', 'Malmendier and Nagel, 2011.']);
     }
-    const t = tilt(b);
-    f.push(['Political weather: ' + (t > 0.3 ? 'leans Republican.' : t < -0.3 ? 'leans Democratic.' : 'close to neutral.'), t > 0.3 || t < -0.3 ? 'The presidents of this cohort\'s formative years were rated in a way that, in the model, tilts its party loyalty in that direction.' : 'Formative years without a long run of well-rated presidents on either side. In the model, that leaves a weaker party imprint.', 'Ghitza, Gelman and Auerbach, AJPS. US data.']);
+    f.push(['Politics: ' + (t > 0.3 ? 'leans Republican.' : t < -0.3 ? 'leans Democratic.' : 'close to neutral.'), t > 0.3 || t < -0.3 ? 'The presidents of these years were rated in a way that, in the model, nudges this group\'s party loyalty that way.' : 'No long run of popular presidents on either side. In the model, that leaves a weaker party pull.', 'Ghitza, Gelman and Auerbach. US data.']);
   }
   $('#winFindings').innerHTML = f.map(x => `<div class="finding"><p><b>${x[0]}</b> ${x[1]}</p><p class="src">${x[2]}</p></div>`).join('');
 }
 
-/* THE CYCLE */
-function axesY(svg, x0, x1, ys, yOf, labels){
-  ys.forEach((v, i) => { const y = yOf(v); svg.append(el('line', { x1: x0, x2: x1, y1: y, y2: y, stroke: css('--grid') })); svg.append(el('text', { x: x0 - 6, y: y + 4, 'text-anchor': 'end' }, labels ? labels[i] : v)); });
-}
+/* POLITICS TAB */
 function renderWeights(){
-  const svg = $('#weights'); svg.innerHTML = '';
-  const x0 = 44, x1 = 944, y0 = 180, y1 = 16, X = a => x0 + a / 70 * (x1 - x0), Y = v => y0 - v * (y0 - y1);
-  axesY(svg, x0, x1, [0, .5, 1], Y, ['0', '0.5', '1']);
+  const svg = $('#weights'), W = frame(svg, 210);
+  const x0 = 34, x1 = W - 8, y0 = 172, y1 = 22, X = a => x0 + a / 70 * (x1 - x0), Y = v => y0 - v * (y0 - y1);
+  gridY(svg, x0, x1, [0, .5, 1], Y);
   svg.append(el('rect', { x: X(14), y: y1, width: X(24) - X(14), height: y0 - y1, fill: css('--accent-soft') }));
   let d = ''; for (let a = 0; a <= 70; a += .5) d += (a ? 'L' : 'M') + X(a).toFixed(1) + ',' + Y(w(a)).toFixed(1);
   svg.append(el('path', { d, fill: 'none', stroke: css('--accent'), 'stroke-width': 2.5 }));
   for (let a = 0; a <= 70; a += 10) svg.append(el('text', { x: X(a), y: y0 + 18, 'text-anchor': 'middle' }, a));
   svg.append(el('text', { x: X(19), y: y0 - 8, 'text-anchor': 'middle', class: 'strong' }, '14 to 24'));
-  svg.append(el('text', { x: X(40) + 6, y: Y(w(40)) - 8, class: 'lbl' }, 'party "all but locked in" by 40'));
-  const ma = age(); if (ma > 0 && ma <= 70){ svg.append(el('circle', { cx: X(ma), cy: Y(w(ma)), r: 5, fill: css('--ink') })); svg.append(el('text', { x: X(ma), y: Y(w(ma)) - 10, 'text-anchor': 'middle', class: 'strong' }, 'you, ' + ma)); }
+  if (!narrow(W)) svg.append(el('text', { x: X(40) + 6, y: Y(w(40)) - 10, class: 'lbl' }, 'party mostly set by 40'));
   svg.append(el('text', { x: x1, y: y0 + 34, 'text-anchor': 'end' }, 'age'));
+  const ma = age(); if (ma > 0 && ma <= 70){ svg.append(el('circle', { cx: X(ma), cy: Y(w(ma)), r: 5, fill: css('--ink') })); svg.append(el('text', { x: X(ma), y: Y(w(ma)) - 10, 'text-anchor': 'middle', class: 'strong' }, 'you, ' + ma)); }
+}
+function renderApproval(){
+  const svg = $('#approval'), W = frame(svg, 230);
+  const years = []; for (let y = 1945; y <= LAST; y++) years.push(y);
+  const x0 = 34, x1 = W - 8, mid = 110, sc = 3, bw = (x1 - x0) / years.length;
+  const Y = v => mid - (v - 50) * sc;
+  const s = birth + 14, e = birth + 24;
+  if (e >= 1945 && s <= LAST){ const a = Math.max(s, 1945), b = Math.min(e, LAST); svg.append(el('rect', { x: x0 + (a - 1945) * bw, y: 6, width: (b - a + 1) * bw, height: 200, fill: css('--accent-soft'), stroke: css('--accent'), 'stroke-width': 1 })); }
+  gridY(svg, x0, x1, [80, 50, 20], Y, v => v + '%');
+  years.forEach((y, i) => { const r = AP[y]; if (!r) return; const v = r[2], top = Math.min(Y(v), mid), hh = Math.abs(Y(v) - mid);
+    const rect = el('rect', { x: x0 + i * bw + .5, y: top, width: Math.max(1, bw - 1), height: Math.max(1, hh), fill: css(r[1] === 'R' ? '--rep' : '--dem') });
+    rect.append(el('title', {}, `${y}: ${r[0]}, ${v}% approval`)); svg.append(rect); });
+  const step = narrow(W) ? 20 : 10; for (let y = 1950; y <= 2020; y += step) svg.append(el('text', { x: x0 + (y - 1945 + .5) * bw, y: 222, 'text-anchor': 'middle' }, y));
+  if (!narrow(W)) [[1953, 'Eisenhower'], [1964, 'Johnson'], [1974, 'Watergate'], [1991, 'Gulf War'], [2002, 'after 9/11'], [2008, 'crash']].forEach(([y, n]) => { const v = AP[y][2]; svg.append(el('text', { x: x0 + (y - 1945 + .5) * bw, y: v >= 50 ? Y(v) - 6 : Y(v) + 14, 'text-anchor': 'middle', class: 'lbl' }, n)); });
 }
 let COH = null;
 function renderCohorts(){
-  const svg = $('#cohorts'); svg.innerHTML = '';
+  const svg = $('#cohorts'), W = frame(svg, 250);
   if (!COH){ COH = []; for (let b = 1937; b <= 2008; b++) COH.push([b, tilt(b)]); }
   const max = Math.max(...COH.map(c => Math.abs(c[1]))) * 1.1;
-  const x0 = 44, x1 = 944, mid = 120, half = 100, bw = (x1 - x0) / COH.length;
-  const Y = v => mid - v / max * half;
-  const tk = Math.floor(max); axesY(svg, x0, x1, [tk, 0, -tk], Y, ['+' + tk, '0', '-' + tk]);
+  const x0 = 30, x1 = W - 8, mid = 112, half = 96, bw = (x1 - x0) / COH.length, Y = v => mid - v / max * half;
+  const tk = Math.floor(max); gridY(svg, x0, x1, [tk, 0, -tk], Y, v => v > 0 ? '+' + v : v);
   COH.forEach(([b, v], i) => {
-    const x = x0 + i * bw, y = Math.min(Y(v), mid), hh = Math.abs(Y(v) - mid);
-    const sel = b === birth;
-    svg.append(el('rect', { x: x + 1, y, width: bw - 2, height: Math.max(hh, 1), rx: 1.5, fill: sel ? css('--accent') : (v >= 0 ? css('--rep') : css('--dem')), opacity: sel ? 1 : .8, class: 'bar-t' }));
-    if (b % 10 === 0) svg.append(el('text', { x: x + bw / 2, y: 248, 'text-anchor': 'middle' }, b));
+    const x = x0 + i * bw, sel = b === birth;
+    const r = el('rect', { x: x + .5, y: Math.min(Y(v), mid), width: Math.max(1, bw - 1), height: Math.max(Math.abs(Y(v) - mid), 1), rx: 1, fill: sel ? css('--accent') : (v >= 0 ? css('--rep') : css('--dem')), opacity: sel ? 1 : .8 });
+    r.append(el('title', {}, `Born ${b}: ${fmt(v)}`)); svg.append(r);
+    if (b % (narrow(W) ? 20 : 10) === 0) svg.append(el('text', { x: x + bw / 2, y: 242, 'text-anchor': 'middle' }, b));
     if (sel) svg.append(el('path', { d: `M${x + bw / 2},${mid + half + 6} l-6,10 h12 z`, fill: css('--accent') }));
   });
-  [[1941, 'Eisenhower'], [1952, '1960s'], [1968, 'Reagan'], [1985, 'Millennials']].forEach(([b, n]) => {
-    const i = b - 1937, v = COH[i][1], x = x0 + i * bw + bw / 2;
-    svg.append(el('text', { x, y: v >= 0 ? Y(v) - 8 : Y(v) + 16, 'text-anchor': 'middle', class: 'lbl' }, n));
-  });
-  const t = tilt(birth), inRange = birth <= 2008;
-  $('#cohortCap').textContent = (inRange ? `Born ${birth}: ${fmt(t)} weighted approval points. ` : `Born ${birth}: too few years of data to place on this chart yet. `) + 'Index units are approval points above or below 50, averaged with the age weights. Years without Gallup data are skipped.';
+  [[1941, 'Eisenhower'], [1952, '1960s'], [1968, 'Reagan'], [1985, 'Millennials']].forEach(([b, n]) => { const i = b - 1937, v = COH[i][1]; svg.append(el('text', { x: x0 + i * bw + bw / 2, y: v >= 0 ? Y(v) - 8 : Y(v) + 16, 'text-anchor': 'middle', class: 'lbl' }, n)); });
+  const t = tilt(birth);
+  $('#cohortCap').textContent = (birth <= 2008 ? `Born ${birth}: ${fmt(t)}. ` : `Born ${birth}: not enough years yet to place on this chart. `) + 'Units are approval points above or below 50, weighted by age. Not a prediction of how anyone votes.';
 }
-function renderCycle(){ renderWeights(); renderCohorts(); }
 
-/* MONEY */
+/* MONEY TAB */
+function renderYearly(){
+  const svg = $('#yearly'), W = frame(svg, 240);
+  const ys = Object.keys(MK).map(Number), x0 = 38, x1 = W - 8, bw = (x1 - x0) / ys.length, lo = -40, hi = 55;
+  const Y = v => 14 + (hi - v) / (hi - lo) * 196;
+  const s = birth + 18, e = Math.min(birth + 25, LAST);
+  if (e >= 1928 && s <= LAST) svg.append(el('rect', { x: x0 + (Math.max(s, 1928) - 1928) * bw, y: 8, width: (e - Math.max(s, 1928) + 1) * bw, height: 206, fill: css('--accent-soft'), stroke: css('--accent') }));
+  gridY(svg, x0, x1, [-40, -20, 0, 20, 40], Y, v => v + '%');
+  ys.forEach((y, i) => { const v = MK[y][2], inWin = y >= s && y <= e;
+    const r = el('rect', { x: x0 + i * bw + .5, y: Math.min(Y(v), Y(0)), width: Math.max(1, bw - 1), height: Math.max(1, Math.abs(Y(v) - Y(0))), fill: inWin ? css('--accent') : (isRecYear(y) ? css('--ink-3') : css('--mute')) });
+    r.append(el('title', {}, `${y}: ${fmt(v)}% after inflation`)); svg.append(r); });
+  const step = narrow(W) ? 20 : 10; for (let y = 1930; y <= 2020; y += step) svg.append(el('text', { x: x0 + (y - 1928 + .5) * bw, y: 232, 'text-anchor': 'middle' }, y));
+  if (!narrow(W)) [[1931, 'Depression'], [1974, 'oil shock'], [2008, 'financial crisis']].forEach(([y, n]) => svg.append(el('text', { x: x0 + (y - 1928 + .5) * bw, y: Y(MK[y][2]) + 14, 'text-anchor': 'middle', class: 'lbl' }, n)));
+  const info = windowInfo(birth);
+  $('#yearlyCap').innerHTML = (info.real == null ? `<b>Born ${birth}:</b> your 18 to 25 years have not started yet.` : `<b>Born ${birth}:</b> ${fmt(info.real)}% a year on average over ${info.known.length} year${info.known.length > 1 ? 's' : ''} so far.`) + ' Darker grey bars are recession years. S&amp;P 500 with dividends, minus US inflation. Damodaran data, 1928 to 2025.';
+}
 function renderReturns(){
-  const svg = $('#returns'); svg.innerHTML = '';
-  const pts = []; for (let b = 1910; b <= 2000; b++){ const info = windowInfo(b); pts.push([b, info.real]); }
-  const x0 = 44, x1 = 944, y0 = 220, y1 = 14, lo = -6, hi = 20;
+  const svg = $('#returns'), W = frame(svg, 240);
+  const pts = []; for (let b = 1910; b <= 2000; b++) pts.push([b, windowInfo(b).real]);
+  const x0 = 38, x1 = W - 8, y0 = 204, y1 = 14, lo = -6, hi = 22;
   const X = b => x0 + (b - 1910) / 90 * (x1 - x0), Y = v => y0 - (v - lo) / (hi - lo) * (y0 - y1);
-  axesY(svg, x0, x1, [-5, 0, 5, 10, 15, 20], Y, ['-5%', '0%', '5%', '10%', '15%', '20%']);
+  gridY(svg, x0, x1, [-5, 0, 5, 10, 15, 20], Y, v => v + '%');
   svg.append(el('line', { x1: x0, x2: x1, y1: Y(LONGRUN), y2: Y(LONGRUN), stroke: css('--ink-2'), 'stroke-dasharray': '5 4' }));
-  svg.append(el('text', { x: X(1953), y: Y(LONGRUN) - 6, 'text-anchor': 'middle', class: 'lbl' }, 'long-run average ' + LONGRUN.toFixed(1) + '%'));
+  svg.append(el('text', { x: X(1953), y: Y(LONGRUN) - 6, 'text-anchor': 'middle', class: 'lbl' }, 'average ' + LONGRUN.toFixed(1) + '%'));
   let d = ''; pts.forEach(([b, v], i) => d += (i ? 'L' : 'M') + X(b).toFixed(1) + ',' + Y(v).toFixed(1));
   svg.append(el('path', { d, fill: 'none', stroke: css('--ink'), 'stroke-width': 2 }));
-  for (let b = 1910; b <= 2000; b += 10) svg.append(el('text', { x: X(b), y: y0 + 18, 'text-anchor': 'middle' }, b));
-  svg.append(el('text', { x: x1, y: y0 + 34, 'text-anchor': 'end' }, 'birth year'));
-  const lab = [[1931, 'came of age in the 1950s', -1], [1950, '1970s stagflation', 1], [1974, '1990s boom', -1], [1983, 'dot-com bust and 2008', 1]];
-  lab.forEach(([b, n, s]) => { const v = pts[b - 1910][1]; svg.append(el('text', { x: X(b), y: s < 0 ? Y(v) - 10 : Y(v) + 20, 'text-anchor': 'middle', class: 'lbl' }, n)); });
+  for (let b = 1910; b <= 2000; b += (narrow(W) ? 30 : 10)) svg.append(el('text', { x: X(b), y: y0 + 18, 'text-anchor': 'middle' }, b));
+  svg.append(el('text', { x: x1, y: y0 + 32, 'text-anchor': 'end' }, 'birth year'));
+  if (!narrow(W)) [[1931, 'grew up into the 1950s boom', -1], [1950, 'hit 1970s high prices', 1], [1974, 'caught the 1990s boom', -1], [1983, 'dot-com bust and 2008', 1]].forEach(([b, n, s]) => { const v = pts[b - 1910][1]; svg.append(el('text', { x: X(b), y: s < 0 ? Y(v) - 10 : Y(v) + 20, 'text-anchor': 'middle', class: 'lbl' }, n)); });
   const info = windowInfo(birth);
-  if (birth <= 2000 && info.real != null){ svg.append(el('circle', { cx: X(birth), cy: Y(info.real), r: 6, fill: css('--accent'), stroke: css('--surface'), 'stroke-width': 2 })); }
-  $('#retCap').textContent = (info.real == null ? `Born ${birth}: window not started.` : `Born ${birth}: ${fmt(info.real)}% a year after inflation over ${info.known.length} window year${info.known.length > 1 ? 's' : ''}${birth > 2000 ? ' (past the chart\'s edge)' : ''}.`) + ' S&P 500 total return, deflated by US CPI. Damodaran data, 1928 to 2025.';
+  if (birth <= 2000 && info.real != null) svg.append(el('circle', { cx: X(birth), cy: Y(info.real), r: 6, fill: css('--accent'), stroke: css('--surface'), 'stroke-width': 2 }));
+  $('#retCap').innerHTML = (info.real == null ? `<b>Born ${birth}:</b> not started.` : `<b>Born ${birth}:</b> ${fmt(info.real)}% a year${birth > 2000 ? ' so far (off the right edge of this chart)' : ''}.`) + ' Green dot is you.';
 }
 
-/* PERSONALITY */
+/* FIRST JOB TAB */
+function renderScar(){
+  const svg = $('#scar'), W = frame(svg, 220);
+  const x0 = 38, x1 = W - 8, y0 = 176, y1 = 16, X = t => x0 + t / 12 * (x1 - x0), Y = v => y1 + v / 10 * (y0 - y1);
+  gridY(svg, x0, x1, [0, 3, 6, 9], Y, v => v ? '-' + v + '%' : '0');
+  const P = [[0, 9], [5, 4.5], [10, 0]];
+  let d = `M${X(0)},${Y(0)}`; for (let t = 0; t <= 12; t += .25){ const v = t <= 5 ? 9 * Math.pow(.5, t / 5) : t <= 10 ? 4.5 * (10 - t) / 5 : 0; d += `L${X(t).toFixed(1)},${Y(v).toFixed(1)}`; } d += `L${X(12)},${Y(0)}Z`;
+  svg.append(el('path', { d, fill: css('--accent-soft'), stroke: css('--accent'), 'stroke-width': 2.5 }));
+  P.forEach(([t, v]) => { svg.append(el('circle', { cx: X(t), cy: Y(v), r: 5, fill: css('--accent') })); });
+  svg.append(el('text', { x: X(0) + 10, y: Y(9) + 4, class: 'strong' }, 'about 9% lower pay'));
+  svg.append(el('text', { x: X(5) + 10, y: Y(4.5) + 4, class: 'strong' }, 'half by year 5'));
+  svg.append(el('text', { x: X(10), y: Y(0) - 10, 'text-anchor': 'middle', class: 'strong' }, 'gone by about 10'));
+  for (let t = 0; t <= 12; t += 2) svg.append(el('text', { x: X(t), y: y0 + 18, 'text-anchor': 'middle' }, t));
+  svg.append(el('text', { x: x1, y: y0 + 32, 'text-anchor': 'end' }, 'years since graduating'));
+}
+function renderJob(){
+  renderScar();
+  hbars($('#kahn'), [['First year', 7, '--rep', '-6 to -8%'], ['15 years later', 2.5, '--rep', '-2.5%']], { max: 9, lw: 120 });
+  hbars($('#who'), [['Strongest grads', 1, '--mute', '1x'], ['Weakest grads', 3.5, '--accent', '3 to 4x']], { max: 4.2, lw: 130 });
+  const gy = birth + 22, f = [];
+  if (gy <= LAST){ const r = REC.filter(x => { const [a, e] = recYears(x); return e >= gy - 1 && a <= gy + 1; });
+    f.push([`Born ${birth}: graduating around ${gy}.`, r.length ? `There was a recession close to then (${r.map(x => x[2]).join(', ')}). Graduates of that time started behind, and the ones who switched to better employers caught up fastest.` : 'No recession right around then, so the classic recession scar should not apply.', 'NBER recession dates; age 22 is an assumption.']); }
+  else f.push([`Born ${birth}: graduating around ${gy}.`, 'Nobody knows yet whether that will be a recession year. If it is, the research says mobility is the repair: keep switching toward better employers.', 'Oreopoulos et al., 2012.']);
+  f.push(['A bad first job can cost more than waiting.', 'One economist estimates that taking a year or two to find a good first job can lose less money overall than locking into a poor one during a recession.', 'Lisa Kahn, as reported by Infometrics.']);
+  f.push(['Your first job also changes your personality.', 'People who start their first real job become more <button class="t" data-k="conscientiousness">conscientious</button> than people the same age who have not. Commitment to the role is what does it.', 'Specht et al., 2011.']);
+  $('#jobFindings').innerHTML = f.map(x => `<div class="finding"><p><b>${x[0]}</b> ${x[1]}</p><p class="src">${x[2]}</p></div>`).join('');
+  document.querySelectorAll('#jobFindings .t').forEach(x => { x.type = 'button'; x.setAttribute('aria-expanded', 'false'); });
+}
+
+/* PERSONALITY TAB */
+function renderRace(){
+  const svg = $('#race'), W = frame(svg, 210);
+  const xa = W * .22, xb = W * .78, Y = v => 186 - v * 1.6;
+  const people = [[20, 46], [38, 60], [52, 74], [66, 84], [80, 96]];
+  const cols = ['--ink-3', '--ink-3', '--accent', '--ink-3', '--ink-3'];
+  svg.append(el('text', { x: xa, y: 202, 'text-anchor': 'middle', class: 'strong' }, 'age 20'));
+  svg.append(el('text', { x: xb, y: 202, 'text-anchor': 'middle', class: 'strong' }, 'age 40'));
+  people.forEach(([a, b], i) => {
+    svg.append(el('line', { x1: xa, x2: xb, y1: Y(a), y2: Y(b), stroke: css(cols[i]), 'stroke-width': i === 2 ? 3 : 1.5 }));
+    svg.append(el('circle', { cx: xa, cy: Y(a), r: 5, fill: css(cols[i]) })); svg.append(el('circle', { cx: xb, cy: Y(b), r: 5, fill: css(cols[i]) }));
+  });
+  svg.append(el('text', { x: xb + 10, y: Y(74) + 4, class: 'strong' }, '3rd'));
+  svg.append(el('text', { x: xa - 10, y: Y(52) + 4, 'text-anchor': 'end', class: 'strong' }, '3rd'));
+  svg.append(el('text', { x: 4, y: 14, class: 'lbl' }, 'more organised'));
+  svg.append(el('text', { x: 4, y: 182, class: 'lbl' }, 'less'));
+}
 function renderPersona(){
-  const svg = $('#persona'); svg.innerHTML = '';
-  const P = [[10, .31, 'childhood'], [20, .54, 'college years'], [30, .64, 'age 30'], [60, .74, '50 to 70']];
-  const x0 = 44, x1 = 944, y0 = 200, y1 = 16, X = a => x0 + (a - 5) / 65 * (x1 - x0), Y = v => y0 - v / .9 * (y0 - y1);
-  axesY(svg, x0, x1, [0, .3, .6, .9], Y, ['0', '.3', '.6', '.9']);
+  const svg = $('#persona'), W = frame(svg, 210);
+  const P = [[10, .31, 'child'], [20, .54, 'college'], [30, .64, '30'], [60, .74, '50 to 70']];
+  const x0 = 30, x1 = W - 10, y0 = 172, y1 = 16, X = a => x0 + (a - 5) / 65 * (x1 - x0), Y = v => y0 - v / .9 * (y0 - y1);
+  gridY(svg, x0, x1, [0, .3, .6, .9], Y, v => v ? '.' + Math.round(v * 10) : '0');
   svg.append(el('rect', { x: X(25), y: y1, width: X(70) - X(25), height: y0 - y1, fill: css('--accent-soft'), opacity: .7 }));
-  svg.append(el('text', { x: X(25) + 8, y: y1 + 14, class: 'lbl' }, 'little further rise after 25 (2022 update)'));
+  svg.append(el('text', { x: X(26), y: y1 + 14, class: 'lbl' }, 'flat after 25'));
   let d = ''; P.forEach(([a, v], i) => d += (i ? 'L' : 'M') + X(a) + ',' + Y(v));
   svg.append(el('path', { d, fill: 'none', stroke: css('--ink'), 'stroke-width': 2 }));
-  P.forEach(([a, v, n]) => { svg.append(el('circle', { cx: X(a), cy: Y(v), r: 4.5, fill: css('--ink') })); svg.append(el('text', { x: X(a), y: Y(v) - 12, 'text-anchor': 'middle', class: 'strong' }, '.' + String(Math.round(v * 100)).padStart(2, '0'))); svg.append(el('text', { x: X(a), y: y0 + 18, 'text-anchor': 'middle' }, n)); });
-  const ma = age(); if (ma >= 5 && ma <= 70){ svg.append(el('line', { x1: X(ma), x2: X(ma), y1: y1, y2: y0, stroke: css('--accent'), 'stroke-width': 2 })); svg.append(el('text', { x: X(ma) + 6, y: y0 - 8, class: 'strong' }, 'you, ' + ma)); }
+  P.forEach(([a, v, n]) => { svg.append(el('circle', { cx: X(a), cy: Y(v), r: 4.5, fill: css('--ink') })); svg.append(el('text', { x: X(a), y: Y(v) - 12, 'text-anchor': 'middle', class: 'strong' }, '.' + Math.round(v * 100))); svg.append(el('text', { x: X(a), y: y0 + 18, 'text-anchor': 'middle' }, n)); });
+  const ma = age(); if (ma >= 5 && ma <= 70){ svg.append(el('line', { x1: X(ma), x2: X(ma), y1, y2: y0, stroke: css('--accent'), 'stroke-width': 2 })); svg.append(el('text', { x: X(ma) + 5, y: y0 - 8, class: 'strong' }, 'you')); }
+}
+function renderGenes(){
+  const svg = $('#genes'), W = frame(svg, 150);
+  const x0 = 0, x1 = W, g = .4;
+  svg.append(el('rect', { x: x0, y: 10, width: (x1 - x0) * g, height: 44, rx: 6, fill: css('--accent') }));
+  svg.append(el('rect', { x: x0 + (x1 - x0) * g + 3, y: 10, width: (x1 - x0) * (1 - g) - 3, height: 44, rx: 6, fill: css('--mute') }));
+  const bc = narrow(W) ? 'strong' : 'big';
+  svg.append(el('text', { x: 12, y: 37, class: bc, style: 'fill:var(--accent-ink)' }, '40% genes'));
+  svg.append(el('text', { x: x0 + (x1 - x0) * g + 14, y: 37, class: bc }, narrow(W) ? '60% other' : '60% everything else'));
+  svg.append(el('text', { x: 0, y: 84, class: 'lbl' }, 'Twin studies'));
+  svg.append(el('rect', { x: 110, y: 74, width: (W - 160) * .47, height: 14, rx: 3, fill: css('--accent') })); svg.append(el('text', { x: 116 + (W - 160) * .47, y: 85, class: 'strong' }, '47%'));
+  svg.append(el('text', { x: 0, y: 114, class: 'lbl' }, 'Family studies'));
+  svg.append(el('rect', { x: 110, y: 104, width: (W - 160) * .22, height: 14, rx: 3, fill: css('--accent') })); svg.append(el('text', { x: 116 + (W - 160) * .22, y: 115, class: 'strong' }, '22%'));
+}
+function renderShift(){
+  const svg = $('#shift'), W = frame(svg, 170);
+  const x0 = 8, x1 = W - 8, base = 140, X = z => x0 + (z + 3.2) / 6.4 * (x1 - x0);
+  const pdf = z => Math.exp(-z * z / 2);
+  const curve = (m, col, dash) => { let d = ''; for (let z = -3.2; z <= 3.2; z += .05) d += (d ? 'L' : 'M') + X(z).toFixed(1) + ',' + (base - pdf(z - m) * 110).toFixed(1); svg.append(el('path', { d, fill: 'none', stroke: css(col), 'stroke-width': 2.5, 'stroke-dasharray': dash || '' })); };
+  curve(-.185, '--ink-3', '5 4'); curve(.185, '--accent');
+  svg.append(el('line', { x1: x0, x2: x1, y1: base, y2: base, stroke: css('--rule') }));
+  svg.append(el('line', { x1: X(-.185), x2: X(-.185), y1: base, y2: base - 110, stroke: css('--ink-3'), 'stroke-dasharray': '3 3' }));
+  svg.append(el('line', { x1: X(.185), x2: X(.185), y1: base, y2: base - 110, stroke: css('--accent') }));
+  svg.append(el('text', { x: X(-.185) - 6, y: 22, 'text-anchor': 'end', class: 'lbl' }, 'before'));
+  svg.append(el('text', { x: X(.185) + 6, y: 22, class: 'strong' }, 'after'));
+  svg.append(el('text', { x: W / 2, y: 162, 'text-anchor': 'middle' }, 'trait score'));
 }
 
-/* SUBSTANCES: window status from age */
+/* SUBSTANCES TAB */
 function renderSubs(){
   const a = age();
   const set = (id, open, txt) => { const e = $(id); e.textContent = txt; e.classList.toggle('open', open); };
-  set('#st-nic', a <= 26, a <= 18 ? `At ${a}: inside the window where nearly all smokers start.` : a <= 26 ? `At ${a}: the window closes around 26.` : `At ${a}: past the window where 99% start.`);
-  set('#st-alc', a < 21, a < 15 ? `At ${a}: before the highest-risk onset age.` : a < 21 ? `At ${a}: later onset still lowers the odds.` : `At ${a}: onset risk is about the past; maturing out is the live question.`);
-  set('#st-can', a < 18, a < 18 ? `At ${a}: in the adolescent-onset window the IQ finding is about.` : `At ${a}: past adolescent onset; persistence into adulthood is the live question.`);
+  set('#st-nic', a <= 26, a <= 18 ? `At ${a}: in the window where almost all smokers start.` : a <= 26 ? `At ${a}: this window closes around 26.` : `At ${a}: past the window where 99% start.`);
+  set('#st-alc', a < 21, a < 15 ? `At ${a}: before the riskiest starting age.` : a < 21 ? `At ${a}: starting later still lowers the risk.` : `At ${a}: starting age is in the past; cutting down is the live question.`);
+  set('#st-can', a < 18, a < 18 ? `At ${a}: inside the teen window the IQ study is about.` : `At ${a}: past teen onset; heavy daily use is the live question.`);
+  // nicotine: stacked bar
+  { const svg = $('#nic'), W = frame(svg, 90); const seg = [[90, 'by 18', '--accent'], [9, '18 to 26', '--accent-mid'], [1, 'after 26', '--mute']]; let x = 0;
+    seg.forEach(([v, n, c], i) => { const ww = W * v / 100; svg.append(el('rect', { x: x + (i ? 2 : 0), y: 8, width: Math.max(2, ww - (i ? 2 : 0)), height: 40, rx: 5, fill: css(c) }));
+      if (i === 0) svg.append(el('text', { x: x + 12, y: 33, class: narrow(W) ? 'strong' : 'big', style: 'fill:var(--accent-ink)' }, narrow(W) ? '9 in 10 tried by 18' : 'about 9 in 10 tried by 18'));
+      x += ww; });
+    svg.append(el('text', { x: W, y: 70, 'text-anchor': 'end', class: 'strong' }, '99% had tried by 26')); svg.append(el('text', { x: 0, y: 70, class: 'lbl' }, 'adults who smoke daily')); }
+  hbars($('#alc'), [['First drink before 15', 40, '--accent', 'about 40%'], ['at 17', 25, '--accent-mid', '25%'], ['at 21 or 22', 10, '--mute', '10%'], ['at 23', 15, '--mute', '15%'], ['at 24', 14, '--mute', '14%']], { max: 45, lw: 170, rh: 38 });
+  hbars($('#psy'), [['Never used', 1, '--mute', '1 (baseline)'], ['Daily, weaker weed', 2.2, '--accent-mid', '2.2x'], ['Daily, any strength', 3.2, '--accent-mid', '3.2x'], ['Daily, high-potency', 4.8, '--accent', '4.8x']], { max: 5.4, lw: 170, rh: 38 });
 }
 
-/* WHAT TO DO */
+/* RELIGION TAB */
+function renderFaith(){
+  { const svg = $('#switch'), W = frame(svg, 140); const a0 = 10, a1 = 60, x0 = 0, x1 = W - 4, X = a => x0 + (a - a0) / (a1 - a0) * (x1 - x0), nar = narrow(W);
+    for (let a = 10; a <= 60; a += 10){ svg.append(el('line', { x1: X(a), x2: X(a), y1: 8, y2: 112, stroke: css('--grid') })); svg.append(el('text', { x: X(a), y: 130, 'text-anchor': 'middle' }, a)); }
+    svg.append(el('rect', { x: X(13), y: 16, width: X(24) - X(13), height: 22, rx: 4, fill: css('--accent') }));
+    svg.append(el('text', { x: X(24) + 8, y: 32, class: 'strong' }, nar ? 'most leave by 24' : 'most who leave their childhood religion do so before 24'));
+    svg.append(el('rect', { x: X(13), y: 50, width: X(36) - X(13), height: 22, rx: 4, fill: css('--accent-mid') }));
+    svg.append(el('text', { x: X(36) + 8, y: 66, class: 'strong' }, nar ? 'most join by 36' : 'most join their current religion before 36'));
+    svg.append(el('rect', { x: X(50), y: 84, width: X(60) - X(50), height: 22, rx: 4, fill: css('--mute') }));
+    svg.append(el('text', { x: X(50) - 8, y: 100, 'text-anchor': 'end', class: 'strong' }, 'very few switch after 50'));
+    const ma = age(); if (ma >= 10 && ma <= 60){ svg.append(el('line', { x1: X(ma), x2: X(ma), y1: 4, y2: 112, stroke: css('--ink'), 'stroke-width': 2 })); svg.append(el('text', { x: X(ma) + 4, y: 120, class: 'strong' }, 'you')); } }
+  { const svg = $('#faithAge'), W = frame(svg, 180); const groups = [['18 to 24', 46, 43], ['74 and over', 80, 13]], x0 = 0, bw = (W - 20) / 2;
+    groups.forEach(([n, c, u], i) => { const gx = x0 + i * (bw + 20), cw = bw / 2 - 6, Y = v => 140 - v * 1.5;
+      svg.append(el('rect', { x: gx, y: Y(c), width: cw, height: c * 1.5, rx: 4, fill: css('--accent') })); svg.append(el('text', { x: gx + cw / 2, y: Y(c) - 6, 'text-anchor': 'middle', class: 'strong' }, c + '%'));
+      svg.append(el('rect', { x: gx + cw + 8, y: Y(u), width: cw, height: u * 1.5, rx: 4, fill: css('--mute') })); svg.append(el('text', { x: gx + cw + 8 + cw / 2, y: Y(u) - 6, 'text-anchor': 'middle', class: 'strong' }, u + '%'));
+      svg.append(el('text', { x: gx + bw / 2, y: 160, 'text-anchor': 'middle', class: 'lbl' }, n)); });
+    svg.append(el('rect', { x: 0, y: 168, width: 10, height: 10, fill: css('--accent') })); svg.append(el('text', { x: 14, y: 177 }, 'Christian'));
+    svg.append(el('rect', { x: 90, y: 168, width: 10, height: 10, fill: css('--mute') })); svg.append(el('text', { x: 104, y: 177 }, 'no religion')); }
+  hbars($('#sticky'), [['Oldest adults', 51, '--accent', '51%'], ['Ages 18 to 24', 28, '--accent-mid', '28%']], { max: 60, lw: 120 });
+  { const svg = $('#trend'), W = frame(svg, 180); const pts = [[2007, 78], [2014, 71], [2024, 62]], x0 = 70, x1 = W - 44, X = y => x0 + (y - 2007) / 17 * (x1 - x0), Y = v => 150 - (v - 50) * 4;
+    gridY(svg, 40, W - 4, [50, 60, 70, 80], Y, v => v + '%');
+    let d = ''; pts.forEach(([y, v], i) => d += (i ? 'L' : 'M') + X(y) + ',' + Y(v)); svg.append(el('path', { d, fill: 'none', stroke: css('--accent'), 'stroke-width': 3 }));
+    pts.forEach(([y, v]) => { svg.append(el('circle', { cx: X(y), cy: Y(v), r: 5, fill: css('--accent') })); svg.append(el('text', { x: X(y), y: Y(v) - 12, 'text-anchor': 'middle', class: 'strong' }, v + '%')); svg.append(el('text', { x: X(y), y: 174, 'text-anchor': 'middle' }, y === 2024 ? '2023-24' : y)); }); }
+}
+
+/* MUSIC AND FRIENDS TAB */
+function renderTaste(){
+  { const svg = $('#music'), W = frame(svg, 150), nar = narrow(W); const a0 = 8, a1 = 40, x0 = nar ? 0 : 150, x1 = W - 6, X = a => x0 + (a - a0) / (a1 - a0) * (x1 - x0);
+    for (let a = 10; a <= 40; a += (nar ? 10 : 5)){ svg.append(el('line', { x1: X(a), x2: X(a), y1: 8, y2: 124, stroke: css('--grid') })); svg.append(el('text', { x: X(a), y: 142, 'text-anchor': 'middle' }, a)); }
+    const rows = [['Men\'s favourite songs', 13, 16, 14, '--accent', 'peak 14'], ['Women\'s favourite songs', 11, 14, 13, '--accent', 'peak 13'], ['Still exploring new music', 13, 33, null, '--accent-mid', 'tails off around 33']];
+    rows.forEach(([n, a, b, pk, c, t], i) => { const y = 14 + i * 38;
+      svg.append(el('text', { x: 0, y: nar ? y + 2 : y + 16, class: 'row-lbl' }, n));
+      const by = nar ? y + 8 : y + 4; svg.append(el('rect', { x: X(a), y: by, width: X(b) - X(a), height: 16, rx: 4, fill: css(c) }));
+      if (pk) svg.append(el('circle', { cx: X(pk), cy: by + 8, r: 4, fill: css('--surface') }));
+      svg.append(el('text', { x: X(b) + 8, y: by + 12, class: 'strong' }, t)); });
+    const ma = age(); if (ma >= a0 && ma <= a1){ svg.append(el('line', { x1: X(ma), x2: X(ma), y1: 4, y2: 124, stroke: css('--ink'), 'stroke-width': 2 })); svg.append(el('text', { x: X(ma) + 4, y: 132, class: 'strong' }, 'you')); } }
+  { const svg = $('#alone'), W = frame(svg, 190); const pts = [[15, 193], [25, 275], [35, 263], [45, 309], [55, 384], [65, 444], [75, 463], [80, 477]];
+    const x0 = 36, x1 = W - 8, X = a => x0 + (a - 15) / 65 * (x1 - x0), Y = v => 160 - v / 500 * 144;
+    gridY(svg, x0, x1, [0, 200, 400], Y);
+    let d = ''; pts.forEach(([a, v], i) => d += (i ? 'L' : 'M') + X(a).toFixed(1) + ',' + Y(v).toFixed(1));
+    svg.append(el('path', { d: d + `L${X(80)},${Y(0)}L${X(15)},${Y(0)}Z`, fill: css('--accent-soft') }));
+    svg.append(el('path', { d, fill: 'none', stroke: css('--accent'), 'stroke-width': 2.5 }));
+    pts.forEach(([a, v]) => { svg.append(el('circle', { cx: X(a), cy: Y(v), r: 3.5, fill: css('--accent') })); if (a % 20 === 15 || a === 80) svg.append(el('text', { x: X(a), y: Y(v) - 10, 'text-anchor': 'middle', class: 'strong' }, v)); svg.append(el('text', { x: X(a), y: 178, 'text-anchor': 'middle' }, a)); }); }
+  hbars($('#circle'), [['Men at 25', 19, '--accent', '19 a month'], ['Women at 25', 17.5, '--accent-mid', '17.5 a month']], { max: 22, lw: 110 });
+}
+
+/* WHAT TO DO TAB */
 const BANDS = {
   early: { moves: [
-    ['Delay the first cigarette, drink and joint.', 'Onset age is the strongest lever in the substance data. Nearly 9 in 10 daily smokers started by 18; drinking before 15 goes with about four times the later dependence of starting at 21.', 'CDC; Grant and Dawson 1997'],
-    ['Collect inputs widely, commit late.', 'Events between 14 and 24 weigh most in your lifelong party loyalty, with a peak near 18. Read the best case for the side you dislike before your defaults set.', 'Ghitza, Gelman and Auerbach'],
-    ['Build the habits behind conscientiousness now.', 'Rank stability is still low in your teens (around .5 by the college years), so moving your position is cheapest now. Sleep, training, a system for work.', 'Roberts and DelVecchio 2000'] ],
+    ['Put off the first cigarette, drink and joint.', 'Starting age is the biggest lever in the data. 9 in 10 daily smokers started by 18. Drinking before 15 goes with about four times the later problems of starting at 21.', 'CDC; Grant and Dawson 1997'],
+    ['Listen widely, decide late.', 'What you see between 14 and 24 shapes your politics the most, peaking near 18. Hear the best case for the side you dislike before your views set.', 'Ghitza, Gelman and Auerbach'],
+    ['Build organised habits now.', 'Your place on traits like <button class="t" data-k="conscientiousness">conscientiousness</button> is still moving a lot in your teens, so it is cheapest to change now. Sleep, training, a system for schoolwork.', 'Roberts and DelVecchio 2000'] ],
     watch: [
-    ['ph-users-three', 'One feed, one friend group.', 'Experience amplifies the traits you bring. A narrow environment narrows you.'],
-    ['ph-tag', 'Fixed labels about yourself.', 'Personality ranks are far from settled at 16. "I am not a maths person" is a forecast, not a fact.'] ] },
+    ['ph-users-three', 'Only one feed, one friend group.', 'Experience makes the traits you already have stronger. A narrow world makes you narrower.'],
+    ['ph-tag', 'Fixed labels about yourself.', 'Your personality is far from set at 16. "I am not a maths person" is a guess, not a fact.'] ] },
   mid: { moves: [
-    ['Pick environments on purpose.', 'Experience magnifies existing traits, and your number of regular contacts peaks around 25. The people around you now are the main channel through which beliefs harden.', 'Roberts, Wood and Caspi 2008; Bhattacharya et al. 2016'],
-    ['Treat your read on the economy as one regime.', 'A recession at 18 to 25 leaves lifelong beliefs about luck, effort and institutions. Check your priors against long data before you bet on them.', 'Giuliano and Spilimbergo 2014'],
-    ['Practise the behaviour, not the wish.', 'Trait change follows completed behaviour goals: speak first in the meeting, finish the plan. Wanting to change is not enough.', 'Hudson et al. 2018'] ],
+    ['Pick the people around you on purpose.', 'Your circle is at its widest around 25, and life tends to strengthen the traits you bring. The people around you now are how your beliefs harden.', 'Roberts, Wood and Caspi 2008; Bhattacharya et al. 2016'],
+    ['Treat your view of the economy as one sample.', 'A <button class="t" data-k="recession">recession</button> at 18 to 25 changes beliefs about luck, effort and trust for life. Check your gut against long-run data before betting on it.', 'Giuliano and Spilimbergo 2014'],
+    ['Practise the behaviour, not the wish.', 'Personality changes when you actually do the thing: speak first in the meeting, finish the plan. Wanting to change is not enough.', 'Hudson et al. 2018'] ],
     watch: [
-    ['ph-house', 'Leaving home.', 'Heavy drinking typically rises when people move out. Most cut down later, through work and relationships.'],
-    ['ph-warning', 'Daily high-potency cannabis.', 'About 4.8 times the odds of a first psychotic episode across 11 European sites.'] ] },
+    ['ph-house', 'Moving out.', 'Heavy drinking usually goes up when people leave home. Most cut down later, through work and relationships.'],
+    ['ph-warning', 'Strong weed every day.', 'About 4.8 times the odds of a first psychotic episode, in a study across 11 European cities.'] ] },
   late: { moves: [
-    ['Choose the first serious employer carefully.', 'Initial placement drives long-run earnings. Graduating into a recession cost about 9% of earnings at the start, closing over 8 to 10 years. Switching to better firms is the repair.', 'Oreopoulos, von Wachter and Heisz 2012'],
-    ['Commit to roles that build the traits you want.', 'People who start a first job become more conscientious than peers who have not. Commitment to the role is what does it.', 'Specht et al. 2011'],
-    ['Change a trait now if you want to.', 'Rank stability levels off around 25. It stays changeable after, but now is the cheapest point left.', 'Bleidorn et al. 2022'] ],
+    ['Choose your first serious employer carefully.', 'Where you start shapes your pay for years. Graduating into a recession cost about 9% of pay at the start and took about 10 years to fade. Moving to better employers is the fix.', 'Oreopoulos, von Wachter and Heisz 2012'],
+    ['Commit to roles that build the person you want to be.', 'People who start a first real job become more organised and reliable than people the same age who have not.', 'Specht et al. 2011'],
+    ['If you want to change a trait, now is cheap.', 'Your place on each trait settles around 25. It can still change later, but this is the easiest point left.', 'Bleidorn et al. 2022'] ],
     watch: [
-    ['ph-hourglass', 'The end-of-history illusion.', 'People of every age think they have changed a lot and will change little. Avoid irreversible bets on this year\'s preferences.'],
-    ['ph-leaf', 'Persistent use into adulthood.', 'People who keep using cannabis into adulthood miss the normal rise in conscientiousness.'] ] }
+    ['ph-hourglass', 'Thinking you are done changing.', 'People of every age believe they changed a lot in the past but will change little from now on. Avoid big bets you cannot undo on what you want this year.'],
+    ['ph-leaf', 'Daily cannabis into adulthood.', 'People who keep using into adulthood miss the normal rise in being organised and reliable.'] ] }
 };
-const ALWAYS = ['ph-brain', 'The "brain finishes at 25" line.', 'No single study shows it. Development and change continue after 25.'];
-function renderTodo(a){
-  $('#ageOut').textContent = a;
+const ALWAYS = ['ph-brain', 'The "brain finishes at 25" line.', 'No single study shows it. You keep developing and changing after 25.'];
+function renderTodo(){
+  const a = todoAge; $('#ageOut').textContent = a;
   const left = 25 - a;
   $('#ageLeft').innerHTML = left > 0
-    ? `About <b>${left} year${left > 1 ? 's' : ''}</b> left in the steepest part of the window. It narrows, it does not shut: beliefs still move with big shocks until about 40.`
-    : `<b>At the end of the steep part.</b> It narrows, it does not shut: beliefs still move with big shocks until about 40, and traits stay changeable.`;
+    ? `About <b>${left} year${left > 1 ? 's' : ''}</b> left in the most open part. It narrows, it does not slam shut: views can still shift with big events until about 40.`
+    : `<b>At the end of the most open part.</b> It narrows, it does not slam shut: views can still shift until about 40, and traits can still change.`;
+  drawClock($('#clock2'), 14, 32, a, true);
   const band = a <= 17 ? BANDS.early : a <= 21 ? BANDS.mid : BANDS.late;
   $('#moves').innerHTML = band.moves.map(m => `<li><b>${m[0]}</b><p>${m[1]}</p><p class="src">${m[2]}</p></li>`).join('');
   $('#watch').innerHTML = [...band.watch, ALWAYS].map(x => `<li><i class="ph ${x[0]}" aria-hidden="true"></i><span><b>${x[1]}</b> ${x[2]}</span></li>`).join('');
+  document.querySelectorAll('#moves .t').forEach(x => { x.type = 'button'; x.setAttribute('aria-expanded', 'false'); });
 }
 
-/* Tabs */
+/* Render only the visible tab (charts need real widths) */
+const RENDER = { window: renderWindow, cycle: () => { renderWeights(); renderApproval(); renderCohorts(); }, money: () => { renderYearly(); renderReturns(); }, firstjob: renderJob,
+  personality: () => { renderRace(); renderPersona(); renderGenes(); renderShift(); }, substances: renderSubs, faith: renderFaith, taste: renderTaste, todo: renderTodo };
+let current = 'window';
+const renderCurrent = () => { hidePop(); RENDER[current](); };
+
 const tabs = [...document.querySelectorAll('.tab')];
-function select(id, focus){
+function select(id, focus, jump){
+  current = id;
   tabs.forEach(t => { const on = t.dataset.tab === id; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; document.getElementById('p-' + t.dataset.tab).hidden = !on; if (on && focus) t.focus(); if (on) t.scrollIntoView({ block: 'nearest', inline: 'nearest' }); });
   if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
+  renderCurrent();
+  if (jump) document.querySelector('.tabs-bar').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 }
 tabs.forEach((t, i) => {
   t.addEventListener('click', () => select(t.dataset.tab));
   t.addEventListener('keydown', e => { const k = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (k) { e.preventDefault(); select(tabs[(i + k + tabs.length) % tabs.length].dataset.tab, true); } });
 });
 document.querySelectorAll('.gen').forEach(g => g.addEventListener('click', () => setBirth(+g.dataset.year)));
+addEventListener('hashchange', () => { const h = location.hash.slice(1); if (RENDER[h]) select(h); });
 
-function renderAll(){ renderHero(); renderWindow(); renderCycle(); renderReturns(); renderPersona(); renderSubs(); }
-function setBirth(b){ birth = b; $('#birth').value = b; renderAll(); const a = age(); if (a >= 16 && a <= 25){ $('#age').value = a; renderTodo(a); } }
+function setBirth(b){ birth = b; $('#birth').value = b; renderHero(); const a = age(); if (a >= 16 && a <= 25){ todoAge = a; $('#age').value = a; } renderCurrent(); }
 $('#birth').addEventListener('input', e => setBirth(+e.target.value));
-$('#age').addEventListener('input', e => renderTodo(+e.target.value));
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change', renderAll);
+$('#age').addEventListener('input', e => { todoAge = +e.target.value; renderTodo(); });
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', renderCurrent);
+let rz; let lastW = innerWidth; addEventListener('resize', () => { if (innerWidth === lastW) return; lastW = innerWidth; clearTimeout(rz); rz = setTimeout(renderCurrent, 120); });
 
-addEventListener('hashchange', () => { const h = location.hash.slice(1); if (tabs.some(t => t.dataset.tab === h)) select(h); });
+renderHero();
 const start = location.hash.slice(1);
-select(tabs.some(t => t.dataset.tab === start) ? start : 'window');
-renderAll(); renderTodo(22);
+select(RENDER[start] ? start : 'window');
 </script>
 </body>
 </html>
