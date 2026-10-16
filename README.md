@@ -12,6 +12,7 @@ capex-opex-da/index.html  Capex, Opex and D&A
 not-so-cosmic-cycles/index.html  Not-so-cosmic cycles (when beliefs and habits lock in; 9 tabs, plain-language glossary)
 archive/index.html      full list of linked work (nav: Archive)
 labour-economics/index.html  Labour economics study guide
+light-birthday/index.html  Your light-birthday stars (stars whose light left them when you were born; data build in light-birthday/build/)
 assets/                 thumbnails (1200x750 webp)
 ```
 
@@ -30,6 +31,7 @@ Each piece has one source of truth. The site copy is the published version.
 | The Bottom Wage | built from scripts in a Claude session (model.py, template.html); the page embeds all data | /bottom-wage/ |
 | Atlas Through Time | github.com/paul-bebear/atlas-through-time | external, already live |
 | Not-so-cosmic cycles | built from scripts in a Claude session (template, Gallup/NBER/Damodaran data, logo geometry); the page embeds all data. Glossary terms live in the GLOSS object in the script | /not-so-cosmic-cycles/ |
+| Your light-birthday stars | `light-birthday/index.html` itself. Star data is one embedded line, rebuilt by `light-birthday/build/` (see its README) | /light-birthday/ |
 
 When a piece changes: replace its `index.html` here, refresh the thumbnail if the top of the page changed, commit, push. Vercel redeploys in about a minute. URLs never change.
 
