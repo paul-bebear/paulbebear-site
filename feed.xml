@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>Paul Bébéar</title>
+  <link>https://paulbebear.com/</link>
+  <atom:link href="https://paulbebear.com/feed.xml" rel="self" type="application/rss+xml"/>
+  <description>Interactive explainers and analyses on markets, money and history.</description>
+  <language>en</language>
+  <item>
+    <title>Not-so-cosmic cycles</title>
+    <link>https://paulbebear.com/not-so-cosmic-cycles/</link>
+    <guid>https://paulbebear.com/not-so-cosmic-cycles/</guid>
+    <pubDate>Fri, 16 Oct 2026 00:00:00 +0000</pubDate>
+    <description>When do your beliefs, tastes and habits set? Not all at 25. Pick your birth year and see, with charts and sources.</description>
+  </item>
+  <item>
+    <title>SpaceX&#x27;s IPO, checked</title>
+    <link>https://paulbebear.com/spacex-ipo/</link>
+    <guid>https://paulbebear.com/spacex-ipo/</guid>
+    <pubDate>Tue, 13 Oct 2026 00:00:00 +0000</pubDate>
+    <description>A viral video on the SpaceX listing, checked claim by claim. Most of it holds. The index mechanism it blames is described backwards.</description>
+  </item>
+  <item>
+    <title>The Premium Ladder</title>
+    <link>https://paulbebear.com/premium-ladder/</link>
+    <guid>https://paulbebear.com/premium-ladder/</guid>
+    <pubDate>Tue, 13 Oct 2026 00:00:00 +0000</pubDate>
+    <description>How many times the median full-time salary do banking, consulting and Big Tech careers pay, in seven countries, from the first job to 20 years in, before and after tax.</description>
+  </item>
+  <item>
+    <title>Labour economics study guide</title>
+    <link>https://paulbebear.com/labour-economics/</link>
+    <guid>https://paulbebear.com/labour-economics/</guid>
+    <pubDate>Tue, 13 Oct 2026 00:00:00 +0000</pubDate>
+    <description>50 exam questions on labour economics: EU-LFS, labour supply and demand, wages and unemployment, with a study mode.</description>
+  </item>
+  <item>
+    <title>The Half Line</title>
+    <link>https://paulbebear.com/half-line/</link>
+    <guid>https://paulbebear.com/half-line/</guid>
+    <pubDate>Tue, 13 Oct 2026 00:00:00 +0000</pubDate>
+    <description>How few people hold half of all wealth or income, in 26 countries. Toggle wealth or income, remove billionaires, or count public wealth.</description>
+  </item>
+  <item>
+    <title>Capex, opex and D&amp;A</title>
+    <link>https://paulbebear.com/capex-opex-da/</link>
+    <guid>https://paulbebear.com/capex-opex-da/</guid>
+    <pubDate>Tue, 13 Oct 2026 00:00:00 +0000</pubDate>
+    <description>When a cost hits profit, with live charts. One euro spent, two ways to book it, and why regulated grid operators prefer to capitalise.</description>
+  </item>
+  <item>
+    <title>The Bottom Wage</title>
+    <link>https://paulbebear.com/bottom-wage/</link>
+    <guid>https://paulbebear.com/bottom-wage/</guid>
+    <pubDate>Tue, 13 Oct 2026 00:00:00 +0000</pubDate>
+    <description>On paper, New York&#x27;s minimum wage is 2.3 times Utah&#x27;s. In hours of work needed to pay rent and get to work, Salt Lake City&#x27;s lowest-paid workers come out ahead.</description>
+  </item>
+</channel>
+</rss>
