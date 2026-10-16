@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Run the grid</title>
+<meta name="description" content="On 28 April 2025 Spain and Portugal went dark in seconds. Balance a real Spanish grid day, see why inertia and voltage matter, and replay the 90 seconds of the Iberian blackout from the official reports.">
+<meta property="og:title" content="Run the grid">
+<meta property="og:description" content="Can you keep the lights on? Balance a real Spanish grid day, then replay the 28 April 2025 Iberian blackout second by second, from the official reports.">
+<meta property="og:image" content="https://paulbebear.com/assets/og/run-the-grid.jpg">
+<meta property="og:url" content="https://paulbebear.com/run-the-grid/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M6 50 Q19 14 32 50 T58 50 T84 50' fill='none' stroke='%230e6b5c' stroke-width='9' stroke-linecap='round'/%3E%3Ccircle cx='88' cy='50' r='7' fill='%230e6b5c'/%3E%3C/svg%3E">
+<style>
+/* Design read: interactive explainer, same family as light-birthday and not-so-cosmic-cycles. Geist + Geist Mono, one accent
+   (deep teal), light/dark from the system. Teal = frequency and "fine"; amber = voltage and warnings; red = protection acting.
+   Generation colours are data and are listed once in the legend. Radius: panels 12px, controls pill. */
+:root{
+  --bg:#f6f7f8; --surface:#ffffff; --ink:#15181c; --ink-2:#4b525b; --ink-3:#6c737c;
+  --rule:#e1e4e8; --grid:#eceef1; --accent:#0e6b5c; --accent-ink:#ffffff; --accent-soft:#e2f0ed; --accent-mid:#8cc3b8;
+  --warn:#b5651d; --warn-soft:#f6e8da; --bad:#c0453b; --bad-soft:#f7e1df; --mute:#b9c0c8;
+  --c-pv:#e3a21a; --c-st:#cf6f2e; --c-wind:#4fa3b3; --c-hydro:#2f68b0; --c-pump:#93b4dc; --c-nuc:#7a5aa6; --c-gas:#8b6b55; --c-other:#a2a8ae; --c-ex:#46525e;
+  --shadow:0 1px 2px rgba(21,24,28,.05),0 12px 32px -12px rgba(21,24,28,.14);
+  --r:12px;
+  --sans:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111315; --surface:#181b1e; --ink:#eceef0; --ink-2:#b3b9c0; --ink-3:#8b929a;
+  --rule:#262a2f; --grid:#22262a; --accent:#4cc3ab; --accent-ink:#0b1714; --accent-soft:#16302b; --accent-mid:#2c6f62;
+  --warn:#f0b35a; --warn-soft:#3a2c1a; --bad:#ef6a5e; --bad-soft:#3a1e1c; --mute:#4a5058;
+  --c-pv:#f2c14e; --c-st:#ea8d52; --c-wind:#67c3d3; --c-hydro:#6b9ee3; --c-pump:#3f5f86; --c-nuc:#a98cd6; --c-gas:#b59a86; --c-other:#6c737a; --c-ex:#c3cbd3;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 32px -12px rgba(0,0,0,.6); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111315; --surface:#181b1e; --ink:#eceef0; --ink-2:#b3b9c0; --ink-3:#8b929a;
+  --rule:#262a2f; --grid:#22262a; --accent:#4cc3ab; --accent-ink:#0b1714; --accent-soft:#16302b; --accent-mid:#2c6f62;
+  --warn:#f0b35a; --warn-soft:#3a2c1a; --bad:#ef6a5e; --bad-soft:#3a1e1c; --mute:#4a5058;
+  --c-pv:#f2c14e; --c-st:#ea8d52; --c-wind:#67c3d3; --c-hydro:#6b9ee3; --c-pump:#3f5f86; --c-nuc:#a98cd6; --c-gas:#b59a86; --c-other:#6c737a; --c-ex:#c3cbd3;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 32px -12px rgba(0,0,0,.6); color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-underline-offset:3px}
+h1,h2,h3{margin:0;letter-spacing:-.025em;text-wrap:balance}
+p{margin:0}
+button,input,select{font:inherit;color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:clamp(16px,4vw,40px)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+[hidden]{display:none!important}
+svg text{font-family:var(--mono)}
+
+.top{padding-top:22px}
+.home{font:500 13px var(--mono);color:var(--ink-3);text-decoration:none}
+.home:hover{color:var(--ink)}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,6fr);gap:clamp(28px,5vw,56px);align-items:center;padding-block:clamp(28px,5vw,56px) clamp(28px,4vw,40px)}
+.title-row{display:flex;align-items:center;gap:18px}
+.wave{width:clamp(64px,9vw,92px);height:auto;flex:none;color:var(--accent);overflow:visible}
+.hero h1{font-size:clamp(2.4rem,5.4vw,3.8rem);line-height:1.02;font-weight:650}
+.lede{margin-top:20px;color:var(--ink-2);font-size:1.15rem;max-width:44ch}
+.lede b{color:var(--ink);font-weight:600}
+.cta{margin-top:24px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);font:600 .95rem var(--sans);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.sm{height:36px;padding:0 14px;font-size:.86rem}
+.btn:active{transform:translateY(1px)}
+.btn[disabled]{opacity:.45;cursor:default}
+.herofig{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 16px 12px}
+.herofig .lab{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-weight:500;color:var(--ink-2);font-size:.92rem}
+.herofig svg{display:block;width:100%;height:auto;margin-top:6px}
+.tag{font:500 .72rem var(--mono);color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:999px;white-space:nowrap}
+
+/* Sticky section nav */
+.tabs-bar{position:sticky;top:0;z-index:15;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--rule)}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-block:10px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;font:500 .92rem var(--sans);padding:8px 14px;border-radius:999px;border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);text-decoration:none;white-space:nowrap;transition:background .2s var(--ease),color .2s var(--ease),border-color .2s var(--ease)}
+.tab:hover{color:var(--ink);border-color:var(--ink-3)}
+.tab.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+
+/* Sections */
+.panel{padding-block:clamp(36px,5vw,64px) clamp(28px,4vw,48px);scroll-margin-top:56px}
+.panel h2{font-size:clamp(1.7rem,3.2vw,2.4rem);line-height:1.08;font-weight:650}
+.panel h3{font-size:1.15rem;font-weight:600;letter-spacing:-.015em}
+.kicker{font:500 .8rem var(--mono);color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.intro{margin-top:14px;color:var(--ink-2);max-width:64ch;font-size:1.05rem}
+.intro b{color:var(--ink);font-weight:600}
+.block{margin-top:clamp(32px,4vw,48px)}
+.prose p{max-width:66ch;color:var(--ink-2)}
+.prose p+p{margin-top:12px}
+.prose b{color:var(--ink);font-weight:600}
+.prose h3{margin-top:28px;margin-bottom:8px}
+.cap{font-size:.86rem;color:var(--ink-3);margin-top:8px;line-height:1.45}
+.cap b{color:var(--ink-2);font-weight:600}
+.note{margin-top:14px;font-size:.95rem;color:var(--ink-2);max-width:72ch;background:var(--accent-soft);border-radius:var(--r);padding:12px 16px}
+.note b{color:var(--ink)}
+.note.warn{background:var(--warn-soft)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.84rem;color:var(--ink-2);margin-top:10px}
+.key{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:6px}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:16px 18px}
+
+/* Source tags: tap to jump to the source */
+.src{display:inline-block;font:500 .68rem/1.6 var(--mono);letter-spacing:.02em;color:var(--ink-3);border:1px solid var(--rule);border-radius:999px;padding:0 7px;margin-left:2px;text-decoration:none;white-space:nowrap;vertical-align:1px}
+a.src:hover{color:var(--accent);border-color:var(--accent)}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:14px 16px}
+.stat .k{font-size:.85rem;color:var(--ink-3)}
+.stat .v{font:600 1.35rem/1.15 var(--mono);letter-spacing:-.02em;margin-top:6px}
+.stat .s{font-size:.84rem;color:var(--ink-2);margin-top:6px;line-height:1.4}
+
+/* Mix bar */
+.mix{margin-top:16px}
+.mixbar{display:flex;height:34px;border-radius:8px;overflow:hidden;border:1px solid var(--rule)}
+.mixbar i{display:block;height:100%;min-width:1px}
+.mixrow{display:grid;grid-template-columns:118px minmax(0,1fr) 92px;gap:12px;align-items:center;margin-top:10px;font-size:.88rem;color:var(--ink-2)}
+.mixrow .num{text-align:right;color:var(--ink)}
+
+/* Morning timeline */
+.morning{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:0}
+.morning li{display:grid;grid-template-columns:96px 22px minmax(0,1fr);gap:0 10px;font-size:.95rem;color:var(--ink-2)}
+.morning .tm{font:600 .88rem/1.9 var(--mono);color:var(--ink);text-align:right}
+.morning .rail{position:relative}
+.morning .rail::before{content:"";position:absolute;left:10px;top:0;bottom:0;width:2px;background:var(--rule)}
+.morning .rail::after{content:"";position:absolute;left:5px;top:9px;width:12px;height:12px;border-radius:50%;background:var(--surface);border:2px solid var(--ink-3)}
+.morning li.osc .rail::after{border-color:var(--warn);background:var(--warn-soft)}
+.morning li.act .rail::after{border-color:var(--accent);background:var(--accent-soft)}
+.morning li.crit .rail::after{border-color:var(--bad);background:var(--bad-soft)}
+.morning .tx{padding-bottom:14px}
+.morning .tx b{color:var(--ink);font-weight:600}
+.lgd-dot{display:inline-block;width:10px;height:10px;border-radius:50%;border:2px solid;margin-right:6px;vertical-align:-1px}
+
+/* Replay */
+.replay{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,4fr);gap:16px;margin-top:18px;align-items:start}
+.rp-main{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--shadow);padding:14px}
+.readouts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.ro{border:1px solid var(--grid);border-radius:10px;padding:8px 10px;min-width:0}
+.ro .k{font-size:.74rem;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ro .v{font:600 1.08rem/1.2 var(--mono);letter-spacing:-.02em;margin-top:2px;white-space:nowrap}
+.ro .v small{font-size:.72rem;color:var(--ink-3);font-weight:500}
+.ro.warn{border-color:color-mix(in srgb,var(--warn) 50%,transparent);background:var(--warn-soft)}
+.ro.bad{border-color:color-mix(in srgb,var(--bad) 50%,transparent);background:var(--bad-soft)}
+.ro.bad .v,.ro.warn .v{color:var(--ink)}
+#rpChart{display:block;width:100%;height:auto;margin-top:10px;touch-action:pan-y}
+#rpChart .ax{stroke:var(--rule);stroke-width:1}
+#rpChart .gl{stroke:var(--grid);stroke-width:1}
+#rpChart .tk{font-size:10px;fill:var(--ink-3)}
+#rpChart .tl{font-size:10px;fill:var(--ink-3);paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}
+#rpChart .ttl{font:600 11px var(--sans);fill:var(--ink-2)}
+#rpChart .band{fill:var(--accent-soft)}
+#rpChart .thr{stroke-width:1;stroke-dasharray:3 3}
+#rpChart .thr.w{stroke:var(--warn)}
+#rpChart .thr.b{stroke:var(--bad)}
+#rpChart .thr.a{stroke:var(--accent)}
+#rpChart .vpt{fill:var(--warn);stroke:var(--surface);stroke-width:1.5}
+#rpChart .vline{stroke:var(--warn);stroke-width:2;fill:none}
+#rpChart .fline{stroke:var(--accent);stroke-width:2;fill:none}
+#rpChart .fdash{stroke:var(--accent);stroke-width:2;fill:none;stroke-dasharray:2 4}
+#rpChart .fpt{fill:var(--accent);stroke:var(--surface);stroke-width:1.5}
+#rpChart .evt{stroke:var(--ink-3);stroke-width:1;opacity:.35}
+#rpChart .evt.big{stroke:var(--bad);opacity:.7}
+#rpChart .now{stroke:var(--ink);stroke-width:1.5}
+#rpChart .brk{fill:var(--surface);stroke:var(--rule);stroke-dasharray:2 2}
+#rpChart .fut{opacity:.18}
+#rpChart .lostbar{fill:var(--bad);opacity:.85}
+.rpctl{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;gap:10px;align-items:center;margin-top:10px}
+.play{width:44px;height:44px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-ink);cursor:pointer;display:grid;place-items:center;flex:none}
+.play svg{width:18px;height:18px}
+.iconbtn{width:38px;height:38px;border-radius:50%;border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);cursor:pointer;display:grid;place-items:center}
+.iconbtn svg{width:16px;height:16px}
+.rate{font:500 .76rem var(--mono);color:var(--ink-3);white-space:nowrap}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;cursor:pointer;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:4px;background:linear-gradient(90deg,var(--accent) 0 var(--p,0%),var(--rule) var(--p,0%))}
+input[type=range]::-moz-range-track{height:4px;border-radius:4px;background:var(--rule)}
+input[type=range]::-moz-range-progress{height:4px;border-radius:4px;background:var(--accent)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent);border:3px solid var(--surface);box-shadow:0 0 0 1px var(--accent);margin-top:-9px}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--accent);border:3px solid var(--surface);box-shadow:0 0 0 1px var(--accent)}
+.feed{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);display:flex;flex-direction:column;max-height:640px}
+.feed-now{padding:14px 16px;border-bottom:1px solid var(--rule)}
+.feed-now .t{font:600 .9rem var(--mono);color:var(--accent)}
+.feed-now h3{font-size:1.05rem;margin-top:4px}
+.feed-now p{font-size:.92rem;color:var(--ink-2);margin-top:6px}
+.feed-now .why{margin-top:8px;font-size:.88rem;color:var(--ink);background:var(--warn-soft);border-radius:8px;padding:8px 10px}
+.feed ol{list-style:none;margin:0;padding:6px 6px 8px;overflow:auto;flex:1;min-height:0;overscroll-behavior:contain}
+.feed li button{display:grid;grid-template-columns:86px minmax(0,1fr);gap:8px;width:100%;text-align:left;border:0;background:none;padding:7px 10px;border-radius:8px;cursor:pointer;font-size:.86rem;color:var(--ink-3);line-height:1.35}
+.feed li button .tt{font:500 .78rem/1.5 var(--mono)}
+.feed li.past button{color:var(--ink-2)}
+.feed li.cur button{background:var(--accent-soft);color:var(--ink)}
+.feed li.big button .ev{font-weight:600}
+.feed li button:hover{color:var(--ink)}
+
+/* Positions */
+.pos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
+.pos .card h3{font-size:1.02rem;display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.pos .card .who{font:500 .74rem var(--mono);color:var(--ink-3);font-weight:500;letter-spacing:0}
+.pos .card ul{margin:8px 0 0;padding-left:18px;font-size:.92rem;color:var(--ink-2)}
+.pos .card li+li{margin-top:5px}
+.pos .card q{color:var(--ink)}
+
+/* Glossary terms: dotted underline, tap or hover for the meaning (same as light-birthday) */
+.t{border:0;background:none;padding:0;font:inherit;color:inherit;cursor:help;text-decoration:underline dotted;text-decoration-color:var(--accent);text-underline-offset:4px;text-decoration-thickness:1.5px}
+.t:hover,.t[aria-expanded="true"]{color:var(--accent)}
+#pop{position:absolute;z-index:40;max-width:300px;background:var(--ink);color:var(--bg);font-size:.9rem;line-height:1.45;padding:10px 12px;border-radius:10px;box-shadow:var(--shadow);pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .15s,transform .15s}
+#pop.on{opacity:1;transform:none}
+#pop b{display:block;margin-bottom:2px}
+.gloss{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 40px;margin-top:20px}
+.gloss div{padding-block:8px;border-bottom:1px solid var(--grid);font-size:.93rem;color:var(--ink-2)}
+.gloss dt{font-weight:600;color:var(--ink)}
+.gloss dd{margin:2px 0 0}
+
+/* Sources and method */
+.sources{border-top:1px solid var(--rule);padding-block:clamp(40px,6vw,64px);scroll-margin-top:56px}
+.sources h2{font-size:1.4rem;font-weight:650}
+.sources h2+p{margin-top:8px;color:var(--ink-2);font-size:.95rem;max-width:72ch}
+.srcgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 40px;margin-top:20px;font-size:.88rem;color:var(--ink-2)}
+.srcgrid .s{padding-block:6px;scroll-margin-top:70px}
+.srcgrid .s:target{background:var(--accent-soft);border-radius:8px;outline:6px solid var(--accent-soft)}
+.srcgrid h3{font-size:.95rem;font-weight:600;color:var(--ink)}
+.srcgrid h3 .src{margin-left:6px}
+.srcgrid .s p{margin-top:4px}
+.srcgrid .lic{color:var(--ink-3)}
+.sources a{color:inherit;text-underline-offset:2px}
+.method{max-width:72ch;margin-top:20px;font-size:.92rem;color:var(--ink-2)}
+.method p+p{margin-top:10px}
+.method b{color:var(--ink)}
+.flags{margin-top:20px;font-size:.9rem;color:var(--ink-2);max-width:72ch}
+.flags li+li{margin-top:6px}
+footer{border-top:1px solid var(--rule);padding-block:28px 48px;font-size:.88rem;color:var(--ink-3)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:center}
+footer a{color:var(--ink-2);text-decoration:none}
+footer a:hover{color:var(--ink)}
+footer .coffee{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--rule);border-radius:999px;padding:4px 12px;font-size:.84rem}
+footer .coffee:hover{border-color:var(--ink-3)}
+
+@media (prefers-reduced-motion:no-preference){
+  .wave .w{animation:slide 2.4s linear infinite}
+  @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-40px)}}
+}
+@media (max-width:900px){
+  .hero,.replay{grid-template-columns:1fr}
+  .feed{max-height:420px}
+  .stats{grid-template-columns:1fr 1fr}
+}
+@media (max-width:640px){
+  body{font-size:16px}
+  .srcgrid,.gloss,.pos{grid-template-columns:1fr}
+  .readouts{grid-template-columns:1fr 1fr}
+  .rp-main{padding:10px}
+  .mixrow{grid-template-columns:96px minmax(0,1fr) 78px;gap:8px;font-size:.84rem}
+  .morning li{grid-template-columns:62px 22px minmax(0,1fr);gap:0 6px;font-size:.92rem}
+  .morning .tm{font-size:.8rem}
+  .rpctl{grid-template-columns:auto auto minmax(0,1fr)}
+  .rpctl .rate{grid-column:1/-1}
+}
+</style>
+<!-- seo, previews, analytics -->
+<link rel="canonical" href="https://paulbebear.com/run-the-grid/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Paul Bébéar">
+<link rel="alternate" type="application/rss+xml" title="Paul Bébéar" href="https://paulbebear.com/feed.xml">
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+
+<div class="wrap top"><a class="home" href="/">paulbebear.com</a></div>
+
+<header class="wrap hero">
+  <div>
+    <div class="title-row">
+      <svg class="wave" viewBox="0 0 100 60" aria-hidden="true">
+        <defs><clipPath id="wclip"><rect x="0" y="0" width="80" height="60"/></clipPath></defs>
+        <g clip-path="url(#wclip)"><path class="w" d="M0 30 Q10 6 20 30 T40 30 T60 30 T80 30 T100 30 T120 30" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></g>
+        <circle cx="88" cy="30" r="6" fill="currentColor"/>
+      </svg>
+      <h1>Run the grid</h1>
+    </div>
+    <p class="lede">At 12:33 on <b>28 April 2025</b>, Spain and Portugal went dark in seconds. A power grid has to match supply and demand every second, and hold its <button class="t" data-k="voltage">voltage</button> in a narrow band while it does it. Can you keep the lights on?</p>
+    <div class="cta">
+      <a class="btn" href="#replay" id="ctaPlay">Can you keep the lights on?</a>
+      <a class="btn ghost" href="#replay">Skip to the blackout</a>
+    </div>
+  </div>
+  <figure class="herofig" style="margin:0">
+    <div class="lab"><span>Electricity demand, peninsular Spain</span><span class="tag">REE, 5&#8209;min data</span></div>
+    <svg id="heroChart" viewBox="0 0 520 260" role="img" aria-label="Line chart of electricity demand in peninsular Spain. On 22 April 2025 demand runs between about 20 and 31 gigawatts. On 28 April it follows a similar shape until 12:30, then falls to zero and climbs back slowly through the evening and night."></svg>
+    <figcaption class="cap">Monday 28 April 2025 (teal) against Tuesday 22 April, a normal spring weekday (grey). Demand is what consumers drew, served from the grid. Source: <a href="#s-ree-data">Red Eléctrica</a>.</figcaption>
+  </figure>
+</header>
+
+<nav class="tabs-bar" aria-label="Sections">
+  <div class="wrap">
+    <div class="tabs" id="tabs">
+      <a class="tab" href="#replay">28 April</a>
+      <a class="tab" href="#blame">Who's to blame?</a>
+      <a class="tab" href="#model">How it works</a>
+      <a class="tab" href="#sources">Sources</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+<!-- 28 APRIL REPLAY -->
+<section class="panel wrap" id="replay">
+  <p class="kicker">The blackout replay</p>
+  <h2>28 April 2025: ninety seconds, in slow motion</h2>
+  <p class="intro">It was not a lack of power. Spain was exporting about 4.3 GW to its neighbours at 12:30. It was <b>voltage</b>: it climbed across the grid, plants disconnected to protect themselves, and every disconnection pushed voltage higher. Only at the end did frequency collapse. Every value below comes from the official reports, tagged with its source.</p>
+
+  <div class="block">
+    <h3>The grid at 12:30</h3>
+    <p class="intro">A sunny Monday with very cheap power: the day&#8209;ahead price averaged €18.50/MWh and was zero or negative in the middle hours <a class="src" href="#s-gov">GOV</a>. Solar supplied more than half of the electricity. Pumped&#8209;storage plants were using the surplus to pump water uphill.</p>
+    <div class="stats" id="stats1230"></div>
+    <div class="mix card" style="margin-top:12px">
+      <div class="mixbar" id="mixBar" role="img" aria-label="Generation mix at 12:30"></div>
+      <div id="mixRows"></div>
+      <p class="cap">Generation in peninsular Spain at 12:30, 28 April 2025, from REE's 5&#8209;minute data. Hydro is conventional hydro; pumping and exports are where the surplus went. <button class="t" data-k="sync">Synchronous</button> machines spin in step with the grid and carry <button class="t" data-k="inertia">inertia</button>; solar PV and wind connect through <button class="t" data-k="inverter">inverters</button>.</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>The morning: oscillations, and a cure with a side effect</h3>
+    <p class="intro">Two bouts of <button class="t" data-k="osc">oscillation</button> shook the grid around noon. The operator, Red Eléctrica (REE), damped them with standard tools: more lines in service, lower exports, a fixed setting on the link to France. Every report agrees on the side effect: <b>those measures raised voltages</b>.</p>
+    <div class="legend" style="margin-top:12px">
+      <span><i class="lgd-dot" style="border-color:var(--warn);background:var(--warn-soft)"></i>Oscillation</span>
+      <span><i class="lgd-dot" style="border-color:var(--accent);background:var(--accent-soft)"></i>Operator action</span>
+      <span><i class="lgd-dot" style="border-color:var(--bad);background:var(--bad-soft)"></i>Voltage-control gap</span>
+    </div>
+    <ol class="morning">
+      <li><span class="tm">19:47 (27th)</span><span class="rail"></span><div class="tx">One south&#8209;west thermal unit scheduled for <button class="t" data-k="vcontrol">voltage control</button> drops out. It is not replaced for the midday hours. <a class="src" href="#s-gov">GOV</a> On the morning of the 28th REE <q>concluded that it was not necessary to replace it</q> <a class="src" href="#s-factual">FACTUAL</a></div></li>
+      <li class="act"><span class="tm">06:00</span><span class="rail"></span><div class="tx">Export schedule to France cut from 2,590 MW to 1,600 MW. <a class="src" href="#s-gov">GOV</a></div></li>
+      <li class="osc"><span class="tm">09:00–10:30</span><span class="rail"></span><div class="tx">Voltage variability grows, with larger swings from 10:30. Voltages stay inside the Spanish 400 kV band of 380–435 kV. Small 0.2 Hz oscillations at 05:49, 08:52, 10:30, 11:06 and 11:23. <a class="src" href="#s-gov">GOV</a></div></li>
+      <li class="act"><span class="tm">11:08–11:20</span><span class="rail"></span><div class="tx">Three 400 kV circuits connected to improve <button class="t" data-k="damping">damping</button>. <a class="src" href="#s-gov">GOV</a></div></li>
+      <li class="osc"><span class="tm">12:03</span><span class="rail"></span><div class="tx"><b>Oscillation 1, at 0.63 Hz</b>, until 12:08. FINAL classes it as a local, converter&#8209;driven phenomenon, most active between Carmona and Almaraz. Voltage swings of over 30 kV peak&#8209;to&#8209;peak at Almaraz and Arroyo de San Serván. <a class="src" href="#s-gov">GOV</a><a class="src" href="#s-final">FINAL</a></div></li>
+      <li class="act"><span class="tm">12:04–12:24</span><span class="rail"></span><div class="tx">With voltages briefly low, operators switch <button class="t" data-k="reactor">shunt reactors</button> out: Villaviciosa, Guadame, Rueda, Aragón, then Cabra, Peñaflor, Palos, Morata. Seven more 400 kV circuits are connected. <a class="src" href="#s-gov">GOV</a></div></li>
+      <li class="act"><span class="tm">12:07–12:20</span><span class="rail"></span><div class="tx">Exports to France cut again, to 1,500 then 1,000 MW. At 12:11 the <button class="t" data-k="hvdc">HVDC</button> link to France is switched from AC&#8209;emulation to a fixed 1,000 MW export, held until the collapse. <a class="src" href="#s-gov">GOV</a></div></li>
+      <li class="osc"><span class="tm">12:19</span><span class="rail"></span><div class="tx"><b>Oscillation 2, at 0.2 Hz</b>, until 12:22: the East–Centre–West mode that swings the whole continental grid. <a class="src" href="#s-gov">GOV</a><a class="src" href="#s-final">FINAL</a></div></li>
+      <li class="crit"><span class="tm">12:26</span><span class="rail"></span><div class="tx">REE orders a voltage&#8209;controlling thermal unit in the south. The fastest available needs <b>1 h 30 min</b> to connect, so it is scheduled for 14:00. It never connects. Reactors go back in as voltages rise. <a class="src" href="#s-gov">GOV</a></div></li>
+      <li><span class="tm">12:30</span><span class="rail"></span><div class="tx">Voltages 410–420 kV; frequency about 50 Hz; low damping. <a class="src" href="#s-gov">GOV</a></div></li>
+    </ol>
+  </div>
+
+  <div class="block">
+    <h3>12:32:00 to 12:33:30</h3>
+    <p class="intro">Press play. The first minute runs fast. The last fifteen seconds run at a third of real speed, because that is when everything happens. Tap any event to jump to it.</p>
+    <div class="replay">
+      <div class="rp-main">
+        <div class="readouts" aria-live="off">
+          <div class="ro" id="roClock"><div class="k">Time (CEST)</div><div class="v num" id="rvClock">12:32:00.000</div></div>
+          <div class="ro" id="roLost"><div class="k">Generation lost</div><div class="v num" id="rvLost">0 <small>MW</small></div></div>
+          <div class="ro" id="roV"><div class="k">Highest voltage reported</div><div class="v num" id="rvV">413 <small>kV</small></div></div>
+          <div class="ro" id="roF"><div class="k">Frequency</div><div class="v num" id="rvF">≈50.0 <small>Hz</small></div></div>
+        </div>
+        <svg id="rpChart" role="img" aria-label="Replay chart. Top: voltages reported at individual substations, rising from 413 kV past the 435 kV limit to 485 kV. Bottom: frequency, near 50 Hz until 12:33:19, then falling through load-shedding thresholds to 46 Hz by 12:33:23.5. The full event list beside the chart gives the same information as text."></svg>
+        <div class="rpctl">
+          <button class="play" id="rpPlay" type="button" aria-label="Play the replay"><svg viewBox="0 0 20 20" aria-hidden="true"><path id="rpIcon" d="M5 3l12 7-12 7z" fill="currentColor"/></svg></button>
+          <button class="iconbtn" id="rpRestart" type="button" aria-label="Back to 12:32:00"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4v5h5M4.5 9A6 6 0 1 1 6 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <input type="range" id="rpScrub" min="0" max="91" step="0.01" value="0" aria-label="Replay time, seconds after 12:32:00">
+          <span class="rate" id="rpRate">paused</span>
+        </div>
+        <div class="legend">
+          <span><i class="key" style="background:var(--warn);border-radius:50%"></i>Voltage at a tripping element (different substations)</span>
+          <span><i class="key" style="background:var(--accent)"></i>Frequency, reported values joined</span>
+          <span><i class="key" style="background:var(--bad)"></i>Generation lost</span>
+        </div>
+        <p class="cap">The time axis is broken: the left third covers 75 seconds, the right two&#8209;thirds the last 16. Each voltage dot is a value reported at a different place, so the dots are not one continuous trace. Frequency is about 50 Hz until the AC link to Europe starts to slip; the official reports give exact values only from 49.5 Hz down.</p>
+      </div>
+      <aside class="feed" aria-label="Event list">
+        <div class="feed-now" id="feedNow" aria-live="polite"></div>
+        <ol id="feedList"></ol>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- WHO'S TO BLAME -->
+<section class="panel wrap" id="blame">
+  <p class="kicker">Three readings</p>
+  <h2>Who's to blame? The reports agree on the physics, not the fault</h2>
+  <p class="intro">Every official report calls it a <b>multifactorial overvoltage</b>: not enough dynamic voltage control, oscillation fixes that raised voltages, and disconnections, some of them improper. Who should have absorbed more <button class="t" data-k="q">reactive power</button> is still disputed. Here are the positions side by side. This page doesn't pick a winner.</p>
+  <div class="pos">
+    <div class="card"><h3>ENTSO-E Expert Panel <span class="who">final report, 20 Mar 2026</span></h3>
+      <ul>
+        <li>The key phenomenon was that voltage control in Spain was not effective. Renewable plants ran at a <button class="t" data-k="pf">fixed power factor</button>, so as their output fell, so did the reactive power they absorbed. <a class="src" href="#s-final">FINAL</a></li>
+        <li>Several large synchronous generators reached their reactive&#8209;power reference in less than 75% of hourly samples. Shunt reactors were switched by hand. Some protection settings were below the requirements. <a class="src" href="#s-final">FINAL</a></li>
+        <li>Simulations: <q>increased reactive power margins could have prevented system collapse</q>. The report says it does not assign liability. <a class="src" href="#s-final">FINAL</a></li>
+      </ul></div>
+    <div class="card"><h3>Spanish government committee <span class="who">17 Jun 2025</span></h3>
+      <ul>
+        <li>Not enough dynamic voltage control: units either weren't scheduled, didn't deliver what the rules required, or both. <a class="src" href="#s-gov">GOV</a></li>
+        <li>REE scheduled 10 thermal units for voltage control; one south&#8209;west unit dropped out the evening before and was not replaced. <a class="src" href="#s-gov">GOV</a></li>
+        <li>Some disconnections were <q>apparently improper</q>. No evidence of a cyberattack. <a class="src" href="#s-gov">GOV</a></li>
+      </ul></div>
+    <div class="card"><h3>Red Eléctrica (REE) <span class="who">grid operator</span></h3>
+      <ul>
+        <li>Generators with voltage&#8209;control duties under the operating rule <button class="t" data-k="po74">P.O. 7.4</button> failed to comply with them. <a class="src" href="#s-ree">REE</a></li>
+        <li>Its scheduling was sufficient; inertia was above ENTSO-E's recommendation. <a class="src" href="#s-ree">REE</a></li>
+        <li>On the final report: <q>Red Eléctrica no falló</q>; REE says the panel does not name its scheduling as a cause. <a class="src" href="#s-ree-2026">REE 2026</a></li>
+      </ul></div>
+    <div class="card"><h3>The utilities (AELEC) <span class="who">Iberdrola, Endesa, EDP</span></h3>
+      <ul>
+        <li>REE alone was responsible: it chose to manage voltage with limited synchronous capacity, unevenly spread across the country. <a class="src" href="#s-aelec">AELEC</a></li>
+        <li>Their plants met the rules. Voltage swings fell 37–52% in the days after, once more gas plants ran. <a class="src" href="#s-aelec">AELEC</a></li>
+        <li>Endesa's CEO: the central cause was REE scheduling <q>un número reducido de grupos</q> able to control voltage dynamically. <a class="src" href="#s-bogas">El Español</a></li>
+      </ul></div>
+  </div>
+  <p class="note">The final report adds a third party to the story: <b>the rules themselves</b>. Fixed power factor for renewables, a 435 kV operating limit with little margin below generators' 435–440 kV ride&#8209;through limits, and no economic penalty for missing reactive targets. <a class="src" href="#s-final">FINAL</a> The regulator, CNMC, has since let renewables provide voltage control (June 2025) and added a simpler fixed&#8209;setpoint mode (July 2026). <a class="src" href="#s-cnmc">CNMC</a></p>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="panel wrap prose" id="model">
+  <p class="kicker">Method</p>
+  <h2>How this page works</h2>
+  <h3>The replay is the record, not a simulation</h3>
+  <p>Every time, value and place in the replay comes from the official reports: millisecond timestamps from the Spanish government committee (GOV), causes and the generation&#8209;loss totals from the ENTSO-E Expert Panel (FACTUAL and FINAL). Where they disagree, the event card says so. The chart joins reported frequency values with straight lines; it is not a measured trace. Voltage dots are values at different substations and are not joined.</p>
+  <h3>The numbers at 12:30 are REE's own data</h3>
+  <p>Demand and the generation mix come from REE's public 5&#8209;minute data for peninsular Spain, retrieved on 16 October 2026 and embedded in this page. REE's 12:30 demand, 25,184 MW, matches the government report exactly. REE's hydro figure is net of pumping, so conventional hydro is shown as hydro plus pumping, which reproduces the government report's shares (solar 54%, nuclear 10%, gas 3%). "Other" is coal, cogeneration, biomass and the small remainder REE does not break out.</p>
+</section>
+
+</main>
+
+<section class="sources" id="words">
+  <div class="wrap">
+    <h2>Words used on this page</h2>
+    <p>Underlined words can also be tapped anywhere on the page.</p>
+    <dl class="gloss" id="gloss"></dl>
+  </div>
+</section>
+
+<section class="sources" id="sources">
+  <div class="wrap">
+    <h2>Sources and credits</h2>
+    <p>Every source behind this page, what it is used for and its terms. The tags on the page (<span class="src">GOV</span>, <span class="src">FINAL</span>, …) link here. Report figures are restated as facts with citation; no figures or images from the reports are reproduced.</p>
+    <div class="srcgrid">
+      <div class="s" id="s-gov"><h3><a href="https://www.lamoncloa.gob.es/consejodeministros/resumenes/Documents/2025/Informe-no-confidencial-Comite-de-analisis-28A.pdf" rel="noopener">Informe no confidencial del Comité de Análisis 28-A</a><span class="src">GOV</span></h3>
+        <p>Gobierno de España, committee for the analysis of the 28 April crisis, approved by the Council of Ministers on 17 June 2025. <a href="https://www.lamoncloa.gob.es/lang/en/gobierno/councilministers/paginas/2025/20250617-council-press-conference.aspx" rel="noopener">Press release</a>.</p>
+        <p><b>Used for:</b> the millisecond timeline, voltages and frequencies in the replay, the morning events, the system state at 12:30, load&#8209;shedding thresholds and the committee's findings.</p>
+        <p class="lic"><b>Terms:</b> Spanish public&#8209;sector information, reusable under Ley 37/2007 with citation and without distorting it.</p></div>
+      <div class="s" id="s-final"><h3><a href="https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/" rel="noopener">ENTSO-E Expert Panel, Final Report</a><span class="src">FINAL</span></h3>
+        <p><i>Grid Incident in Spain and Portugal on 28 April 2025</i>, 20 March 2026. Panel of 49 experts from ACER, national regulators, TSOs and RCCs.</p>
+        <p><b>Used for:</b> causes, the 727 MW and 928 MW trip totals, the 0.63 Hz oscillation, the RoCoF statement, the inertia and reactive&#8209;margin simulations, reactive&#8209;power compliance findings. Checked against the report PDF (pages 11–22).</p>
+        <p class="lic"><b>Terms:</b> reuse terms not stated; facts cited, nothing reproduced.</p></div>
+      <div class="s" id="s-factual"><h3><a href="https://eepublicdownloads.blob.core.windows.net/public-cdn-container/clean-documents/Publications/2025/iberian-blackout/251003_ENTSO-E-Media%20briefing%20on%20Factual%20Report.pdf" rel="noopener">ENTSO-E Expert Panel, Factual Report and briefing</a><span class="src">FACTUAL</span></h3>
+        <p>3 October 2025. Facts only, no root causes.</p>
+        <p><b>Used for:</b> about 525 MW of early losses, about 2.5 GW lost by 12:33:18, loss of synchronism from 12:33:19, the unit not replaced on the morning of the 28th.</p>
+        <p class="lic"><b>Terms:</b> reuse terms not stated; facts cited.</p></div>
+      <div class="s" id="s-soesc"><h3><a href="https://eepublicdownloads.blob.core.windows.net/public-cdn-container/clean-documents/Network%20codes%20documents/GC%20ESC/GC%20ESC%20MEETING%20DOCS/2025/250604_SO_ESC_meeting_28_April_2025_incident.pdf" rel="noopener">ENTSO-E, SO ESC slides</a><span class="src">SO ESC</span></h3>
+        <p>System Operation European Stakeholder Committee, 4 June 2025. Preliminary.</p>
+        <p><b>Used for:</b> ENTSO-E's collapse time of 12:33:24, Portugal's load shedding.</p>
+        <p class="lic"><b>Terms:</b> reuse terms not stated; facts cited.</p></div>
+      <div class="s" id="s-ree"><h3><a href="https://d1n1o4zeyfu21r.cloudfront.net/WEB_Incident_%2028A_SpanishPeninsularElectricalSystem_18june25.pdf" rel="noopener">Red Eléctrica, incident report</a><span class="src">REE</span></h3>
+        <p><i>Blackout in Spanish Peninsular Electrical System the 28th of April 2025</i>, 18 June 2025, and <a href="https://www.ree.es/en/press-office/news/press-release/2025/06/red-electrica-presents-report-incident-28-april-and-proposes-recommendations" rel="noopener">press release</a>.</p>
+        <p><b>Used for:</b> REE's position on compliance, scheduling and inertia.</p>
+        <p class="lic"><b>Terms:</b> REE legal notice (see REE data below).</p></div>
+      <div class="s" id="s-ree-2026"><h3><a href="https://www.ree.es/es/sala-de-prensa/actualidad/nota-de-prensa/2026/03/red-electrica-no-fallo-el-informe-del-expert-panel-europeo-confirma-las-causas-del-incidente-identificadas-por-el-os" rel="noopener">REE, "Red Eléctrica no falló"</a><span class="src">REE 2026</span></h3>
+        <p>Press release, 20 March 2026, the day the final report was published.</p>
+        <p><b>Used for:</b> REE's reading of the final report.</p>
+        <p class="lic"><b>Terms:</b> REE legal notice.</p></div>
+      <div class="s" id="s-aelec"><h3>AELEC (Iberdrola, Endesa, EDP)</h3>
+        <p>As reported by Ara.cat and E&amp;T / Reuters, 2025.</p>
+        <p><b>Used for:</b> the utilities' position.</p>
+        <p class="lic"><b>Terms:</b> press reports, paraphrased with short quotes.</p></div>
+      <div class="s" id="s-bogas"><h3>El Español, interview with José Bogas</h3>
+        <p>Endesa CEO, 12 February 2026.</p>
+        <p><b>Used for:</b> a short quote on REE's scheduling.</p>
+        <p class="lic"><b>Terms:</b> press, short quote with attribution.</p></div>
+      <div class="s" id="s-cnmc"><h3><a href="https://www.cnmc.es/sites/default/files/editor_contenidos/Energia/Consulta%20Publica/1_DCOOR_DE_008_25_Resolucion%20.pdf" rel="noopener">CNMC resolutions on P.O. 7.4</a><span class="src">CNMC</span></h3>
+        <p>Comisión Nacional de los Mercados y la Competencia: June 2025 P.O. 7.4; DCOOR/DE/006/26 of 10 July 2026. Summary by <a href="https://www.unef.es/es/comunicacion/comunicacion-post/el-control-de-tension-de-las-renovables-la-actualizacion-del-po-74" rel="noopener">UNEF</a>.</p>
+        <p><b>Used for:</b> the rule changes since the blackout.</p>
+        <p class="lic"><b>Terms:</b> Spanish public&#8209;sector information, Ley 37/2007.</p></div>
+      <div class="s" id="s-ree-data"><h3><a href="https://demanda.ree.es/" rel="noopener">Red Eléctrica, demand and generation data</a><span class="src">REE data</span></h3>
+        <p>"Seguimiento de la demanda", peninsular Spain, 5&#8209;minute values for 22, 28 and 29 April 2025, retrieved 16 October 2026 (the days are closed; REE gives no later update date for this feed). Cross&#8209;checked against REE's <a href="https://www.ree.es/en/datos/apidata" rel="noopener">REData API</a>.</p>
+        <p><b>Used for:</b> every demand curve, the generation mix and the exports at 12:30.</p>
+        <p class="lic"><b>Terms:</b> <a href="https://www.ree.es/es/aviso-legal" rel="noopener">REE legal notice</a>: may be published on a website for informational, non&#8209;commercial purposes, naming REE as the source, without altering the data, and stating the date. Source: Red Eléctrica.</p></div>
+      <div class="s" id="s-arxiv"><h3><a href="https://arxiv.org/html/2511.17433v1" rel="noopener">Albustami &amp; Taha, arXiv:2511.17433</a><span class="src">ARXIV</span></h3>
+        <p>"The Iberian Blackout: A Black Swan or a Gray Rhino?", November 2025. Academic analysis, not an official report.</p>
+        <p><b>Used for:</b> the inertia range at 12:30 (citing the Factual Report).</p>
+        <p class="lic"><b>Terms:</b> arXiv preprint; cited, nothing reproduced.</p></div>
+      <div class="s" id="s-power"><h3><a href="https://www.powermag.com/anatomy-of-a-blackout-findings-from-the-spain-portugal-grid-collapse-final-report/" rel="noopener">POWER Magazine, "Anatomy of a Blackout"</a></h3>
+        <p>23 March 2026, and pv magazine the same day.</p>
+        <p><b>Used for:</b> background on the final report; every figure used was then checked in the report itself.</p>
+        <p class="lic"><b>Terms:</b> press, cited.</p></div>
+      <div class="s"><h3><a href="https://vercel.com/font" rel="noopener">Geist and Geist Mono</a></h3>
+        <p><b>Used for:</b> the typefaces, served by Google Fonts.</p>
+        <p class="lic"><b>Licence:</b> SIL Open Font License 1.1.</p></div>
+    </div>
+    <p class="method">Research brief behind this page, with every claim and its source: <a href="https://github.com/paul-bebear/paulbebear-site/blob/main/run-the-grid/RESEARCH.md" rel="noopener">run-the-grid/RESEARCH.md</a>. Data build: <a href="https://github.com/paul-bebear/paulbebear-site/tree/main/run-the-grid/build" rel="noopener">run-the-grid/build</a>. Version 1, October 2026.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Paul Bébéar, Madrid</span>
+    <span><a href="/">Home</a> &nbsp; <a href="/archive/">Archive</a> &nbsp; <a href="https://www.linkedin.com/in/pbebear/" rel="noopener">LinkedIn</a></span>
+    <a class="coffee" href="https://buymeacoffee.com/paulbebear" target="_blank" rel="noopener">&#9749; Buy me a coffee</a>
+  </div>
+</footer>
+
+<div id="pop" role="tooltip"></div>
+
+<script>
+'use strict';
+const DATA = {"d22":{"dem":[23294,23494,23478,23382,23477,23474,23086,22800,22678,22775,22398,22352,21947,22123,22247,22108,21941,21713,21672,21471,21239,21030,21234,21094,20987,20895,20864,20863,20616,20687,20558,20637,20378,20482,20617,20274,20494,20430,20373,20329,20272,20225,20276,20346,20567,20444,20150,20187,20242,20143,20160,20148,19945,20165,20123,20310,20349,20160,20231,20267,20405,20451,20269,20596,20824,20576,20858,20977,20937,21211,21494,21488,21539,22281,22623,22952,23169,23383,23680,23993,24209,24555,24655,25023,25315,26067,26319,26613,26838,26962,27102,27222,27550,27377,27540,27760,28075,28348,28424,28598,28558,28721,28749,28698,28624,28843,28824,28720,28693,28894,28829,28666,28604,28562,28584,28571,28538,28306,28264,28302,28234,28025,28157,28106,27736,27967,28229,27953,28122,28207,28220,28190,27562,27616,27956,28090,28133,28100,27957,27827,27879,27695,27514,27352,27330,27239,26952,26895,27141,27353,27268,26891,27459,27501,27370,27491,27197,27136,27286,27357,27614,27177,27395,27202,27609,27214,27306,27701,27217,27198,27494,27006,27227,27097,27382,27217,27336,27169,27216,27142,26804,26458,26400,26343,26243,26604,26439,26163,26131,25957,26212,26142,26340,25995,25965,25812,25860,25792,25943,25747,25870,25628,26026,25970,25936,26332,26078,26275,26280,26237,26124,26069,26135,26357,26361,26396,25569,25938,25986,26254,26347,26138,26202,26460,26530,26649,26732,26743,27068,27913,27580,27666,28020,28096,27956,28153,28343,28302,28373,28460,28617,29271,29543,29696,29700,29664,29834,29865,29891,29981,30191,30515,30682,30958,31331,31615,31754,31806,31642,31538,31477,31439,31145,30843,30323,29991,30047,29524,29387,28937,28901,28631,28364,27921,27914,27647,27418,27159,27026,26850,26472,26103,25864,25927,25567,25302,24841,24760],"pv":[48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,47,48,48,48,48,48,47,46,47,47,47,47,47,47,47,48,47,46,48,48,47,48,46,47,47,48,48,48,48,48,47,47,47,46,48,47,47,47,47,47,45,45,45,45,45,45,45,45,45,45,45,45,45,45,43,45,45,46,48,54,49,58,91,100,111,142,210,307,425,568,744,954,1181,1416,1662,2031,2379,2848,3261,3716,4158,4644,5441,5768,6276,6784,7020,7611,7990,8329,8343,8469,8628,8828,9738,10386,10653,10823,11636,12028,12529,12421,12619,12976,13345,13525,14413,14463,14810,15042,15307,15325,15097,15116,15203,15552,15544,15832,16559,16651,16582,16978,16965,17167,17157,17183,17147,17338,17405,17197,17492,17590,17396,17158,17378,17256,17347,17339,17376,17373,17166,16811,17205,17160,17302,17430,17541,17492,17594,17534,17790,17591,17535,17331,17260,17313,17033,17005,17171,17100,16645,16481,16580,16605,16388,16458,16467,16116,16179,16267,16138,16178,16120,15581,15648,16146,16253,16006,15914,15912,15789,15380,15340,15239,15322,15013,15382,15230,14890,14517,14570,14441,14350,14301,13749,13682,13620,13502,13498,12858,12907,12371,10242,9684,9484,9581,8915,8279,7616,7155,6725,6054,5372,4707,3963,3522,3042,2590,2195,1758,1433,1137,909,742,613,446,311,260,250,248,248,248,247,247,239,239,238,238,238,237,236,236,221,218,207,185,182,182,182,182,182,182,182,176,170,170,170,170,113,113,113],"st":[244,240,237,235,223,218,219,219,219,219,219,219,218,218,218,218,219,218,219,218,218,214,207,201,191,186,184,178,164,164,164,164,165,166,165,163,161,159,157,156,152,150,150,150,150,150,150,144,137,125,121,117,118,118,116,103,91,70,51,51,52,52,10,10,10,10,10,9,9,9,9,9,9,9,9,9,8,8,8,8,8,8,8,9,8,9,8,9,9,9,9,8,9,9,9,9,9,9,9,9,9,9,9,9,8,8,8,8,8,8,7,7,7,12,14,25,41,68,91,119,155,207,254,311,367,429,465,503,557,629,673,710,756,800,847,867,882,906,917,940,963,962,963,960,967,979,969,977,984,982,1040,1022,994,973,923,884,854,842,819,811,807,795,808,827,848,864,879,899,904,912,896,900,894,899,903,911,922,927,935,959,984,999,996,1022,1018,1010,1015,1024,1025,1004,988,989,999,1002,1009,1015,1000,1004,1010,1003,991,983,985,992,973,972,981,986,1000,999,1001,1000,1019,1007,1008,1022,1022,1013,1005,1001,998,984,980,987,989,1013,1066,1118,1136,897,906,932,959,986,979,967,955,947,937,932,923,916,912,899,877,849,821,805,587,552,540,496,483,466,458,406,392,377,372,370,366,362,363,363,363,364,358,357,358,357,363,377,381,385,391,392,393,394,394,395,396,395,396,397,393,393,405,419],"wind":[1654,1682,1703,1688,1725,1738,1784,1822,1837,1826,1853,1880,1903,1914,1918,1899,1878,1863,1832,1803,1828,1858,1891,1904,1962,1994,2000,2003,2025,2026,2044,2078,2107,2110,2123,2135,2165,2167,2161,2183,2227,2271,2301,2271,2251,2294,2363,2412,2534,2581,2616,2665,2703,2736,2763,2786,2795,2835,2821,2806,2744,2742,2737,2749,2739,2741,2717,2663,2638,2690,2742,2793,2811,2858,2859,2870,2880,2925,2928,2949,2942,2975,3003,2999,3023,3046,3042,3103,3071,3092,3145,3150,3122,3151,3197,3212,3286,3337,3389,3441,3508,3550,3600,3556,3522,3500,3526,3561,3475,3521,3526,3551,3587,3602,3598,3570,3515,3433,3455,3458,3460,3526,3508,3494,3576,3652,3700,3700,3674,3628,3773,3759,3748,3824,3816,3853,3929,3809,3878,3768,3772,3797,3830,3843,3877,3780,3773,3695,3610,3557,3638,3626,3721,3851,3752,3800,3877,3929,4081,4078,4211,4196,4220,4201,4300,4362,4444,4467,4441,4527,4292,4355,4338,4373,4335,4376,4503,4609,4672,4761,4907,4669,4682,4665,4719,4864,4910,5019,5120,5201,5114,5420,5528,5719,5835,5812,5746,5777,5834,6059,6203,6170,5541,5546,5563,5506,5510,5503,5666,5781,5800,5784,5858,5905,5944,6011,6016,6150,6201,6172,6357,6363,6391,6338,6409,6501,6316,6183,6065,5780,5650,5742,5924,5901,5736,5903,5880,6013,6447,6367,6318,6204,6249,6195,6093,6083,5985,5866,5935,5887,6016,6007,6028,5964,6013,6030,6098,6059,6059,6157,6142,6222,6303,6297,6292,6553,6563,6442,6434,6403,6357,6403,6245,6172,6177,6136,6096,6057,5991,5994,5942,5964,5919,5963,5914,5942,5894,5903],"nuc":[2562,2562,2563,2570,2567,2574,2583,2580,2581,2582,2583,2583,2583,2586,2594,2603,2610,2616,2624,2629,2642,2647,2654,2661,2671,2677,2685,2692,2701,2705,2715,2721,2730,2735,2744,2753,2758,2762,2764,2763,2761,2760,2761,2763,2759,2764,2762,2767,2770,2772,2775,2777,2779,2781,2782,2788,2788,2793,2795,2796,2797,2801,2805,2807,2810,2811,2813,2815,2818,2819,2823,2826,2828,2830,2832,2835,2839,2840,2843,2845,2848,2849,2854,2853,2859,2860,2862,2865,2868,2868,2873,2875,2877,2880,2883,2884,2889,2890,2894,2895,2898,2901,2903,2905,2907,2910,2913,2915,2920,2920,2922,2925,2929,2930,2931,2934,2939,2940,2943,2945,2949,2949,2953,2955,2958,2959,2960,2964,2968,2973,2974,2977,2978,2980,2983,2986,2989,2986,2994,2994,2997,3000,3003,3006,3008,3007,3012,3015,3015,3021,3021,3025,3027,3030,3032,3035,3037,3041,3042,3044,3042,3043,3041,3043,3041,3045,3044,3045,3045,3045,3043,3042,3042,3041,3044,3042,3044,3042,3043,3042,3041,3046,3045,3045,3049,3045,3044,3044,3044,3043,3044,3045,3044,3049,3047,3048,3048,3050,3046,3048,3047,3046,3048,3048,3049,3048,3049,3047,3047,3046,3047,3047,3048,3049,3047,3051,3049,3050,3053,3047,3050,3049,3046,3044,3045,3046,3047,3048,3048,3046,3044,3046,3047,3047,3080,3084,3087,3090,3092,3096,3097,3099,3105,3105,3107,3111,3112,3114,3116,3120,3123,3128,3130,3132,3136,3137,3141,3142,3145,3147,3151,3155,3156,3137,3138,3136,3137,3138,3145,3147,3149,3151,3155,3156,3160,3160,3166,3166,3171,3171,3174,3179,3183,3183,3187,3190,3193,3196],"gas":[4802,5103,5048,4982,4926,4839,4694,4431,4290,4144,3977,3955,3915,3985,3969,3977,3943,3957,3822,3829,3808,3732,3785,3624,3689,3750,3796,3795,3662,3754,3689,3739,3627,3595,3685,3690,3759,3761,3753,3748,3763,3765,3761,3750,3770,3756,3674,3599,3724,3728,3758,3744,3740,3705,3704,3716,3726,3745,3764,3764,3725,3709,3732,3745,3745,3811,3832,3899,3925,3992,3993,4091,4122,4299,4397,4491,4563,4614,4667,4757,4799,5083,5203,5332,5449,5581,5576,5681,5825,5882,6323,6659,6694,6827,6960,7008,6700,6591,6690,6533,6403,6124,6067,5965,5798,5757,5587,5374,5461,5321,5052,4706,4323,4153,3969,3940,3713,3652,3684,3681,3655,3586,3594,3549,3094,2543,2232,1936,1790,1678,1538,1398,1361,1373,1376,1377,1359,1325,1324,1323,1313,1338,1338,1335,1345,1336,1333,1511,1383,1358,1347,1337,1335,1326,1333,1341,1347,1415,1392,1428,1478,1379,1367,1367,1348,1324,1441,1380,1375,1326,1314,1312,1312,1310,1318,1314,1309,1313,1309,1314,1318,1313,1320,1311,1319,1311,1315,1313,1314,1313,1314,1310,1314,1309,1308,1311,1313,1314,1325,1332,1339,1339,1379,1406,1433,1450,1459,1454,1471,1505,1526,1540,1551,1564,1573,1590,1595,1605,1691,1739,1822,1915,1972,2034,2171,2213,2316,2316,2315,2503,2555,2639,2719,2892,3165,3354,3505,3778,3954,4016,4206,4395,4534,4713,4899,4967,5247,5508,5560,5700,5852,5872,5731,5638,6335,6324,6621,6331,6385,6454,6344,6243,6107,6080,6170,6410,6365,6265,6120,6116,6084,6073,6056,5825,5516,5376,5060,4928,4828,4739,4519,4478,4471,4443,4425,4440,4450,4470],"other":[2789,2788,2790,2789,2786,2787,2786,2789,2787,2802,2771,2771,2774,2795,2796,2823,2805,2806,2803,2805,2805,2807,2787,2785,2786,2807,2808,2766,2801,2827,2802,2846,2806,2805,2785,2773,2785,172,191,2804,2803,2804,2801,2772,2803,2881,2802,2802,2800,2794,2795,2822,2792,2794,2795,2805,2794,2795,2794,2789,2793,2721,192,191,2746,2711,2746,2750,2750,2750,2745,2743,2745,2767,2767,2786,2767,2768,2768,2766,2768,2737,2762,2762,2736,2775,2774,2812,2775,2773,2775,2773,2775,2730,2773,2772,2773,2785,2785,2845,2781,2793,2794,2788,2787,2786,191,192,2803,2805,2731,2746,2733,2734,228,191,2715,2690,2702,2702,2802,2710,2712,2712,2803,2704,2703,2703,2714,2725,223,94,2742,2737,2737,2724,2704,2704,2705,2704,2702,2705,2676,2703,2702,2640,2643,2576,2645,2644,2647,2649,2700,2634,2626,2635,2665,2506,2560,2559,2630,2569,2511,2566,2568,2567,2568,2567,2568,2527,2524,2505,2552,2524,2525,2525,2524,2525,2524,2522,2523,2510,2472,2512,2502,2503,2504,2513,2512,2513,240,202,2502,2511,2512,2511,2507,2557,2508,2508,2507,2508,2508,2426,2509,2517,2515,2507,2502,2502,233,222,237,2518,2532,2534,2534,2605,2594,2592,2605,2594,2577,2604,2574,2605,2500,2606,2607,2702,2678,2717,2716,2682,2713,2748,183,160,80,2750,2749,2759,2757,2759,2772,2772,2747,2703,2777,2772,2771,2803,2772,2804,2802,2831,2799,2800,2798,2805,2804,2807,2772,2803,2830,2849,2828,2852,2826,2820,2849,2859,2858,2848,2862,2849,2819,2850,2826,2877,2825,2773,2811,2810,191,188,2801,2799],"hydro":[8325,8639,8622,8592,8475,8529,8565,8606,8617,8464,8376,8224,8262,8508,8452,8352,8168,8126,8211,8272,8220,8011,7868,7564,7842,8023,8048,7924,7689,7782,7704,7758,7638,7500,7578,7489,7657,7750,7747,7661,7615,7589,7573,7507,7555,7520,7468,7374,7579,7694,7696,7691,7551,7548,7537,7593,7635,7631,7635,7625,7624,7633,7574,7795,7709,7836,7989,8036,7959,7969,7886,7919,7917,7928,8078,8249,8436,8458,8513,8501,8496,8589,8688,8722,8778,8671,8750,8970,9184,9161,9192,9308,9222,9123,9085,8992,8806,8757,8927,8830,8848,8654,8723,8641,8611,8347,8155,7977,8092,8245,8190,8161,8172,8234,8099,8162,7968,7940,7876,7815,7300,6748,6590,6485,6538,6676,6522,6555,6521,6390,5998,5917,5739,5362,5036,5040,5068,5149,5094,5050,5005,5050,5024,4969,4980,4955,4929,4971,4877,4862,4763,4855,4832,4841,4878,4897,4818,4756,4750,4732,4679,4674,4629,4595,4529,4536,4643,4655,4549,4479,4535,4532,4475,4387,4411,4393,4363,4344,4390,4348,4404,4444,4417,4437,4442,4460,4566,4599,4622,4482,4452,4453,4427,4359,4404,4425,4371,4340,4384,4331,4357,4346,4346,4405,4391,4388,4391,4384,4484,4522,4509,4500,4512,4472,4372,4366,4400,4386,4458,4441,4461,4456,4462,4480,4418,4411,4955,5052,4756,5425,5485,5720,5602,5756,5883,5846,6180,6342,6585,6756,7383,8313,8553,8956,9016,9146,9548,9253,9157,9319,9342,9468,9785,9816,9883,9566,9446,9379,9463,9691,9617,9350,9058,8902,9023,9200,9190,8913,8505,8448,8615,9009,9161,8799,8838,8647,8824,9125,9166,8962,8744,8743,8480,8417,8358,7965,7458,7296],"pump":[1498,1599,1613,1498,1475,1500,1500,1545,1451,1523,1349,1289,1354,1453,1460,1361,1214,1265,1285,1229,1226,1133,1044,1016,1042,1052,1049,943,808,768,755,626,638,530,424,432,481,627,507,476,312,320,326,305,318,295,288,268,335,435,444,436,350,338,323,205,212,199,81,70,108,104,102,149,353,361,380,417,477,554,642,630,669,666,697,959,896,959,1016,1054,1128,1234,1232,1336,1277,1176,1166,1337,1577,1523,1844,1985,1982,1899,1941,1804,1844,1896,1900,1764,1682,1654,1581,1495,1195,1160,1029,919,935,614,678,587,633,702,591,547,437,356,323,195,-3,-262,-544,-541,-491,-542,-683,-793,-769,-807,-845,-1172,-1228,-1279,-1300,-1367,-1679,-1717,-2052,-2111,-2109,-2109,-2109,-2109,-2153,-2174,-2422,-2507,-2536,-2638,-2645,-2668,-2672,-2676,-2677,-2672,-2703,-2726,-2789,-2788,-2784,-2788,-2778,-2819,-2980,-3005,-3084,-3087,-2991,-2985,-2975,-2984,-2980,-2983,-3077,-3067,-3071,-3064,-3063,-3067,-3081,-3074,-3169,-3164,-3122,-3122,-3118,-3117,-3112,-3113,-3114,-3106,-3121,-3129,-3113,-3112,-3110,-3108,-3117,-3113,-3115,-3111,-3106,-3109,-3043,-2999,-2995,-2971,-2969,-2967,-2966,-2972,-2966,-2984,-2984,-2979,-3002,-2923,-2905,-2892,-2890,-2891,-2884,-2813,-2798,-2798,-2547,-2555,-1786,-1113,-1228,-904,-1012,-773,-771,-839,-739,-738,-690,-304,-146,580,580,667,691,805,780,1486,1529,1711,1984,2086,2121,2170,2158,2009,1947,1914,1943,2063,2002,1915,1833,1737,1788,1886,1898,1764,1657,1658,1750,1879,1910,1813,1788,1744,1825,1845,1962,1762,1660,1661,1598,1550,1573,1427,1344,1352],"ex":[1372,832,853,979,1251,1240,906,759,846,1165,1220,1381,888,614,790,825,1054,812,826,637,444,580,950,1291,756,358,246,515,718,611,636,657,619,994,1067,792,681,372,433,491,592,519,555,781,915,736,595,774,315,-32,-92,-151,-136,97,55,266,260,45,243,319,516,641,516,549,665,248,324,343,316,383,609,432,394,880,940,709,735,766,892,1068,1175,1037,860,965,1139,1901,2087,1787,1471,1563,837,349,723,544,381,651,1197,1336,873,1097,1011,1372,1039,958,946,1112,1125,1043,354,19,-45,-293,-564,-824,-998,-1312,-1118,-1116,-1279,-1243,-910,-1175,-1294,-1511,-1931,-2090,-1697,-2144,-1754,-1628,-1588,-1336,-2060,-2591,-1998,-2196,-2157,-2365,-2224,-1933,-1875,-2246,-2758,-2894,-3223,-3834,-3926,-3915,-3805,-3388,-3700,-4104,-3653,-3617,-3827,-3827,-3888,-4111,-4152,-3895,-3598,-4061,-3651,-3917,-3376,-3847,-3994,-3382,-3477,-3830,-3288,-3951,-3829,-3988,-3562,-3864,-3786,-4310,-4178,-4267,-4618,-4699,-4666,-4508,-4679,-4628,-4889,-4869,-4867,-5053,-4682,-4810,-4800,-5287,-5148,-5373,-5282,-5280,-5225,-5541,-5040,-5301,-4821,-4997,-4945,-4464,-4744,-4424,-4301,-4491,-4548,-4658,-4421,-4556,-4361,-4089,-4562,-4522,-4556,-4200,-4361,-4085,-4028,-3838,-3784,-3844,-3787,-3940,-3451,-1579,-1204,-1720,-1524,-1318,-1116,-535,-437,-580,-662,-534,-631,-966,-677,-648,-353,-272,-172,-314,82,0,-190,31,175,642,271,1048,1049,1543,1216,596,796,1139,1307,1280,477,-648,-532,-443,106,-232,-483,-1326,-1585,-1257,-998,-837,-945,-1386,-1494,-1232,-964,-1260,-1164,-1006,-1264,-974,-815,-786]},"d28":{"dem":[22381,22170,22115,21994,22141,22104,22003,21888,21553,21206,21218,21277,21242,21280,21033,20980,21007,21217,20883,20817,20568,20534,20434,20523,20492,20218,20216,19987,20076,20200,20101,19954,19739,19871,19736,20015,19828,19716,19767,19734,19658,19623,19744,19625,19645,19478,19465,19533,19571,19420,19489,19798,19853,19683,19700,19740,19624,19569,19514,19644,19826,20070,20177,20144,20212,20352,20617,20418,20437,20747,20754,21224,21350,21907,22309,22628,22829,22962,23105,23452,23752,23823,24102,24250,24730,25184,25482,25770,25824,26053,26192,26287,26310,26558,26700,26909,26917,27066,27443,27470,27453,27606,27532,27339,27268,27163,27221,27141,27154,26988,26973,27055,27077,26677,26808,26763,26649,26772,26485,26661,26329,26295,26360,26108,25933,25922,25800,26000,26080,25872,25748,25344,25157,25731,26334,25808,25340,25257,25325,25090,25191,25173,25005,24658,24708,24616,25367,25110,25124,25283,25184,0,0,0,0,0,0,37,204,231,253,260,319,382,432,539,611,664,713,747,794,887,937,972,991,1012,1050,1124,1211,1302,1346,1463,1545,1596,1682,1754,1952,2067,2119,2215,2322,2440,2559,2572,2745,2770,2781,2829,2863,2984,3041,3130,3264,3302,3445,3575,3742,3859,3995,4238,4519,4741,5032,5380,5565,5852,6069,6515,6655,6808,6904,7019,7219,7159,7122,7470,7633,7754,8082,8216,8362,8523,8612,8690,8827,8909,9004,9047,9065,9206,9565,9854,10177,10392,10537,10799,11057,11296,11697,12224,12672,12989,13236,13387,13379,13358,13293,13261,13277,13397,13471,13630,13811,13934,14111,14339,14372,14632,14903,14892,14777,14760,14803,14660,14728,14778,14831,14818,14997,15174,15199,15127,15346,15299,15279,15437,15327,15441],"pv":[125,125,125,116,116,116,116,116,116,116,116,116,116,116,116,116,116,116,116,116,116,116,116,116,116,116,116,115,115,115,115,115,115,115,115,115,115,114,114,114,114,114,114,114,114,114,114,114,114,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,126,133,155,203,272,382,561,800,1100,1510,1948,2567,3234,3946,4702,5594,6225,6912,7458,8003,8728,9749,10522,11279,12970,13650,14149,14943,15412,15788,16087,16102,16106,16553,16870,16479,16918,16841,17186,17404,17581,17734,18199,17865,17459,16971,17054,17504,18073,18223,17883,18277,18100,18172,18232,18219,18004,17647,17209,17670,17398,17590,17672,17779,17888,17657],"st":[603,603,605,602,641,637,637,638,637,635,634,636,633,629,627,627,625,624,623,622,621,620,619,620,619,619,616,617,617,615,616,616,614,614,611,612,613,610,611,610,608,609,609,609,607,606,604,600,598,596,594,593,592,592,592,591,589,585,581,574,570,567,560,553,552,550,546,526,534,514,413,386,382,379,373,365,362,340,320,312,304,265,253,248,248,247,242,240,233,250,235,220,204,182,160,136,133,133,134,135,133,140,142,149,152,163,179,195,225,259,324,404,505,624,841,991,1133,1258,1385,1496,1583,1636,1663,1668,1666,1699,1671,1660,1657,1652,1635,1616,1581,1582,1571,1572,1572,1562,1550,1538,1535,1527,1518,1511,1511,1512,1505,1518,1518,1505,1498],"wind":[5969,6466,6704,6523,6497,6446,6059,5984,5855,5816,5641,5596,5534,5460,5388,5287,5314,5525,5406,5525,5605,5518,5438,5443,5454,5420,5407,5147,4984,4957,4894,4897,4859,4886,5055,5057,5063,5037,5032,5003,5043,5201,5240,5242,5232,5191,4861,4871,4889,4545,4585,4624,4679,4651,4694,4684,4684,4676,5017,5028,5155,4373,4370,4334,4296,4597,4602,4690,4866,4961,5447,5603,5601,5352,5190,5198,5049,5391,5275,5530,5486,5540,5501,5513,5545,5568,5581,5592,5601,5597,5608,5594,5594,5517,5498,5362,5351,5263,5173,5122,4719,4668,4425,3859,3704,3645,3791,3696,3598,3783,3664,3689,3310,3306,3324,3053,3054,2940,2874,2769,2870,2778,2769,2760,2777,2739,2775,2782,2891,2908,2811,2849,2865,2898,2964,2960,2931,2967,2878,2924,2991,3001,2917,2924,2838,3151,3190,3183,3473,3507,3499],"nuc":[3384,3383,3382,3386,3387,3383,3384,3386,3387,3387,3385,3384,3386,3387,3385,3390,3387,3389,3388,3384,3385,3389,3388,3388,3386,3389,3386,3388,3391,3386,3388,3388,3388,3386,3388,3387,3385,3390,3389,3388,3386,3389,3390,3387,3388,3388,3388,3387,3387,3389,3386,3391,3387,3388,3389,3388,3389,3388,3390,3388,3389,3388,3389,3391,3385,3386,3388,3388,3389,3389,3386,3386,3389,3387,3386,3385,3391,3389,3386,3390,3391,3387,3391,3388,3390,3389,3388,3391,3386,3387,3388,3385,3385,3387,3386,3386,3387,3387,3384,3392,3385,3385,3385,3381,3385,3384,3385,3385,3386,3383,3385,3385,3383,3390,3387,3384,3385,3386,3382,3387,3386,3385,3384,3385,3385,3388,3383,3386,3385,3388,3388,3387,3388,3385,3391,3386,3384,3387,3390,3386,3392,3389,3384,3389,3381,3366,3388,3387,3394,3391,3387],"gas":[3327,3601,3540,3395,3342,3381,3405,3432,3326,3311,3333,3386,3394,3574,3674,3666,3653,3606,3487,3534,3440,3419,3359,3358,3369,3287,3257,3191,3151,3180,3101,3062,3020,3041,3010,3044,3027,2929,2919,2949,2997,2991,2999,3012,2993,2989,3009,3021,3014,3022,3014,3009,3004,2954,2955,2971,2955,3019,2956,2957,2942,2981,2985,2995,3016,3019,3039,3029,3035,3043,3073,3085,3097,3160,3282,3327,3384,3394,3424,3562,3575,3640,3624,3566,3638,3723,3737,3800,3840,3785,3741,3706,3690,3679,3668,3611,3612,3467,3359,3358,3287,3256,3263,3004,2895,2885,2571,2274,2192,1781,1582,1364,1209,1079,1040,997,977,980,978,974,973,980,994,971,987,976,996,975,969,968,973,989,974,974,972,970,966,965,969,972,969,969,965,969,971,976,983,982,971,983,982],"other":[2634,2633,2635,2564,2633,2635,2634,2633,2633,2679,189,188,2633,2657,2598,2599,2506,2597,2598,2602,2602,2568,2600,2601,2601,2611,2612,2611,2611,2611,2613,2612,2612,2656,2612,2613,2611,2611,2611,2611,2614,2613,2614,2612,2612,2611,2603,2602,2603,2608,2609,2609,2608,2608,2607,2606,2607,2607,2604,2604,2605,2667,2667,2698,2667,2667,2667,2669,188,187,2672,2670,2672,2657,2708,2711,2708,2707,2714,2689,2713,2712,2712,2713,2715,2745,2744,2745,2745,2746,2747,2748,2747,2749,2736,2685,2738,2768,2768,2813,2765,2765,2740,2736,2737,2735,2726,2734,2737,2609,2610,2620,2618,2619,2618,2615,2614,2615,2597,2597,2597,2498,2496,2497,2498,2496,2496,2415,2412,2424,2397,2398,2398,2393,2392,2393,2382,2382,2335,2225,2268,2267,2244,2179,2244,2361,2360,2342,2339,2349,2336],"hydro":[6811,6897,6781,6840,6825,6862,6725,6782,6674,6606,6748,6811,6846,7089,7010,7044,7029,6910,6747,6719,6573,6475,6360,6381,6335,5999,6018,5969,6033,6065,6114,6076,5969,6030,5880,5870,5951,6028,6014,5995,5908,5884,5925,5864,5839,5761,5704,5748,5754,5880,5861,5933,5818,5942,5966,5984,5936,5884,5849,5915,5949,6005,6068,6023,6090,6080,6135,6084,6013,6050,6111,6027,6120,6283,6589,6848,7105,6884,7105,7064,6895,7057,7075,7066,7359,7434,7550,7605,7519,7486,7662,7720,7671,7399,7444,7126,7160,6919,6704,6342,6308,6110,5751,5990,5578,5329,5049,5088,4916,4450,4188,3965,4006,4071,4066,4180,4030,3828,3805,3879,4003,3705,3722,3810,3755,3755,3751,3745,3799,3813,3826,3886,3877,3831,3778,3758,3804,3749,3709,3576,3553,3529,3510,3513,3559,3489,3421,3381,3220,3171,3133],"pump":[563,710,573,598,608,614,610,650,587,404,297,337,357,367,350,412,433,433,329,209,119,84,-51,40,-24,118,210,119,201,215,217,217,173,196,120,136,208,202,74,6,32,-22,-43,71,-41,-43,32,50,146,274,241,347,312,238,250,297,261,297,48,22,31,182,280,212,199,213,258,246,63,203,199,122,-40,-27,189,327,372,278,377,589,451,713,986,1174,1304,1634,1674,1764,1855,1837,1878,1930,1910,1880,1835,1694,1310,994,1095,1080,1004,917,626,684,547,342,323,208,279,378,268,205,21,-302,-575,-699,-809,-862,-890,-1332,-1750,-1993,-2097,-2411,-2587,-2808,-2801,-2795,-2812,-2801,-2795,-2799,-2889,-2843,-2878,-2882,-2968,-2974,-2945,-2936,-2945,-2940,-2948,-2967,-2990,-2960,-3000,-3013,-3017,-3010,-3002],"ex":[-1035,-2248,-2230,-2030,-1908,-1970,-1567,-1733,-1662,-1748,-1570,-1622,-1657,-1999,-2115,-2161,-2056,-1983,-1811,-1894,-1893,-1655,-1395,-1424,-1364,-1341,-1406,-1170,-1027,-944,-957,-1029,-1011,-1053,-1055,-819,-1145,-1205,-997,-942,-1044,-1156,-1104,-1286,-1099,-1139,-850,-860,-934,-998,-905,-812,-651,-794,-857,-885,-901,-991,-1035,-948,-919,-197,-246,-166,-97,-264,-122,-318,-235,-184,-651,-159,25,612,488,363,354,475,400,212,833,405,456,478,427,318,433,478,442,693,551,423,309,665,463,961,659,900,879,525,257,140,286,76,265,-50,-552,-963,-1460,-2623,-2697,-2725,-2917,-3521,-3681,-3843,-3835,-3476,-4196,-3976,-3809,-3610,-3411,-3757,-3951,-3903,-4204,-4366,-4085,-3938,-3457,-4034,-4539,-4560,-4077,-4230,-5006,-4879,-4731,-4825,-4789,-4571,-4230,-4067,-4474,-4669,-4062,-4334,-4545,-4493,-4298]},"dem29":[15300,15362,15293,15287,15290,15257,15198,15151,15147,15132,15277,15015,15028,15084,15080,14968,15324,15294,15145,15137,15164,15131,15127,15087,14980,14892,14773,14234,14180,14146,14917,14954,14960,14970,15087,15165,15061,14940,14909,14729,14796,14822,14911,15027,15036,15109,15122,14987,14976,14965,15036,14853,14772,14714,14830,15020,15031,14990,15068,15095,15151,15149,15339,15348,15257,15306,15359,15341,15404,15658,15813,15963,16228,16724,17203,17740,18086,18172,18729,18979,19289,19595,20246,20469,20816,21123,21749,21919,22091,22486,22648,23054,23254,23400,23721,23797,23987,24222,24639,24765,25159,25091,24609,24804,24801,24740,24817,24647,24630,24786,24770,24518,24389,24048,23747,23937,24008,23970,24195,24147,23989,25334,25293,25269,25102,24925,24708,24767,24229,24223,24300,24156,23932,24098,24056,24036,23712,23801,23646,23615,23948,23237,23469,23212,22955,23074,22915,22751,22724,22919,22833,22928,22752,23065,22855,22905,22996,22754,22536,22735,22585,22538,22608,22296,22897,22388,22416,22412,22358,22079,22511,22492,22423,22073,21910,21963,21935,21678,21567,21564,21085,21199,21364,20927,21107,21093,21074,21132,20863,20692,20924,20941,20776,20925,21045,20922,20890,20695,20894,20991,21041,20929,21193,21090,21365,21236,21227,21634,21713,21728,22048,21541,21887,22281,22133,22512,22319,22488,22486,22812,22980,22974,23289,23234,23279,23405,23371,23626,23882,23668,23723,23679,23790,24373,24179,24596,24704,25046,25003,25408,25236,26595,26719,26749,27030,26942,27265,27481,27693,27373,27619,27748,27961,28532,28527,28799,28885,29089,28920,28736,28233,28187,28112,28007,27421,27172,26930,26893,26614,26452,25920,25831,25781,25425,25140,24785,24460,24257,24209,24157,23848,23464,23159,22943,22948,22863,22598,22281]};
+const $ = s => document.querySelector(s);
+const fmt = n => Math.round(n).toLocaleString('en-GB');
+const SVGNS = 'http://www.w3.org/2000/svg';
+const el = (tag, attrs = {}, parent) => { const e = document.createElementNS(SVGNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Glossary (same pattern as light-birthday) ---------- */
+const GLOSS = {
+  freq: ['Frequency', 'How many times a second the alternating current swings back and forth: 50 in Europe. It drops when demand exceeds supply and rises when supply exceeds demand, everywhere on a connected grid at once.'],
+  voltage: ['Voltage', 'The electrical "pressure" on a line. Unlike frequency it differs from place to place. Spain\'s main grid runs at a nominal 400 kV and must stay between 380 and 435 kV.'],
+  q: ['Reactive power', 'Power that sloshes back and forth between generators, lines and loads without doing useful work. Injecting it raises local voltage; absorbing it lowers voltage. Measured in Mvar.'],
+  mvar: ['Mvar', 'Megavolt-ampere reactive: the unit of reactive power, the way MW is the unit of real power.'],
+  inertia: ['Inertia', 'The energy stored in the spinning mass of generators locked in step with the grid. It slows down how fast frequency can change after a sudden imbalance, buying time for controls to act.'],
+  sync: ['Synchronous machine', 'A generator or motor whose rotor spins in lock-step with the grid frequency: nuclear, gas, coal, hydro and solar-thermal plants. They provide inertia and, if controlled to, voltage support.'],
+  inverter: ['Inverter-based', 'Solar panels, most wind turbines and batteries connect through power electronics. They provide no spinning inertia unless designed and set to emulate it, but can control reactive power quickly if the rules ask them to.'],
+  vcontrol: ['Voltage control', 'Adjusting reactive power to hold voltage at a target. In Spain, plants with this duty follow operating procedure P.O. 7.4.'],
+  osc: ['Oscillation', 'A rhythmic swing in power flows, frequency and voltage. Inter-area oscillations at about 0.2 Hz are big regions of Europe swinging against each other; well-damped ones die out in seconds.'],
+  damping: ['Damping', 'How quickly an oscillation dies out. Low damping means a swing keeps going.'],
+  reactor: ['Shunt reactor', 'A large coil connected to the grid that absorbs reactive power and so pulls voltage down. In Spain they were switched in and out by hand.'],
+  hvdc: ['HVDC', 'High-voltage direct current. The Spain–France HVDC link carries a set amount of power regardless of frequency. In "AC-emulation" mode it instead behaves like an AC line and reacts to conditions.'],
+  pf: ['Fixed power factor', 'A mode in which a plant\'s reactive power is a fixed proportion of its real power. If output falls, the reactive power it absorbs falls too, whatever the voltage is doing.'],
+  po74: ['P.O. 7.4', 'Spain\'s operating procedure for the voltage-control service. Before June 2025 renewables could not provide it; they ran at fixed power factor instead.'],
+  lfdd: ['Load shedding (LFDD)', 'Low-frequency demand disconnection: automatic relays that cut blocks of customers when frequency falls past set thresholds, to stop it falling further.'],
+  rocof: ['RoCoF', 'Rate of change of frequency, in hertz per second. The less inertia, the faster frequency moves for the same imbalance.'],
+  sync_loss: ['Loss of synchronism', 'When one part of an AC grid can no longer keep its machines turning in step with the rest. Protection then splits the grid apart.'],
+  ridethrough: ['Ride-through', 'The obligation for a plant to stay connected through a disturbance up to set limits. A plant that trips below its required limit is an improper disconnection.'],
+  tso: ['TSO', 'Transmission system operator: the company that runs the high-voltage grid and balances it in real time. Red Eléctrica (REE) in Spain, REN in Portugal.'],
+  ccgt: ['Combined-cycle gas (CCGT)', 'A gas plant that uses a gas turbine and then a steam turbine on the waste heat. Synchronous, so it can provide inertia and voltage control when running.'],
+  pumped: ['Pumped storage', 'Hydro plants that pump water uphill when power is cheap and release it through turbines when it is needed. In pump mode they are big synchronous motors.'],
+  kv: ['kV', 'Kilovolt, a thousand volts. Spain\'s backbone grid is nominally 400 kV.']
+};
+const pop = $('#pop'); let popFor = null;
+function showPop(btn){
+  const g = GLOSS[btn.dataset.k]; if (!g) return;
+  pop.innerHTML = `<b>${g[0]}</b>${g[1]}`; pop.classList.add('on'); popFor = btn;
+  document.querySelectorAll('.t[aria-expanded="true"]').forEach(b => b.setAttribute('aria-expanded', 'false'));
+  btn.setAttribute('aria-expanded', 'true');
+  const r = btn.getBoundingClientRect(), pw = Math.min(300, innerWidth - 24);
+  pop.style.maxWidth = pw + 'px';
+  let x = r.left + scrollX + r.width / 2 - pw / 2; x = Math.max(12 + scrollX, Math.min(x, scrollX + innerWidth - pw - 12));
+  pop.style.left = x + 'px';
+  const ph = pop.offsetHeight; let y = r.top + scrollY - ph - 10; if (r.top - ph - 10 < 60) y = r.bottom + scrollY + 10;
+  pop.style.top = y + 'px';
+}
+function hidePop(){ pop.classList.remove('on'); if (popFor) popFor.setAttribute('aria-expanded', 'false'); popFor = null; }
+document.addEventListener('click', e => { const b = e.target.closest('.t'); if (b){ e.stopPropagation(); popFor === b ? hidePop() : showPop(b); } else hidePop(); });
+document.addEventListener('mouseover', e => { const b = e.target.closest('.t'); if (b && matchMedia('(hover:hover)').matches) showPop(b); });
+document.addEventListener('mouseout', e => { const b = e.target.closest('.t'); if (b && matchMedia('(hover:hover)').matches) hidePop(); });
+document.addEventListener('focusin', e => { const b = e.target.closest('.t'); if (b) showPop(b); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') hidePop(); });
+addEventListener('scroll', () => { if (popFor) hidePop(); }, { passive: true });
+function wireTerms(root = document){ root.querySelectorAll('.t:not([aria-describedby])').forEach(b => { b.type = 'button'; b.setAttribute('aria-expanded', 'false'); b.setAttribute('aria-describedby', 'pop'); }); }
+wireTerms();
+$('#gloss').innerHTML = Object.values(GLOSS).sort((a, b) => a[0].localeCompare(b[0])).map(g => `<div><dt>${g[0]}</dt><dd>${g[1]}</dd></div>`).join('');
+
+/* ---------- Tabs: highlight the section in view ---------- */
+(() => {
+  const tabs = [...document.querySelectorAll('#tabs .tab')];
+  const secs = tabs.map(t => document.querySelector(t.getAttribute('href'))).filter(Boolean);
+  const io = new IntersectionObserver(es => {
+    es.forEach(e => { if (e.isIntersecting){ tabs.forEach(t => t.classList.toggle('on', t.getAttribute('href') === '#' + e.target.id)); } });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  secs.forEach(s => io.observe(s));
+})();
+
+/* ---------- Helpers for the REE series (5-minute steps, index 0 = 00:00) ---------- */
+const MIX = [ // key, label, colour var, synchronous?
+  ['nuc', 'Nuclear', '--c-nuc', true], ['gas', 'Gas (CCGT)', '--c-gas', true], ['other', 'Other thermal', '--c-other', true],
+  ['hydro', 'Hydro', '--c-hydro', true], ['st', 'Solar thermal', '--c-st', true], ['wind', 'Wind', '--c-wind', false], ['pv', 'Solar PV', '--c-pv', false]
+];
+const at = (d, i) => Object.fromEntries(Object.keys(d).map(k => [k, d[k][i]]));
+const hhmm = i => `${String(Math.floor(i / 12)).padStart(2, '0')}:${String((i % 12) * 5).padStart(2, '0')}`;
+
+/* ---------- Hero chart: 22 vs 28 April demand ---------- */
+(function heroChart(){
+  const svg = $('#heroChart'), W = 520, H = 260, L = 40, R = 12, T = 14, B = 26;
+  const x = i => L + (W - L - R) * i / 287, y = v => T + (H - T - B) * (1 - v / 32000);
+  for (let g = 0; g <= 30000; g += 10000){ el('line', { x1: L, x2: W - R, y1: y(g), y2: y(g), stroke: 'var(--grid)' }, svg); el('text', { x: L - 6, y: y(g) + 3, 'text-anchor': 'end', 'font-size': 10, fill: 'var(--ink-3)' }, svg).textContent = g / 1000 + ' GW'; }
+  for (let h = 0; h <= 24; h += 6){ el('text', { x: x(Math.min(h * 12, 287)), y: H - 8, 'text-anchor': h === 0 ? 'start' : h === 24 ? 'end' : 'middle', 'font-size': 10, fill: 'var(--ink-3)' }, svg).textContent = String(h).padStart(2, '0') + ':00'; }
+  const path = arr => arr.map((v, i) => v == null ? null : `${x(i).toFixed(1)},${y(v).toFixed(1)}`).filter(Boolean).join(' L');
+  el('path', { d: 'M' + path(DATA.d22.dem), fill: 'none', stroke: 'var(--mute)', 'stroke-width': 2 }, svg);
+  const p28 = el('path', { d: 'M' + path(DATA.d28.dem), fill: 'none', stroke: 'var(--accent)', 'stroke-width': 2.5, 'stroke-linejoin': 'round' }, svg);
+  const i0 = 150; // 12:30
+  el('line', { x1: x(i0 + 0.6), x2: x(i0 + 0.6), y1: T, y2: H - B, stroke: 'var(--bad)', 'stroke-dasharray': '3 3' }, svg);
+  const lab = el('text', { x: x(i0 + 3), y: T + 12, 'font-size': 11, fill: 'var(--bad)', 'font-weight': 600 }, svg); lab.textContent = '12:33 blackout';
+  el('text', { x: x(287), y: y(DATA.d22.dem[275]) - 8, 'text-anchor': 'end', 'font-size': 10, fill: 'var(--ink-3)' }, svg).textContent = '22 April';
+  el('text', { x: x(244), y: y(DATA.d28.dem[240]) + 16, 'text-anchor': 'middle', 'font-size': 10, fill: 'var(--accent)' }, svg).textContent = '28 April';
+  if (!reduceMotion){ const len = p28.getTotalLength(); p28.style.strokeDasharray = len; p28.style.strokeDashoffset = len; p28.getBoundingClientRect(); p28.style.transition = 'stroke-dashoffset 2.4s cubic-bezier(.16,1,.3,1)'; p28.style.strokeDashoffset = 0; }
+})();
+
+/* ---------- 12:30 stats and mix ---------- */
+(function at1230(){
+  const r = at(DATA.d28, 150);
+  const gen = MIX.reduce((s, m) => s + r[m[0]], 0) + Math.max(0, r.pump);
+  const sync = MIX.filter(m => m[3]).reduce((s, m) => s + r[m[0]], 0) + Math.max(0, r.pump);
+  $('#stats1230').innerHTML = [
+    ['Demand', fmt(r.dem) + ' MW', 'Matches the government report exactly. <a class="src" href="#s-ree-data">REE data</a><a class="src" href="#s-gov">GOV</a>'],
+    ['Solar PV', Math.round(r.pv / gen * 100) + '%', fmt(r.pv) + ' MW of ' + fmt(gen) + ' MW generated. <a class="src" href="#s-ree-data">REE data</a>'],
+    ['Exports and pumping', fmt(-r.ex - r.pump) + ' MW', fmt(-r.ex) + ' MW to Portugal, Morocco, France and the Balearics; ' + fmt(-r.pump) + ' MW pumping water uphill. <a class="src" href="#s-ree-data">REE data</a>'],
+    ['System inertia', '2.2–2.7 s', 'Above the 2 s floor ENTSO-E recommends. <a class="src" href="#s-arxiv">ARXIV</a><a class="src" href="#s-ree">REE</a>']
+  ].map(s => `<div class="stat"><div class="k">${s[0]}</div><div class="v">${s[1]}</div><div class="s">${s[2]}</div></div>`).join('');
+  $('#mixBar').innerHTML = MIX.map(m => `<i style="width:${r[m[0]] / gen * 100}%;background:var(${m[2]})" title="${m[1]}"></i>`).join('');
+  $('#mixRows').innerHTML = MIX.slice().sort((a, b) => r[b[0]] - r[a[0]]).map(m => `<div class="mixrow"><span><i class="key" style="background:var(${m[2]})"></i>${m[1]}</span><div style="height:8px;border-radius:4px;background:var(--grid);overflow:hidden"><i style="display:block;height:100%;width:${r[m[0]] / r.pv * 100}%;background:var(${m[2]})"></i></div><span class="num">${fmt(r[m[0]])} MW</span></div>`).join('') +
+    `<div class="mixrow" style="margin-top:14px;padding-top:10px;border-top:1px solid var(--grid)"><span>Synchronous</span><div style="height:8px;border-radius:4px;background:var(--grid);overflow:hidden"><i style="display:block;height:100%;width:${sync / gen * 100}%;background:var(--ink-3)"></i></div><span class="num">${Math.round(sync / gen * 100)}%</span></div>`;
+})();
+
+/* ---------- Replay ---------- */
+// t = seconds after 12:32:00. V in kV at a named element, f in Hz, lost = cumulative generation lost (MW).
+const EVENTS = [
+  { t: 0, title: 'Voltages start to climb', text: 'Voltages rise almost linearly across the grid. Olmedilla goes from 413 to 428 kV in 57 seconds; Arroyo de San Serván from 411 to 424 kV.', V: 413, Vat: 'Olmedilla', src: ['gov'] },
+  { t: 0.5, title: 'Large solar and wind plants cut output', text: 'Between 12:32:00 and 12:32:48, large renewable plants lower their output by about 500 MW, a scheduled change. Running at fixed power factor, they absorb less reactive power as they produce less.', why: 'Less reactive absorption means higher voltage.', src: ['final'] },
+  { t: 55, title: 'Small losses add up: about 525 MW', text: '208 MW of distributed wind and solar drop or disconnect for unknown reasons, and net load in distribution grids rises about 317 MW as rooftop PV disconnects and voltage-dependent load rises.', lost: 525, src: ['gov', 'factual', 'final'] },
+  { t: 57, title: 'Olmedilla reaches 428 kV', text: 'Still under the 435 kV limit, but rising.', V: 428, Vat: 'Olmedilla', src: ['gov'] },
+  { t: 57.14, big: 1, title: 'Event 1: Granada, 355 MW', text: 'A 400/220 kV transformer connecting solar, wind and solar-thermal plants trips on overvoltage protection on its 220 kV side. It was injecting 355 MW and absorbing 165 Mvar. 417.9 kV on the 400 kV side.', why: 'It had been absorbing 165 Mvar. When it went, that absorption went with it, and voltage stepped up.', V: 417.9, Vat: 'Granada, 400 kV side', lost: 880, src: ['gov', 'final'] },
+  { t: 60, title: 'Some nodes pass 430 kV', text: 'Still below the 435 kV operating limit.', V: 430, Vat: 'several nodes', src: ['gov'] },
+  { t: 76.443, big: 1, title: 'Event 2: Badajoz, 727 MW', text: 'An evacuation line at a Badajoz substation trips on overvoltage (estimated 432.4 kV), then a second substation at 12:33:16.820. Together 727 MW of solar PV and solar thermal. Frequency drops 55 mHz; the flow with France turns to a 895 MW import.', why: 'Timing and size differ by report: GOV gives 12:33:16.460 and 12:33:17.520, about 730 MW. Shown here: FINAL.', V: 432.4, Vat: 'Badajoz (estimated)', lost: 1607, src: ['final', 'gov'] },
+  { t: 77.368, title: 'Wind farms trip in Segovia', text: '22.87 MW.', src: ['gov'] },
+  { t: 77.78, big: 1, title: 'Event 3: Seville and more, 928 MW', text: 'Trips until 12:33:18.020 disconnect wind and solar in Segovia, Huelva, Badajoz, Sevilla and Cáceres: 928 MW. Some on overvoltage; for most the panel could not establish the cause. Frequency drops a further 75 mHz and does not recover.', why: 'GOV counts the Seville trip alone as 550 MW. The panel found some overvoltage settings below the required limits.', lost: 2535, src: ['final', 'gov'] },
+  { t: 78.38, big: 1, title: 'A plant trips at 443.8 kV', text: 'Above the ride-through obligation. The government report says the cascade is "expected" from this point. More than 2.5 GW has been lost in Spain; none in Portugal.', V: 443.8, Vat: 'a plant on the 400 kV grid', src: ['gov', 'factual'] },
+  { t: 79, big: 1, title: 'Iberia starts losing synchronism', text: 'Spain and Portugal begin to slip out of step with the rest of Continental Europe.', src: ['factual', 'final'] },
+  { t: 79.62, title: 'Peak import from France: 3,807 MW', text: '4,609 MW in over the AC lines while the HVDC link keeps exporting 802 MW.', src: ['gov'] },
+  { t: 80.18, title: 'Frequency 49.5 Hz: pumping shed begins', text: 'First threshold for disconnecting pumped-storage plants. 2,037 MW of pumping is shed in the first two steps.', f: 49.5, src: ['gov'] },
+  { t: 80.473, title: 'Morocco link trips', text: 'The AC interconnection to Morocco trips on under-frequency (relay threshold 49.5 Hz, on the Moroccan side).', f: 49.314, src: ['final', 'gov'] },
+  { t: 80.52, title: 'Power swing: 5,587 MW towards France', text: 'Losing synchronism, the flow on the French border swings from import to a 5,587 MW export.', src: ['gov'] },
+  { t: 80.56, title: 'RoCoF passes 1 Hz/s', text: 'The rate of change of frequency stayed within 1 Hz/s until here, at about 49 Hz. "System conditions had already degraded."', f: 49.03, src: ['final'] },
+  { t: 80.6, big: 1, title: '49.0 Hz: load shedding step 1', text: 'The first automatic demand-disconnection step. About 1,402.5 MW of transmission-connected consumers are shed by step 3.', f: 49.0, src: ['gov'] },
+  { t: 80.65, title: 'Overvoltage trip at 456 kV', text: 'Frequency 48.914 Hz. Shedding load also removes reactive load, which pushes voltage up further.', V: 456, Vat: 'a tripping plant', f: 48.914, src: ['gov'] },
+  { t: 80.76, title: '48.8 Hz: shedding step 2', f: 48.8, src: ['gov'] },
+  { t: 81.0, title: '48.6 Hz: shedding step 3', f: 48.6, src: ['gov'] },
+  { t: 81.38, title: '48.4 Hz: shedding step 4', f: 48.4, src: ['gov'] },
+  { t: 81.407, title: 'Vic–Baixas line opens', text: 'Loss-of-synchronism protection opens the eastern 400 kV line to France.', src: ['gov'] },
+  { t: 81.535, big: 1, title: 'Iberia separates from France', text: 'Hernani–Argia opens. Spain and Portugal are now an electrical island. About 1,000 MW keeps flowing out over the HVDC link, still on its fixed setting.', f: 48.458, src: ['gov', 'final'] },
+  { t: 81.82, title: '48.2 Hz: shedding step 5', f: 48.2, src: ['gov'] },
+  { t: 82.04, title: '48.0 Hz: shedding step 6, the last', text: 'Portugal\'s last step operates at 12:33:22.', f: 48.0, src: ['gov', 'soesc'] },
+  { t: 82.33, title: 'Trip at 465 kV', V: 465, Vat: 'a tripping plant', src: ['gov'] },
+  { t: 82.702, title: 'Trip near the generator limit', text: '47.79 Hz, against a 47.5 Hz withstand requirement; 436 kV.', V: 436, Vat: 'a tripping plant', f: 47.79, src: ['gov'] },
+  { t: 83.076, title: 'Line trips at 485 kV', text: 'Measured 485 kV against a protection setting of 1.2 × 400 kV = 480 kV.', V: 485, Vat: 'a 400 kV line', src: ['gov'] },
+  { t: 83.515, title: 'Under-frequency trip at 46.15 Hz', text: 'That plant had earlier seen 469.3 kV.', f: 46.15, src: ['gov'] },
+  { t: 83.52, title: 'Mallorca link blocks', text: 'The Balearics lose 96.5 MW and dip to 49.009 Hz, with no customers lost.', src: ['gov'] },
+  { t: 83.96, big: 1, title: 'HVDC to France stops. Collapse', text: 'Voltage collapses at Santa Llogaia and the HVDC link blocks, completing the separation. ENTSO-E dates the complete collapse to 12:33:24.', src: ['gov', 'final', 'soesc'] },
+  { t: 87.93, title: 'Andorra disconnects', src: ['gov'] },
+  { t: 89.741, big: 1, title: 'Zero voltage', text: '"Zero voltage" across peninsular Spain at 12:33:29.741 to 12:33:30.', src: ['gov'] }
+];
+const SRCMAP = { gov: ['GOV', 's-gov'], final: ['FINAL', 's-final'], factual: ['FACTUAL', 's-factual'], soesc: ['SO ESC', 's-soesc'], ree: ['REE', 's-ree'] };
+const srcTags = a => a.map(k => `<a class="src" href="#${SRCMAP[k][1]}">${SRCMAP[k][0]}</a>`).join('');
+const clock = t => { const s = 32 * 60 + t, m = Math.floor(s / 60), sec = s - m * 60; return `12:${String(m).padStart(2, '0')}:${sec.toFixed(3).padStart(6, '0')}`; };
+const T_END = 91, T_BRK = 75;
+// playback speed (event seconds per real second) by segment
+const rateAt = t => t < 56 ? 8 : t < 75.8 ? 6 : t < 84.2 ? 0.33 : 2;
+
+const RP = { t: 0, playing: false, last: 0 };
+const feedList = $('#feedList');
+feedList.innerHTML = EVENTS.map((e, i) => `<li class="${e.big ? 'big' : ''}" data-i="${i}"><button type="button"><span class="tt">${clock(e.t).slice(3)}</span><span class="ev">${e.title}</span></button></li>`).join('');
+feedList.addEventListener('click', e => { const li = e.target.closest('li'); if (!li) return; setT(EVENTS[+li.dataset.i].t + 0.0005); pause(); });
+
+function curIndex(t){ let k = -1; for (let i = 0; i < EVENTS.length; i++) if (EVENTS[i].t <= t) k = i; return k; }
+function stateAt(t){
+  let lost = 0, V = 413, Vat = 'Olmedilla', f = null;
+  for (const e of EVENTS){ if (e.t > t) break; if (e.lost != null) lost = e.lost; if (e.V != null && e.V >= V){ V = e.V; Vat = e.Vat; } if (e.f != null) f = e.f; }
+  if (t < 57 && t > 0){ V = 413 + 15 * t / 57; Vat = 'Olmedilla'; } // GOV: near-linear rise, 413 to 428 kV in 57 s
+  if (t >= 83.96) { return { lost, V, Vat, f, collapsed: true }; }
+  return { lost, V, Vat, f };
+}
+
+let chart = null;
+function buildChart(){
+  const svg = $('#rpChart'); svg.innerHTML = '';
+  const W = Math.max(320, svg.parentNode.clientWidth - 0), small = W < 560;
+  const H = small ? 400 : 440, L = small ? 40 : 46, R = 10, T = 16;
+  const gap = 26, axisH = 22, lostH = 26;
+  const panH = (H - T - gap - axisH - lostH - 14) / 2;
+  const vTop = T, vBot = T + panH, fTop = vBot + gap, fBot = fTop + panH, lTop = fBot + 10, lBot = lTop + lostH;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const xb = L + (W - L - R) * 0.32;
+  const x = t => t <= T_BRK ? L + (xb - L) * t / T_BRK : xb + (W - R - xb) * (t - T_BRK) / (T_END - T_BRK);
+  const yV = v => vTop + (vBot - vTop) * (1 - (v - 380) / (490 - 380));
+  const yF = f => fTop + (fBot - fTop) * (1 - (f - 46) / (50.3 - 46));
+  // Voltage panel
+  el('rect', { class: 'band', x: L, width: W - R - L, y: yV(435), height: yV(380) - yV(435) }, svg);
+  el('text', { class: 'ttl', x: L, y: vTop - 4 }, svg).textContent = 'Voltage, kV';
+  [[420, 'a', '420 EU harmonised / Portugal', '420 EU'], [435, 'w', '435 Spanish limit', '435 limit'], [440, 'w', '440 ride-through (435 for older plants)', ''], [480, 'b', '480 line protection (1.2 Un)', '480 line prot.']].forEach(([v, c, s, s2]) => {
+    el('line', { class: 'thr ' + c, x1: L, x2: W - R, y1: yV(v), y2: yV(v) }, svg);
+    const left = v === 440;
+    el('text', { class: 'tl', x: left ? L + 4 : W - R - 2, y: yV(v) - 3, 'text-anchor': left ? 'start' : 'end' }, svg).textContent = small ? s2 : s;
+  });
+  [380, 400, 420, 440, 460, 480].forEach(v => el('text', { class: 'tk', x: L - 5, y: yV(v) + 3, 'text-anchor': 'end' }, svg).textContent = v);
+  // Frequency panel
+  el('text', { class: 'ttl', x: L, y: fTop - 4 }, svg).textContent = 'Frequency, Hz';
+  [[50, 'a'], [49.5, 'w'], [49.3, 'w'], [49.0, 'b'], [48.8, 'b'], [48.6, 'b'], [48.4, 'b'], [48.2, 'b'], [48.0, 'b'], [47.5, 'b']].forEach(([f, c]) => el('line', { class: 'thr ' + c, x1: L, x2: W - R, y1: yF(f), y2: yF(f), opacity: f < 49 && f > 48 ? .5 : 1 }, svg));
+  [[49.5, 'pumping shed 49.5 / 49.3'], [49.0, 'load shedding 49.0 → 48.0 (6 steps)'], [47.5, 'generators may trip below 47.5']].forEach(([f, s]) => el('text', { class: 'tl', x: W - R - 2, y: yF(f) - 3, 'text-anchor': 'end' }, svg).textContent = small ? s.replace(' (6 steps)', '').replace('generators may trip', 'gen. trip') : s);
+  [46, 47, 48, 49, 50].forEach(f => el('text', { class: 'tk', x: L - 5, y: yF(f) + 3, 'text-anchor': 'end' }, svg).textContent = f.toFixed(0));
+  // Time axis
+  [[0, '12:32:00'], [30, ':30'], [57, ':57'], [75, '12:33:15'], [78, ':18'], [81, ':21'], [84, ':24'], [87, ':27'], [90, ':30']].forEach(([t, s]) => {
+    if (small && [30, 57, 87].includes(t)) return;
+    el('line', { class: 'gl', x1: x(t), x2: x(t), y1: vTop, y2: fBot }, svg);
+    el('text', { class: 'tk', x: x(t), y: lBot + 15, 'text-anchor': t === 0 ? 'start' : 'middle' }, svg).textContent = s;
+  });
+  el('rect', { class: 'brk', x: xb - 3, y: vTop, width: 6, height: lBot - vTop }, svg);
+  // Event ticks
+  EVENTS.forEach(e => el('line', { class: 'evt' + (e.big ? ' big' : ''), x1: x(e.t), x2: x(e.t), y1: lTop, y2: lBot }, svg));
+  // Lost generation strip
+  el('text', { class: 'tl', x: L - 5, y: lTop + lostH / 2 + 3, 'text-anchor': 'end' }, svg).textContent = 'lost';
+  const lostSteps = [[0, 0], [55, 525], [57.14, 880], [76.443, 1607], [77.78, 2535]];
+  const lostG = el('g', {}, svg);
+  // Data layers (drawn once; the "future" part is faded by a clip)
+  const past = el('g', {}, svg), fut = el('g', { class: 'fut' }, svg);
+  const cp = el('clipPath', { id: 'rpPast' }, svg), cpr = el('rect', { x: 0, y: 0, width: 0, height: H }, cp);
+  const cf = el('clipPath', { id: 'rpFut' }, svg), cfr = el('rect', { x: 0, y: 0, width: W, height: H }, cf);
+  past.setAttribute('clip-path', 'url(#rpPast)'); fut.setAttribute('clip-path', 'url(#rpFut)');
+  const drawData = g => {
+    el('path', { class: 'vline', d: `M${x(0)},${yV(413)} L${x(57)},${yV(428)}` }, g);
+    EVENTS.filter(e => e.V != null && e.t > 0.1).forEach(e => el('circle', { class: 'vpt', cx: x(e.t), cy: yV(e.V), r: e.big ? 5 : 4 }, g));
+    el('path', { class: 'fdash', d: `M${x(0)},${yF(50)} L${x(79)},${yF(50)}` }, g);
+    const fp = EVENTS.filter(e => e.f != null);
+    el('path', { class: 'fline', d: `M${x(79)},${yF(50)} ` + fp.map(e => `L${x(e.t)},${yF(e.f)}`).join(' ') }, g);
+    fp.forEach(e => el('circle', { class: 'fpt', cx: x(e.t), cy: yF(e.f), r: 3 }, g));
+    el('text', { class: 'tl', x: x(10), y: yF(50) - 5 }, g).textContent = 'about 50 Hz';
+    el('text', { class: 'tl', x: x(40), y: yF(50) + 13, 'text-anchor': 'middle' }, g).textContent = small ? 'then −55, −75 mHz →' : 'then drops of 55 and 75 mHz at 12:33:16–17 →';
+    for (let i = 1; i < lostSteps.length; i++){
+      const [t0, v0] = lostSteps[i], t1 = i + 1 < lostSteps.length ? lostSteps[i + 1][0] : T_END;
+      el('rect', { class: 'lostbar', x: x(t0), width: Math.max(1, x(t1) - x(t0)), y: lBot - lostH * v0 / 2600, height: lostH * v0 / 2600 }, g);
+    }
+  };
+  drawData(past); drawData(fut);
+  const now = el('line', { class: 'now', x1: 0, x2: 0, y1: vTop - 2, y2: lBot }, svg);
+  chart = { x, now, cpr, cfr, W, H };
+  // Tap the chart to jump
+  svg.onclick = ev => {
+    const r = svg.getBoundingClientRect(), px = (ev.clientX - r.left) * W / r.width;
+    const t = px <= xb ? (px - L) / (xb - L) * T_BRK : T_BRK + (px - xb) / (W - R - xb) * (T_END - T_BRK);
+    setT(Math.max(0, Math.min(T_END, t))); pause();
+  };
+}
+
+let lastIdx = -2;
+function render(){
+  const t = RP.t, s = stateAt(t);
+  $('#rvClock').textContent = clock(t);
+  $('#rvLost').innerHTML = `${fmt(s.lost)} <small>MW</small>`;
+  $('#rvV').innerHTML = s.collapsed ? 'collapsed' : `${s.V.toFixed(s.V % 1 ? 1 : 0)} <small>kV</small>`;
+  $('#rvF').innerHTML = s.collapsed ? 'collapsed' : s.f == null ? '≈50.0 <small>Hz</small>' : `${s.f.toFixed(s.f * 100 % 10 ? 3 : 1)} <small>Hz</small>`;
+  $('#roV').className = 'ro' + (s.collapsed || s.V >= 435 ? ' bad' : s.V >= 420 ? ' warn' : '');
+  $('#roF').className = 'ro' + (s.collapsed || (s.f != null && s.f <= 49.0) ? ' bad' : s.f != null ? ' warn' : '');
+  $('#roLost').className = 'ro' + (s.lost >= 2000 ? ' bad' : s.lost > 0 ? ' warn' : '');
+  if (chart){ const px = chart.x(t); chart.now.setAttribute('x1', px); chart.now.setAttribute('x2', px); chart.cpr.setAttribute('width', px); chart.cfr.setAttribute('x', px); }
+  const sc = $('#rpScrub'); sc.value = t; sc.style.setProperty('--p', (t / T_END * 100) + '%');
+  const k = curIndex(t);
+  if (k !== lastIdx){
+    lastIdx = k;
+    feedList.querySelectorAll('li').forEach((li, i) => { li.classList.toggle('past', i < k); li.classList.toggle('cur', i === k); });
+    const e = EVENTS[Math.max(0, k)];
+    $('#feedNow').innerHTML = k < 0 ? '' : `<div class="t">${clock(e.t)}</div><h3>${e.title}</h3>${e.text ? `<p>${e.text}</p>` : ''}${e.why ? `<p class="why">${e.why}</p>` : ''}<p style="margin-top:8px">${srcTags(e.src)}</p>`;
+    const li = feedList.children[Math.max(0, k)];
+    if (li && RP.playing){ const ol = feedList, top = li.offsetTop - ol.clientHeight / 2 + li.offsetHeight / 2; ol.scrollTo({ top, behavior: reduceMotion ? 'auto' : 'smooth' }); }
+  }
+  $('#rpRate').textContent = RP.playing ? `playing at ${rateAt(t) >= 1 ? rateAt(t) + '×' : '⅓×'} real time` : t >= T_END ? 'end' : 'paused';
+}
+function setT(t){ RP.t = t; render(); }
+function play(){ if (RP.t >= T_END - 0.01) RP.t = 0; RP.playing = true; RP.last = performance.now(); $('#rpIcon').setAttribute('d', 'M5 3h4v14H5zM11 3h4v14h-4z'); $('#rpPlay').setAttribute('aria-label', 'Pause the replay'); requestAnimationFrame(tick); }
+function pause(){ RP.playing = false; $('#rpIcon').setAttribute('d', 'M5 3l12 7-12 7z'); $('#rpPlay').setAttribute('aria-label', 'Play the replay'); render(); }
+function tick(now){
+  if (!RP.playing) return;
+  const dt = Math.min(0.1, (now - RP.last) / 1000); RP.last = now;
+  RP.t = Math.min(T_END, RP.t + dt * rateAt(RP.t));
+  render();
+  if (RP.t >= T_END) { pause(); return; }
+  requestAnimationFrame(tick);
+}
+$('#rpPlay').onclick = () => RP.playing ? pause() : play();
+$('#rpRestart').onclick = () => { setT(0); feedList.scrollTo({ top: 0 }); };
+$('#rpScrub').oninput = e => { const v = +e.target.value; RP.playing = false; setT(v); pause(); };
+buildChart(); render();
+let rzT; addEventListener('resize', () => { clearTimeout(rzT); rzT = setTimeout(() => { buildChart(); lastIdx = -2; render(); }, 150); });
+</script>
+</body>
+</html>
