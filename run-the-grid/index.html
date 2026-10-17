@@ -298,6 +298,54 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 @media (max-width:900px){ .vgrid{grid-template-columns:1fr} }
 @media (max-width:640px){ .cmp2{grid-template-columns:1fr} .qbars .r{grid-template-columns:112px minmax(0,1fr) 60px} }
 
+
+/* What-if levers */
+.wi{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:14px;margin-top:16px;align-items:start}
+.levers{display:grid;gap:8px}
+.lever{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:start;background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:10px 12px;cursor:pointer}
+.lever:hover{border-color:var(--ink-3)}
+.lever input{accent-color:var(--accent);width:18px;height:18px;margin:2px 0 0}
+.lever .nm{font-weight:600;font-size:.93rem;line-height:1.35}
+.lever .ds{grid-column:2;font-size:.82rem;color:var(--ink-3);line-height:1.4}
+.conf{display:inline-block;font:600 .66rem/1.7 var(--mono);text-transform:uppercase;letter-spacing:.04em;border-radius:999px;padding:0 7px;margin-left:6px;vertical-align:1px;white-space:nowrap}
+.conf.hi{background:var(--accent-soft);color:var(--accent)}
+.conf.md{background:color-mix(in srgb,var(--accent-soft) 50%,var(--warn-soft));color:var(--ink-2)}
+.conf.lo,.conf.ds{background:var(--warn-soft);color:var(--warn)}
+.conf.no{background:var(--bad-soft);color:var(--bad)}
+.wiout{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:14px;position:sticky;top:64px}
+.wiout svg{display:block;width:100%;height:auto;margin-top:8px}
+.wiout svg .tk{font-size:10px;fill:var(--ink-3)}
+.wiout svg .tl{font-size:10px;fill:var(--ink-3);paint-order:stroke;stroke:var(--surface);stroke-width:3px}
+.verdict{margin-top:10px;border-radius:10px;padding:10px 12px;font-size:.92rem}
+.verdict.ok{background:var(--accent-soft)}
+.verdict.bad{background:var(--bad-soft)}
+.verdict.mid{background:var(--warn-soft)}
+.verdict b{display:block;font-size:1rem}
+.says{margin-top:10px;font-size:.88rem;color:var(--ink-2)}
+.says li+li{margin-top:5px}
+/* Restoration */
+.rest{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:14px;margin-top:16px}
+.rest svg{display:block;width:100%;height:auto}
+.rest svg .tk{font-size:10px;fill:var(--ink-3)}
+.rest svg .ml{font-size:10px;fill:var(--ink-2);paint-order:stroke;stroke:var(--surface);stroke-width:3px}
+.rest .bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.rest .now{font:600 1.1rem var(--mono)}
+.milest{list-style:none;padding:0;margin:14px 0 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 28px}
+.milest li{display:grid;grid-template-columns:92px minmax(0,1fr);gap:10px;padding-block:7px;border-bottom:1px solid var(--grid);font-size:.88rem;color:var(--ink-3);transition:color .3s}
+.milest li.on{color:var(--ink-2)}
+.milest li .tm{font:600 .82rem var(--mono);color:var(--ink-3)}
+.milest li.on .tm{color:var(--accent)}
+/* Myths */
+.myths{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px;margin-top:16px}
+.myth{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:14px 16px}
+.myth .claim{font-weight:600;font-size:1.02rem;display:flex;gap:10px;align-items:baseline}
+.myth .claim .verd{font:600 .66rem/1.7 var(--mono);text-transform:uppercase;letter-spacing:.04em;border-radius:999px;padding:0 7px;white-space:nowrap;margin-left:auto}
+.myth .verd.f{background:var(--bad-soft);color:var(--bad)}
+.myth .verd.p{background:var(--warn-soft);color:var(--warn)}
+.myth p{font-size:.9rem;color:var(--ink-2);margin-top:8px}
+@media (max-width:900px){ .wi{grid-template-columns:1fr} .wiout{position:static} }
+@media (max-width:640px){ .milest{grid-template-columns:1fr} }
+
 /* Positions */
 .pos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
 .pos .card h3{font-size:1.02rem;display:flex;justify-content:space-between;gap:10px;align-items:baseline}
@@ -404,6 +452,9 @@ footer .coffee:hover{border-color:var(--ink-3)}
       <a class="tab" href="#inertia">Inertia</a>
       <a class="tab" href="#voltage">Voltage</a>
       <a class="tab" href="#replay">28 April</a>
+      <a class="tab" href="#whatif">What if</a>
+      <a class="tab" href="#restore">Restoration</a>
+      <a class="tab" href="#myths">Myths</a>
       <a class="tab" href="#blame">Who's to blame?</a>
       <a class="tab" href="#model">How it works</a>
       <a class="tab" href="#sources">Sources</a>
@@ -580,6 +631,49 @@ footer .coffee:hover{border-color:var(--ink-3)}
   </div>
 </section>
 
+<!-- WHAT IF -->
+<section class="panel wrap" id="whatif">
+  <p class="kicker">Level 2 · what if?</p>
+  <h2>Could anything have stopped the cascade?</h2>
+  <p class="intro">These are the changes the reports discuss, each labelled with how confident they are. Switch any on and rerun the last 90 seconds in a <b>toy</b> version of the voltage model above. The toy is tuned to show the reports' reasoning: it can illustrate their conclusions, not test them. The verdict that counts is the reports' own, under the chart.</p>
+  <div class="wi">
+    <div class="levers" id="levers"></div>
+    <div class="wiout">
+      <div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><b style="font-size:.95rem">Toy rerun, 12:32:00 to 12:33:30</b><button class="btn sm" type="button" id="wiRun">Run</button></div>
+      <svg id="wiChart" viewBox="0 0 520 250" role="img" aria-label="Toy voltage trace for the chosen levers, against the real sequence"></svg>
+      <div class="legend" style="margin-top:4px"><span><i class="key" style="background:var(--accent)"></i>Toy with your levers</span><span><i class="key" style="background:var(--ink-3)"></i>Dashed: toy with none</span><span><i class="key" style="background:var(--bad);border-radius:50%"></i>A plant group trips</span></div>
+      <div class="verdict" id="wiVerdict"></div>
+      <ul class="says" id="wiSays"></ul>
+    </div>
+  </div>
+</section>
+
+<!-- RESTORATION -->
+<section class="panel wrap" id="restore">
+  <p class="kicker">After 12:33</p>
+  <h2>Bringing a country back from zero</h2>
+  <p class="intro">A dead grid can't simply be switched back on: power stations need power to start. Operators built small islands of supply and grew them. Islands around the lines from <b>France</b> (Catalonia, the Basque Country) and <b>Morocco</b> (the south), and <button class="t" data-k="blackstart">black&#8209;start</button> hydro plants in the Duero, Galicia and Asturias&#8209;Cantabria. Then they joined the islands together. Some attempts failed and had to be repeated. <a class="src" href="#s-gov">GOV</a><a class="src" href="#s-final">FINAL</a></p>
+  <div class="rest">
+    <div class="bar"><button class="play" id="rmPlay" type="button" aria-label="Play the restoration"><svg viewBox="0 0 20 20" aria-hidden="true"><path id="rmIcon" d="M5 3l12 7-12 7z" fill="currentColor"/></svg></button><span class="now" id="rmNow">28 Apr 12:30</span><span class="cap" style="margin:0" id="rmVal"></span></div>
+    <svg id="rmChart" viewBox="0 0 700 260" role="img" aria-label="Demand served in peninsular Spain from 12:30 on 28 April to 15:00 on 29 April, against a normal day, with restoration milestones"></svg>
+    <p class="cap">Demand served in peninsular Spain, REE 5&#8209;minute data (teal), against the same hours of Tuesday 22 April (grey). Milestones from the government report and ENTSO-E. Portugal's are in the list. <a class="src" href="#s-ree-data">REE data</a></p>
+    <ul class="milest" id="milest"></ul>
+  </div>
+</section>
+
+<!-- MYTHS -->
+<section class="panel wrap" id="myths">
+  <p class="kicker">Myths vs evidence</p>
+  <h2>What didn't cause it, and what's half true</h2>
+  <div class="myths">
+    <div class="myth"><div class="claim">A cyberattack <span class="verd f">no evidence</span></div><p>The government ran what the minister called the largest cybersecurity investigation in the country's history. It found <q>no evidence of cyber-incident or cyber-attack</q>, though it did find vulnerabilities. <a class="src" href="#s-gov">GOV</a></p></div>
+    <div class="myth"><div class="claim">A rare "atmospheric vibration" <span class="verd f">false</span></div><p>Portugal's grid operator REN denied ever issuing the statement. The weather agency AEMET found no unusual phenomena. EDMO traced the claim to a deleted press alert. <a class="src" href="#s-myth-press">REN · AEMET · EDMO</a></p></div>
+    <div class="myth"><div class="claim">Too much solar <span class="verd p">half true</span></div><p>ENTSO-E's president: <q>It's not about renewables, it's about voltage control.</q> But most units that tripped were inverter&#8209;based, and the fixed power&#8209;factor rule made renewables amplify the voltage rise. It was the rules and settings, not the solar share: on 22 April solar was 51% at 12:30, and nothing happened. <a class="src" href="#s-power">POWER</a><a class="src" href="#s-final">FINAL</a><a class="src" href="#s-maldita">Maldita</a></p></div>
+    <div class="myth"><div class="claim">Low inertia <span class="verd f">not the cause</span></div><p>Inertia was above ENTSO-E's recommendation, and the cascade started with frequency at about 50 Hz. The final report's simulations: higher inertia alone would not have avoided the loss of synchronism. <a class="src" href="#s-ree">REE</a><a class="src" href="#s-final">FINAL</a></p></div>
+    <div class="myth"><div class="claim">More nuclear would have saved it <span class="verd p">not automatically</span></div><p>3,078.6 MW of nuclear was declared unavailable (refuelling or maintenance); four reactors were connected. Synchronous units, nuclear included, were among those that didn't meet their reactive reference. Spinning machines only help voltage if they absorb reactive power. <a class="src" href="#s-gov">GOV</a><a class="src" href="#s-final">FINAL</a></p></div>
+  </div>
+</section>
+
 <!-- WHO'S TO BLAME -->
 <section class="panel wrap" id="blame">
   <p class="kicker">Three readings</p>
@@ -647,7 +741,14 @@ footer .coffee:hover{border-color:var(--ink-3)}
       <tr><td>Surprise trip</td><td>1,000 MW of nuclear at 13:30</td><td><span class="as">hypothetical</span> Nothing tripped on 22 April</td></tr>
     </tbody>
   </table>
-  <p style="margin-top:12px"><b>What the model leaves out:</b> the rest of Europe, the grid's geography and lines, voltage (see the voltage section), automatic frequency restoration after the first 30 seconds, unit commitment, and costs. It shows why balance and inertia matter; it cannot say what any real plant would have done.</p>
+  <h3>The inertia comparison</h3>
+  <p>The same island model as Level 1, run for 20 seconds after a single loss, on two real moments from REE's data. The spinning energy of each moment comes from its real mix, with the same inertia constants and calibration.</p>
+  <h3>The voltage panel and the what&#8209;if toy</h3>
+  <p>One aggregated 400 kV node: voltage = 400 kV + a sensitivity × (reactive power injected − absorbed). Shunt reactors absorb Q = B·V². Synchronous plants absorb in proportion to voltage above a 410 kV dead band (the 405–410 kV band with no obligation, ARXIV's reading of REE), at half strength "as on 28 April". Renewables absorb a fixed share of their output at fixed power factor, or follow voltage in voltage&#8209;control mode. The Granada plant's 165 Mvar is from the final report. <b>Every other size is illustrative</b>, chosen so that the default sits at 417 kV (GOV: 410–420 kV at 12:30).</p>
+  <p>The what&#8209;if toy adds six groups of renewable plants named after the reported trips, each with an overvoltage trip setting, and a slow rise standing in for the scheduled output cuts and small losses before 12:33. Its baseline trips Granada at about 52 seconds and runs away at about 70 (real: 57 and 76). It was tuned so its levers behave as the reports reason. <b>It cannot confirm or refute any lever.</b> The toy's verdict is shown apart from the reports' own words.</p>
+  <h3>Restoration</h3>
+  <p>REE's 5&#8209;minute demand for 28 and 29 April, with milestones from the government report and ENTSO-E's slides. Times are rounded to the 5&#8209;minute grid on the chart; the list gives the reported times.</p>
+  <p style="margin-top:12px"><b>What the model leaves out:</b> the rest of Europe, the grid's geography and lines, voltage dynamics, automatic frequency restoration after the first 30 seconds, unit commitment, and costs. It shows why balance and inertia matter; it cannot say what any real plant would have done.</p>
 </section>
 
 </main>
@@ -736,6 +837,14 @@ footer .coffee:hover{border-color:var(--ink-3)}
         <p>National Renewable Energy Laboratory, 2025 (docs.nrel.gov 95103).</p>
         <p><b>Used for:</b> system inertia of 2.3 s at 12:30, against a 2 s floor, used to calibrate the model.</p>
         <p class="lic"><b>Terms:</b> US government work, cited.</p></div>
+      <div class="s" id="s-myth-press"><h3>REN, AEMET and EDMO on the "atmospheric" claim</h3>
+        <p>REN statement as reported by AFP and Euronews (April 2025); AEMET (Spanish weather agency) statement; European Digital Media Observatory fact&#8209;check.</p>
+        <p><b>Used for:</b> the atmospheric&#8209;vibration myth card.</p>
+        <p class="lic"><b>Terms:</b> press and public statements, paraphrased.</p></div>
+      <div class="s" id="s-maldita"><h3>Maldita.es, citing REE</h3>
+        <p>Fact&#8209;check on the solar share, 2025.</p>
+        <p><b>Used for:</b> solar at 51% at 12:30 on 22 April, which REE's own data reproduces (17,167 MW of about 33.7 GW).</p>
+        <p class="lic"><b>Terms:</b> press, cited.</p></div>
       <div class="s"><h3><a href="https://vercel.com/font" rel="noopener">Geist and Geist Mono</a></h3>
         <p><b>Used for:</b> the typefaces, served by Google Fonts.</p>
         <p class="lic"><b>Licence:</b> SIL Open Font License 1.1.</p></div>
@@ -791,6 +900,7 @@ const GLOSS = {
   fcr: ['FCR', 'Frequency containment reserve: plants that automatically raise or lower output within seconds when frequency moves, fully deployed by 0.2 Hz off 50. In Continental Europe it is sized for a 3,000 MW loss.'],
   swing: ['Swing equation', 'The physics of a grid\'s spinning machines: the gap between power in and power out changes their speed, and so the frequency, at a rate set by how much energy they store.'],
   h: ['Inertia constant H', 'Stored spinning energy divided by the machine\'s rating, in seconds: how long the stored energy alone could supply full output. Large thermal units are typically 2.5 to 10 s, hydro 2 to 4 s.'],
+  blackstart: ['Black start', 'Restarting a power station with no power from the grid, using its own small generator. Hydro plants are good at it. Interconnections from a neighbour can do the same job.'],
   kv: ['kV', 'Kilovolt, a thousand volts. Spain\'s backbone grid is nominally 400 kV.']
 };
 const pop = $('#pop'); let popFor = null;
@@ -1375,6 +1485,114 @@ document.querySelectorAll('[data-vr]').forEach(b => b.onclick = () => { vs.mode 
 $('#vTrip').onclick = () => { vs.tripped = true; vDraw(); };
 $('#vReset').onclick = vReset;
 vReset();
+
+/* ---------- What-if levers: toy cascade on the voltage model ---------- */
+const LEVERS = [
+  ['margin', 'More dynamic reactive-power margin', 'hi', 'High', 'Fast absorbers (plants, condensers, STATCOMs) with headroom to pull voltage down.', 'FINAL simulations: increased reactive power margins could have prevented the collapse.'],
+  ['vc', 'Renewables in voltage-control mode', 'hi', 'High', 'Instead of fixed power factor, so absorption no longer falls with output.', 'FINAL, GOV and REE all point to fixed power factor; allowed since the June 2025 P.O. 7.4.'],
+  ['prot', 'Protection set to the requirements, with delays', 'hi', 'High', 'No plant trips below its required ride-through voltage.', 'FINAL found some settings below the requirements or without delay. It does not say this alone would have prevented the collapse.'],
+  ['reac', 'Automatic shunt reactors', 'md', 'Medium–high', 'Reactors switch in within seconds when voltage rises, instead of by hand over minutes.', 'FINAL recommends automating them.'],
+  ['sync', 'Synchronous units meeting their reference', 'md', 'Medium', 'Units with a voltage duty absorb what P.O. 7.4 asked of them.', 'REE and GOV say they fell short; AELEC disputes it.'],
+  ['ccgt', 'One more gas plant scheduled the night before', 'ds', 'Disputed', 'Replace the south-west unit that dropped out at 19:47 on the 27th.', 'GOV and AELEC say scheduling mattered; REE says FINAL does not name it as a cause.'],
+  ['hvdc', 'HVDC to France left in AC-emulation', 'lo', 'Low', 'Instead of the fixed 1,000 MW export set at 12:11.', 'Only the arXiv paper argues it. Not modelled in the toy.'],
+  ['inertia', 'More inertia, nothing else', 'no', 'Doesn\'t save it', 'Add spinning mass without changing reactive control.', 'FINAL simulations: even significantly higher inertia would not have avoided the loss of synchronism.']
+];
+const wiOn = new Set();
+$('#levers').innerHTML = LEVERS.map(l => `<label class="lever"><input type="checkbox" data-lv="${l[0]}"><span class="nm">${l[1]}<span class="conf ${l[2]}">${l[3]}</span></span><span class="ds">${l[4]}</span></label>`).join('');
+document.querySelectorAll('[data-lv]').forEach(c => c.onchange = () => { c.checked ? wiOn.add(c.dataset.lv) : wiOn.delete(c.dataset.lv); wiDraw(1); });
+function wiSim(on){
+  // Renewable groups in the south-west, named after the reported trips. Absorption at fixed power factor: Granada 165 Mvar (FINAL), others 0.15 Mvar/MW (illustrative).
+  const grp = [['Granada', 355, 426, 165], ['Badajoz', 727, 433, 182], ['Seville and others', 928, 434.5, 232], ['More plants', 1300, 436, 325], ['More plants', 1300, 438, 325], ['More plants', 1390, 441, 348]]
+    .map(([n, P, thr, q]) => ({ n, P, thr: on.has('prot') ? Math.max(thr, 440) : thr, delay: on.has('prot') ? 1 : 0.15, q, up: true, over: 0 }));
+  let V = 417, lost = 0, reacExtra = 0, reacT = 0; const tr = [], trips = [];
+  for (let i = 0; i <= 1800; i++){
+    const t = i * 0.05;
+    const drift = Math.min(1.25, (t / 76) ** 1.6);                   // the rise before and between trips: scheduled output cuts, small losses, voltage-dependent load
+    const resFrac = 1 - 0.32 * drift;
+    const solve = Vg => {
+      const inj = 2520 + VQ.LINE * 10 + 260 * drift;
+      const reac = VQ.REAC * (5 + reacExtra) * (Vg / 400) ** 2;
+      const sf = on.has('sync') ? 1 : 0.5;
+      const sync = sf * Math.min(VQ.SYNC, Math.max(0, (Vg - 410) * 30)) + (on.has('ccgt') ? sf * Math.min(300, Math.max(0, (Vg - 410) * 12)) : 0);
+      const upP = grp.reduce((a, g) => a + (g.up ? g.P : 0), 0);
+      const res = on.has('vc') ? Math.min(2000, Math.max(0, (Vg - 395) * 70)) * upP / 6000 : grp.reduce((a, g) => a + (g.up ? g.q * resFrac : 0), 0);
+      const margin = on.has('margin') ? Math.min(900, Math.max(0, (Vg - 405) * 60)) : 0;
+      return 400 + VQ.S * (inj - reac - sync - res - margin);
+    };
+    for (let k = 0; k < 30; k++) V += (solve(V) - V) * 0.3;
+    if (on.has('reac')){ reacT = V > 422 ? reacT + 0.05 : 0; if (reacT > 2 && reacExtra < 4){ reacExtra++; reacT = 0; } }
+    grp.forEach(g => { if (!g.up) return; g.over = V > g.thr ? g.over + 0.05 : 0; if (g.over >= g.delay){ g.up = false; lost += g.P; trips.push([t, V, g.n, g.P]); } });
+    if (i % 4 === 0) tr.push([t, V]);
+    if (lost >= 2500 && V >= 440) { tr.push([t, V]); return { tr, trips, lost, collapse: t, peak: Math.max(...tr.map(p => p[1])) }; }
+  }
+  return { tr, trips, lost, collapse: null, peak: Math.max(...tr.map(p => p[1])) };
+}
+function wiDraw(progress){
+  const base = wiSim(new Set()), r = wiSim(wiOn), svg = $('#wiChart'); svg.innerHTML = '';
+  const W = 520, H = 250, L = 38, R = 8, T = 10, B = 22, X = t => L + (W - L - R) * t / 90, Y = v => T + (H - T - B) * (455 - Math.min(455, v)) / (455 - 405);
+  el('rect', { x: L, y: Y(435), width: W - L - R, height: Y(405) - Y(435), fill: 'var(--accent-soft)' }, svg);
+  [[420, 'var(--accent)', '420'], [435, 'var(--warn)', '435 limit'], [440, 'var(--warn)', '440 ride-through']].forEach(([v, c, t]) => { el('line', { x1: L, x2: W - R, y1: Y(v), y2: Y(v), stroke: c, 'stroke-dasharray': '3 3' }, svg); el('text', { class: 'tl', x: L + 4, y: Y(v) - 3 }, svg).textContent = t; });
+  [410, 420, 430, 440, 450].forEach(v => el('text', { class: 'tk', x: L - 5, y: Y(v) + 3, 'text-anchor': 'end' }, svg).textContent = v);
+  [[0, '12:32:00'], [30, ':30'], [60, '12:33:00'], [90, ':30']].forEach(([t, s]) => el('text', { class: 'tk', x: X(t), y: H - 6, 'text-anchor': t ? (t === 90 ? 'end' : 'middle') : 'start' }, svg).textContent = s);
+  const pth = tr => 'M' + tr.filter(p => p[0] <= 90 * progress).map(p => `${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join(' L');
+  if (wiOn.size) el('path', { d: pth(base.tr), fill: 'none', stroke: 'var(--ink-3)', 'stroke-width': 1.5, 'stroke-dasharray': '4 3' }, svg);
+  el('path', { d: pth(r.tr), fill: 'none', stroke: r.collapse ? 'var(--bad)' : 'var(--accent)', 'stroke-width': 2.5 }, svg);
+  r.trips.filter(tp => tp[0] <= 90 * progress).forEach(tp => el('circle', { cx: X(tp[0]), cy: Y(tp[1]), r: 4, fill: 'var(--bad)', stroke: 'var(--surface)', 'stroke-width': 1.5 }, svg));
+  if (r.collapse != null && r.collapse <= 90 * progress){ el('text', { class: 'tl', x: X(r.collapse) - 4, y: T + 12, 'text-anchor': 'end', fill: 'var(--bad)' }, svg).textContent = 'cascade: synchronism lost'; }
+  if (progress < 1) return;
+  const v = $('#wiVerdict');
+  if (r.collapse != null){ v.className = 'verdict bad'; v.innerHTML = `<b>Toy result: the cascade still happens</b>${fmt(r.lost)} MW trips; voltage keeps climbing. In the real event, loss of synchronism followed within seconds.`; }
+  else if (r.peak >= 435){ v.className = 'verdict mid'; v.innerHTML = `<b>Toy result: it holds, but only just</b>Peak ${r.peak.toFixed(0)} kV, above the 435 kV operating limit${r.trips.length ? `, after ${r.trips.length} trip${r.trips.length > 1 ? 's' : ''} (${fmt(r.lost)} MW)` : ''}. No margin to spare.`; }
+  else { v.className = 'verdict ok'; v.innerHTML = `<b>Toy result: voltage holds</b>Peak ${r.peak.toFixed(0)} kV${r.trips.length ? `, after ${r.trips.length} trip${r.trips.length > 1 ? 's' : ''} (${fmt(r.lost)} MW)` : ', with no trips'}.`; }
+  const sel = LEVERS.filter(l => wiOn.has(l[0]));
+  $('#wiSays').innerHTML = sel.length ? sel.map(l => `<li><b>${l[1]}</b> <span class="conf ${l[2]}">${l[3]}</span><br>${l[5]}</li>`).join('') : '<li>No levers on: this is the toy version of what happened. Switch some on.</li>';
+}
+let wiAnim = 0;
+$('#wiRun').onclick = () => { cancelAnimationFrame(wiAnim); if (reduceMotion) return wiDraw(1); const t0 = performance.now(); const st = now => { const pr = Math.min(1, (now - t0) / 3000); wiDraw(pr); if (pr < 1) wiAnim = requestAnimationFrame(st); }; wiAnim = requestAnimationFrame(st); };
+wiDraw(1);
+
+/* ---------- Restoration ---------- */
+(function restoration(){
+  const series = DATA.d28.dem.slice(150).concat(DATA.dem29.slice(0, 181)); // 12:30 on the 28th to 15:00 on the 29th
+  const ref = DATA.d22.dem.slice(150).concat(DATA.d22.dem.slice(0, 181));
+  const N = series.length - 1, tLab = i => { const k = 150 + i, d = k >= 288 ? 29 : 28; return `${d} Apr ${hhmm(k % 288)}`; };
+  const idx = (d, hm) => { const [h, m] = hm.split(':').map(Number); return (d === 29 ? 288 : 0) + h * 12 + m / 5 - 150; };
+  const MS = [
+    [28, '12:33', 'Zero voltage in peninsular Spain at 12:33:30; Portugal is dark too.', 'gov', '12:33'], [28, '12:44', 'First Spain–France 400 kV line energised (Hernani, west).', 'gov'], [28, '12:45', 'PT · Castelo do Bode hydro energises REN\'s 220 kV grid.', 'soesc'],
+    [28, '13:04', 'Morocco interconnection energised; 100 MW of support.', 'gov'], [28, '13:07', 'First Spanish customers back: Irún, 31 MW.', 'gov'], [28, '13:35', 'Eastern France line energised (Vic).', 'gov'],
+    [28, '14:46', 'Every nuclear plant has external power for its safety systems.', 'gov'], [28, '15:14', 'First thermal unit synchronised.', 'gov'], [28, '16:31', 'PT · First Portuguese customers reconnected.', 'soesc'],
+    [28, '17:26', 'PT · Tapada do Outeiro gas plant black-starts, at the second attempt.', 'soesc'], [28, '18:36', 'PT · Portugal joins the European frequency via Aldeadávila–Pocinho.', 'gov'],
+    [28, '23:30', 'About 50% of Spanish demand restored between 22:30 and 23:32; 21 thermal units online by 23:32.', 'gov', '22:30–23:32'], [29, '00:20', 'PT · Portugal\'s restoration complete.', 'soesc', '00:22'], [29, '00:30', 'Madrid fully restored.', 'gov'],
+    [29, '04:00', 'Spain\'s transmission system restored.', 'soesc', '~04:00'], [29, '07:00', '99.95% of Spanish demand restored.', 'gov'], [29, '14:35', 'Spain moves from emergency to alert: 100% considered restored.', 'gov', '14:36']
+  ].map(m => ({ i: idx(m[0], m[1]), d: m[0], t: m[4] || m[1], s: m[2], src: m[3] }));
+  $('#milest').innerHTML = MS.map((m, k) => `<li data-k="${k}"><span class="tm">${m.d} · ${m.t}</span><span>${m.s} ${srcTags([m.src])}</span></li>`).join('');
+  let W = 700; const H = 260, L = 40, R = 10, T = 12, B = 24, X = i => L + (W - L - R) * i / N, Y = v => T + (H - T - B) * (1 - v / 32000);
+  let prog = N;
+  function draw(){
+    const svg = $('#rmChart'); svg.innerHTML = ''; W = Math.min(700, Math.max(340, svg.parentNode.clientWidth - 28)); svg.setAttribute('viewBox', `0 0 ${W} ${H}`); const small = W < 500;
+    [0, 10000, 20000, 30000].forEach(g => { el('line', { x1: L, x2: W - R, y1: Y(g), y2: Y(g), stroke: 'var(--grid)' }, svg); el('text', { class: 'tk', x: L - 5, y: Y(g) + 3, 'text-anchor': 'end' }, svg).textContent = g / 1000 + ' GW'; });
+    [[0, small ? '28th' : '28 Apr 12:30'], [idx(28, '18:00'), '18:00'], [idx(29, '00:00'), small ? '29th' : '29 Apr 00:00'], [idx(29, '06:00'), '06:00'], [idx(29, '12:00'), '12:00']].forEach(([i, s]) => el('text', { class: 'tk', x: X(i), y: H - 6, 'text-anchor': i ? 'middle' : 'start' }, svg).textContent = s);
+    const line = (a, n) => 'M' + a.slice(0, n + 1).map((v, i) => `${X(i).toFixed(1)},${Y(v ?? 0).toFixed(1)}`).join(' L');
+    el('path', { d: line(ref, N), fill: 'none', stroke: 'var(--mute)', 'stroke-width': 1.5 }, svg);
+    const area = line(series, prog) + ` L${X(prog)},${Y(0)} L${X(0)},${Y(0)} Z`;
+    el('path', { d: area, fill: 'var(--accent-soft)' }, svg);
+    el('path', { d: line(series, prog), fill: 'none', stroke: 'var(--accent)', 'stroke-width': 2.2 }, svg);
+    MS.forEach(m => { if (m.i > prog || m.s.startsWith('PT')) return; el('line', { x1: X(m.i), x2: X(m.i), y1: Y(0), y2: Y(series[Math.round(m.i)] ?? 0) - 4, stroke: 'var(--ink-3)', 'stroke-dasharray': '2 3' }, svg); el('circle', { cx: X(m.i), cy: Y(series[Math.round(m.i)] ?? 0), r: 3, fill: 'var(--ink)' }, svg); });
+    $('#rmNow').textContent = tLab(Math.round(prog));
+    const v = series[Math.round(prog)] ?? 0, rv = ref[Math.round(prog)] ?? 1;
+    $('#rmVal').textContent = `${fmt(v)} MW served · a normal day at this hour: ${fmt(rv)} MW`;
+    document.querySelectorAll('#milest li').forEach((li, k) => li.classList.toggle('on', MS[k].i <= prog));
+  }
+  let raf = 0, playing = false;
+  $('#rmPlay').onclick = () => {
+    if (playing){ playing = false; cancelAnimationFrame(raf); $('#rmIcon').setAttribute('d', 'M5 3l12 7-12 7z'); return; }
+    playing = true; $('#rmIcon').setAttribute('d', 'M5 3h4v14H5zM11 3h4v14h-4z'); if (prog >= N) prog = 0;
+    let last = performance.now();
+    const st = now => { if (!playing) return; prog = Math.min(N, prog + (now - last) / 1000 * N / 14); last = now; draw(); if (prog < N) raf = requestAnimationFrame(st); else { playing = false; $('#rmIcon').setAttribute('d', 'M5 3l12 7-12 7z'); } };
+    raf = requestAnimationFrame(st);
+  };
+  draw(); addEventListener('resize', () => { if (!playing) draw(); });
+})();
 
 </script>
 </body>
