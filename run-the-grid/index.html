@@ -258,6 +258,46 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 @media (max-width:900px){ .ggrid{grid-template-columns:1fr} .gchart canvas{height:200px} }
 @media (max-width:640px){ .game{padding:10px} .gclock{font-size:1.35rem} .gauge .hz{font-size:1.7rem} .pill{margin-left:0} .over .res{grid-template-columns:1fr 1fr 1fr} }
 
+
+/* Inertia comparison */
+.cmp2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-top:16px}
+.side{border:1px solid var(--rule);border-radius:var(--r);background:var(--surface);padding:12px 14px}
+.side h3{font-size:1rem;display:flex;align-items:center;gap:8px}
+.side h3 i{width:12px;height:3px;border-radius:2px;display:inline-block}
+.side select{margin-top:6px;width:100%;height:38px;border:1px solid var(--rule);border-radius:10px;background:var(--bg);padding:0 10px;font:500 .88rem var(--sans)}
+.side .mini{display:flex;height:10px;border-radius:5px;overflow:hidden;margin-top:10px;border:1px solid var(--rule)}
+.side .mini i{display:block;height:100%}
+.side .kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 12px;margin-top:10px;font-size:.78rem;color:var(--ink-3)}
+.side .kv b{display:block;font:600 1rem var(--mono);color:var(--ink);letter-spacing:-.02em}
+.inctl{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-top:14px}
+.inctl label{font-size:.88rem;color:var(--ink-2);display:flex;gap:10px;align-items:center;flex:1;min-width:240px}
+.inctl input[type=range]{flex:1}
+.chartbox{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:12px;margin-top:12px}
+.chartbox svg{display:block;width:100%;height:auto}
+.chartbox svg .tk{font-size:10px;fill:var(--ink-3)}
+.chartbox svg .tl{font-size:10px;fill:var(--ink-3);paint-order:stroke;stroke:var(--surface);stroke-width:3px}
+/* Voltage panel */
+.vgrid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:14px;margin-top:16px;align-items:start}
+.vmeter{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:14px}
+.vmeter .big{font:600 2.2rem/1 var(--mono);letter-spacing:-.03em}
+.vmeter .big small{font-size:1rem;color:var(--ink-3)}
+.vmeter svg{display:block;width:100%;height:auto;margin-top:10px}
+.qbars{margin-top:12px;display:grid;gap:6px;font-size:.82rem;color:var(--ink-2)}
+.qbars .r{display:grid;grid-template-columns:150px minmax(0,1fr) 70px;gap:8px;align-items:center}
+.qbars .tr{position:relative;height:10px;background:var(--grid);border-radius:5px;overflow:hidden}
+.qbars .tr::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--ink-3)}
+.qbars .tr i{position:absolute;top:0;bottom:0;border-radius:5px}
+.qbars .num{text-align:right;color:var(--ink)}
+.vctl{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:6px 14px}
+.vrow{padding:10px 0;border-bottom:1px solid var(--grid)}
+.vrow:last-child{border-bottom:0}
+.vrow .h{display:flex;justify-content:space-between;gap:10px;font-size:.92rem;font-weight:600}
+.vrow .h span:last-child{font:500 .82rem var(--mono);color:var(--ink-2);font-weight:500}
+.vrow p{font-size:.84rem;color:var(--ink-3);margin-top:2px}
+.vrow .seg{margin-top:6px}
+@media (max-width:900px){ .vgrid{grid-template-columns:1fr} }
+@media (max-width:640px){ .cmp2{grid-template-columns:1fr} .qbars .r{grid-template-columns:112px minmax(0,1fr) 60px} }
+
 /* Positions */
 .pos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
 .pos .card h3{font-size:1.02rem;display:flex;justify-content:space-between;gap:10px;align-items:baseline}
@@ -361,6 +401,8 @@ footer .coffee:hover{border-color:var(--ink-3)}
   <div class="wrap">
     <div class="tabs" id="tabs">
       <a class="tab" href="#day">Normal day</a>
+      <a class="tab" href="#inertia">Inertia</a>
+      <a class="tab" href="#voltage">Voltage</a>
       <a class="tab" href="#replay">28 April</a>
       <a class="tab" href="#blame">Who's to blame?</a>
       <a class="tab" href="#model">How it works</a>
@@ -387,7 +429,7 @@ footer .coffee:hover{border-color:var(--ink-3)}
     </div>
     <div class="ggrid">
       <div class="gauge">
-        <svg id="gGauge" viewBox="0 0 300 168" role="img" aria-label="Frequency gauge from 47.5 to 50.5 hertz"></svg>
+        <svg id="gGauge" viewBox="-6 -8 312 176" role="img" aria-label="Frequency gauge from 47.5 to 50.5 hertz"></svg>
         <div class="hz num" id="gHz">50.000 <small>Hz</small></div>
         <div class="mism"><div style="display:flex;justify-content:space-between"><span>Short of demand</span><span id="gMis" class="num">0 MW</span><span>Surplus</span></div><div class="track"><i class="fill" id="gMisBar"></i></div></div>
         <div class="gstats">
@@ -418,6 +460,52 @@ footer .coffee:hover{border-color:var(--ink-3)}
     <li><span class="num">49.0 → 48.0</span><span>Six <button class="t" data-k="lfdd">load&#8209;shedding</button> steps, 5% of demand at 49.0 rising to 45% at 48.0. <a class="src" href="#s-gov">GOV</a><a class="src" href="#s-ncer">NC ER</a></span></li>
     <li><span class="num">&lt; 47.5 · &gt; 51.5</span><span>Generators may disconnect: blackout. <a class="src" href="#s-gov">GOV</a><a class="src" href="#s-rfg">RfG</a></span></li>
   </ul>
+</section>
+
+<!-- INERTIA -->
+<section class="panel wrap" id="inertia">
+  <p class="kicker">The lesson</p>
+  <h2>Same loss, different grid: what inertia buys you</h2>
+  <p class="intro">When a power plant trips, the first thing that happens is that every spinning machine on the grid slows a little, handing over some of its stored energy. The more energy is spinning, the slower <button class="t" data-k="freq">frequency</button> falls, and the more time automatic reserves have to catch it. Pick two real moments from REE's data and drop the same plant out of both.</p>
+  <div class="cmp2">
+    <div class="side"><h3><i style="background:var(--warn)"></i>Grid A</h3><select id="inA" aria-label="Grid A moment"></select><div class="mini" id="inMixA"></div><div class="kv" id="inKvA"></div></div>
+    <div class="side"><h3><i style="background:var(--accent)"></i>Grid B</h3><select id="inB" aria-label="Grid B moment"></select><div class="mini" id="inMixB"></div><div class="kv" id="inKvB"></div></div>
+  </div>
+  <div class="inctl">
+    <label>Plant lost <input type="range" id="inLoss" min="250" max="3000" step="250" value="1000" aria-label="Size of the plant lost, MW"><b class="num" id="inLossV">1,000 MW</b></label>
+    <label class="chk" style="flex:0 1 auto;min-width:0"><input type="checkbox" id="inRes" checked> Automatic reserves</label>
+    <button class="btn sm" type="button" id="inRun">Trip it</button>
+  </div>
+  <div class="chartbox"><svg id="inChart" viewBox="0 0 700 300" role="img" aria-label="Frequency after the same loss in grid A and grid B over 20 seconds"></svg>
+    <p class="cap" id="inCap"></p></div>
+  <p class="note"><b>Two things this does not mean.</b> Inertia sets how fast frequency falls, not whether it recovers: that is the reserves' job. And it was not what failed on 28 April. The cascade began with frequency at about 50 Hz, and the final report's simulations found that <q>even with significantly higher inertia values, the loss of system synchronism would not have been avoided</q>. <a class="src" href="#s-final">FINAL</a></p>
+</section>
+
+<!-- VOLTAGE -->
+<section class="panel wrap" id="voltage">
+  <p class="kicker">The other gauge</p>
+  <h2>Voltage: the problem on 28 April</h2>
+  <p class="intro">Frequency is one number for the whole grid. <button class="t" data-k="voltage">Voltage</button> is local, and it is set by <button class="t" data-k="q">reactive power</button>. Anything that injects reactive power pushes nearby voltage up; anything that absorbs it pulls voltage down. On 28 April too little was absorbing, and it wasn't fast enough. Try the levers the operator and the rules controlled that morning.</p>
+  <div class="vgrid">
+    <div class="vmeter">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><span style="font-size:.88rem;color:var(--ink-3)">400 kV grid, south&#8209;west (illustrative)</span><span class="pill" id="vPill">Normal</span></div>
+      <div class="big num" id="vBig">415 <small>kV</small></div>
+      <svg id="vScale" viewBox="0 0 400 74" role="img" aria-label="Voltage scale from 380 to 490 kilovolts with the operating band and protection limits"></svg>
+      <div class="qbars" id="vBars"></div>
+      <p class="cap">Bars: reactive power in Mvar, injected (right) or absorbed (left). The directions are what the reports describe; the sizes are illustrative, not calibrated to the Spanish grid.</p>
+    </div>
+    <div class="vctl">
+      <div class="vrow"><div class="h"><span>Extra 400 kV circuits in service</span><span id="vLinesV">10</span></div><p>Lightly loaded lines inject reactive power. REE connected 10 circuits after 11:10 to damp the oscillations. <a class="src" href="#s-gov">GOV</a></p><input type="range" id="vLines" min="0" max="10" step="1" value="10" aria-label="Extra circuits in service"></div>
+      <div class="vrow"><div class="h"><span>Shunt reactors switched in</span><span id="vReacV">5</span></div><p>Each absorbs Q = B·V². Switched by hand: out when voltage was low at noon, five back in by 12:28. <a class="src" href="#s-gov">GOV</a><a class="src" href="#s-final">FINAL</a></p><input type="range" id="vReac" min="0" max="10" step="1" value="5" aria-label="Shunt reactors in service"></div>
+      <div class="vrow"><div class="h"><span>Synchronous plants absorbing</span><span></span></div><p>Units with a voltage duty had to follow a reactive reference; several reached it in under 75% of samples. <a class="src" href="#s-final">FINAL</a></p>
+        <div class="seg" role="group" aria-label="Synchronous plants"><button type="button" data-vs="0.5" aria-pressed="true">As on 28 April</button><button type="button" data-vs="1" aria-pressed="false">Meeting the reference</button></div></div>
+      <div class="vrow"><div class="h"><span>Renewables' reactive mode</span><span></span></div><p>At fixed power factor, absorption is tied to output. In voltage&#8209;control mode, allowed since June 2025, it follows voltage. <a class="src" href="#s-final">FINAL</a><a class="src" href="#s-cnmc">CNMC</a></p>
+        <div class="seg" role="group" aria-label="Renewables mode"><button type="button" data-vr="pf" aria-pressed="true">Fixed power factor</button><button type="button" data-vr="vc" aria-pressed="false">Voltage control</button></div></div>
+      <div class="vrow"><div class="h"><span>Renewable output in the area</span><span id="vResV">100%</span></div><p>Large plants cut about 500 MW between 12:32:00 and 12:32:48. Watch what fixed power factor does when output falls. <a class="src" href="#s-final">FINAL</a></p><input type="range" id="vRes" min="50" max="100" step="5" value="100" aria-label="Renewable output, percent"></div>
+      <div class="vrow"><div class="h"><span>Trip a plant absorbing 165 Mvar</span><span></span></div><p>Granada, 12:32:57: it was absorbing 165 Mvar, and when it tripped, the absorption went with it. <a class="src" href="#s-final">FINAL</a></p><div class="row" style="display:flex;gap:8px;margin-top:6px"><button class="btn sm" type="button" id="vTrip">Trip it</button><button class="btn ghost sm" type="button" id="vReset">Reset to 12:32</button></div></div>
+    </div>
+  </div>
+  <p class="note warn"><b>Why trips made it worse:</b> each plant that disconnected on overvoltage took its reactive absorption with it, so the voltage rose again, tripping the next. Load shedding then removed reactive load too, raising voltage further. <a class="src" href="#s-final">FINAL</a><a class="src" href="#s-arxiv">ARXIV</a> The replay below shows it happening, second by second.</p>
 </section>
 
 <!-- 28 APRIL REPLAY -->
@@ -672,7 +760,7 @@ const DATA = {"d22":{"dem":[23294,23494,23478,23382,23477,23474,23086,22800,2267
 const $ = s => document.querySelector(s);
 // REE's feed occasionally misses a 5-minute row: fill gaps in the 22 April series by linear interpolation.
 for (const k in DATA.d22){ const v = DATA.d22[k]; for (let i = 0; i < v.length; i++) if (v[i] == null){ let j = i; while (j < v.length && v[j] == null) j++; const lo = v[i - 1] ?? v[j], hi = v[j] ?? lo; for (let q = i; q < j; q++) v[q] = lo + (hi - lo) * (q - i + 1) / (j - i + 1); } }
-const fmt = n => Math.round(n).toLocaleString('en-GB');
+const fmt = n => (Math.round(n) || 0).toLocaleString('en-GB');
 const SVGNS = 'http://www.w3.org/2000/svg';
 const el = (tag, attrs = {}, parent) => { const e = document.createElementNS(SVGNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1115,7 +1203,7 @@ function drawGauge(){
   arc(47.5, 48.0, 'var(--bad)'); arc(48.0, 49.0, 'color-mix(in srgb,var(--bad) 55%,var(--surface))'); arc(49.0, 49.5, 'color-mix(in srgb,var(--warn) 70%,var(--surface))');
   arc(49.5, 49.8, 'color-mix(in srgb,var(--warn) 35%,var(--surface))'); arc(49.8, 50.2, 'var(--accent)'); arc(50.2, 50.5, 'color-mix(in srgb,var(--warn) 35%,var(--surface))');
   [47.5, 48, 48.5, 49, 49.5, 50, 50.5].forEach(f => { const [a, b] = gPt(f, GA.r - 10), [c, d] = gPt(f, GA.r - 18); el('line', { x1: a, y1: b, x2: c, y2: d, stroke: 'var(--ink-3)', 'stroke-width': 1.5 }, svg); const [tx, ty] = gPt(f, GA.r - 30); const t = el('text', { x: tx, y: ty + 4, 'text-anchor': 'middle', 'font-size': 11, fill: 'var(--ink-3)' }, svg); t.textContent = f % 1 ? '' : f; });
-  const lab = (f, s) => { const [x, y] = gPt(f, GA.r + 14); const t = el('text', { x, y: y + 3, 'text-anchor': 'middle', 'font-size': 9, fill: 'var(--ink-3)' }, svg); t.textContent = s; };
+  const lab = (f, s) => { const [x, y] = gPt(f, GA.r + 21); const t = el('text', { x, y: y + 3, 'text-anchor': 'middle', 'font-size': 9, fill: 'var(--ink-3)' }, svg); t.textContent = s; };
   lab(47.75, 'trip'); lab(48.5, 'shed'); lab(49.3, 'pumps'); lab(50, 'normal');
   needle = el('line', { x1: GA.cx, y1: GA.cy, x2: GA.cx, y2: GA.cy - GA.r + 6, stroke: 'var(--ink)', 'stroke-width': 3, 'stroke-linecap': 'round' }, svg);
   el('circle', { cx: GA.cx, cy: GA.cy, r: 7, fill: 'var(--ink)' }, svg);
@@ -1180,6 +1268,113 @@ function gRender(){
   $('#gh-nuc').textContent = gs.tripped ? `slow · 1,000 MW unit tripped at 13:30` : 'slow: hours to move';
 }
 gReset();
+
+/* ---------- Inertia comparison ---------- */
+(function inertia(){
+  const rowE = r => G.K * (G.H.nuc * r.nuc + G.H.gas * r.gas + G.H.other * r.other + G.H.st * r.st + G.H.hydro * r.hydro + G.H.pump * Math.abs(r.pump));
+  const rowGen = r => MIX.reduce((s, m) => s + r[m[0]], 0) + Math.max(0, r.pump);
+  let maxI = 0, minI = 0, eMax = 0, eMin = 1e12;
+  for (let i = 0; i < 288; i++){ const e = rowE(at(DATA.d22, i)); if (e > eMax){ eMax = e; maxI = i; } if (e < eMin){ eMin = e; minI = i; } }
+  const OPTS = [
+    ['28-150', '28 April, 12:30 · just before the blackout', DATA.d28, 150],
+    ['22-150', '22 April, 12:30 · sunny midday, normal day', DATA.d22, 150],
+    ['22-' + maxI, `22 April, ${hhmm(maxI)} · most spinning energy that day`, DATA.d22, maxI],
+    ['22-' + minI, `22 April, ${hhmm(minI)} · least spinning energy that day`, DATA.d22, minI],
+    ['22-48', '22 April, 04:00 · night', DATA.d22, 48]
+  ];
+  const opt = OPTS.map(o => `<option value="${o[0]}">${o[1]}</option>`).join('');
+  $('#inA').innerHTML = opt; $('#inB').innerHTML = opt; $('#inA').value = '28-150'; $('#inB').value = '22-' + maxI;
+  const get = sel => { const o = OPTS.find(o => o[0] === $(sel).value); return at(o[2], o[3]); };
+  function sim(r, loss, res){
+    const E = rowE(r), D = G.DLOAD * r.dem / G.F0; let f = 0, p = 0, out = [], nad = 0, tN = 0;
+    for (let i = 0; i <= 2000; i++){ const t = i * 0.01;
+      if (i % 10 === 0) out.push([t, 50 + f]);
+      const pt = res ? -Math.max(-1, Math.min(1, f / 0.2)) * G.RES : 0; p += (pt - p) / G.TFCR * 0.01;
+      f += (-loss + p - D * f) * G.F0 / (2 * E) * 0.01; if (f < nad){ nad = f; tN = t; } }
+    return { out, E, H: E / rowGen(r), rocof: loss * G.F0 / (2 * E), nad: 50 + nad, tN };
+  }
+  const W = 700, H = 300, L = 44, R = 12, T = 14, B = 26, FMIN = 48.6;
+  const X = t => L + (W - L - R) * t / 20, Y = f => T + (H - T - B) * (50.05 - f) / (50.05 - FMIN);
+  let anim = 0;
+  function side(id, r, s){
+    const gen = rowGen(r);
+    $('#inMix' + id).innerHTML = MIX.map(m => `<i style="width:${r[m[0]] / gen * 100}%;background:var(${m[2]})"></i>`).join('');
+    const sync = MIX.filter(m => m[3]).reduce((a, m) => a + r[m[0]], 0) + Math.max(0, r.pump);
+    $('#inKv' + id).innerHTML = `<div><b>${(s.E / 1000).toFixed(0)} GW·s</b>spinning energy</div><div><b>${s.H.toFixed(1)} s</b>inertia H</div><div><b>${Math.round(sync / gen * 100)}%</b>synchronous</div><div><b>−${s.rocof.toFixed(2)} Hz/s</b>first-second RoCoF</div>`;
+  }
+  function draw(progress){
+    const loss = +$('#inLoss').value, res = $('#inRes').checked, rA = get('#inA'), rB = get('#inB');
+    const a = sim(rA, loss, res), b = sim(rB, loss, res); side('A', rA, a); side('B', rB, b);
+    const svg = $('#inChart'); svg.innerHTML = '';
+    [[50, 'a', ''], [49.8, 'w', '49.8 alert'], [49.5, 'w', '49.5 pumps disconnected'], [49.0, 'b', '49.0 load shedding begins']].forEach(([f, c, s]) => { if (f < FMIN) return; el('line', { x1: L, x2: W - R, y1: Y(f), y2: Y(f), stroke: c === 'a' ? 'var(--grid)' : c === 'w' ? 'var(--warn)' : 'var(--bad)', 'stroke-dasharray': c === 'a' ? '' : '3 3' }, svg); if (s) el('text', { class: 'tl', x: W - R - 2, y: Y(f) - 3, 'text-anchor': 'end' }, svg).textContent = s; });
+    [48.8, 49.2, 49.6, 50].forEach(f => el('text', { class: 'tk', x: L - 6, y: Y(f) + 3, 'text-anchor': 'end' }, svg).textContent = f.toFixed(1));
+    [0, 5, 10, 15, 20].forEach(t => el('text', { class: 'tk', x: X(t), y: H - 8, 'text-anchor': 'middle' }, svg).textContent = t + ' s');
+    const tMax = 20 * progress;
+    const path = s => 'M' + s.out.filter(p => p[0] <= tMax).map(p => `${X(p[0]).toFixed(1)},${Y(Math.max(FMIN, p[1])).toFixed(1)}`).join(' L');
+    el('path', { d: path(a), fill: 'none', stroke: 'var(--warn)', 'stroke-width': 2.5 }, svg);
+    el('path', { d: path(b), fill: 'none', stroke: 'var(--accent)', 'stroke-width': 2.5 }, svg);
+    const t1 = (s, col) => { const p = s.out[10]; if (tMax >= 1) el('circle', { cx: X(1), cy: Y(p[1]), r: 3.5, fill: col }, svg); };
+    t1(a, 'var(--warn)'); t1(b, 'var(--accent)');
+    const ratio = a.rocof / b.rocof;
+    $('#inCap').innerHTML = `After 1 second, A has fallen ${(50 - a.out[10][1]).toFixed(2)} Hz and B ${(50 - b.out[10][1]).toFixed(2)} Hz: ${ratio >= 1 ? 'A falls ' + ratio.toFixed(1) + '× faster' : 'B falls ' + (1 / ratio).toFixed(1) + '× faster'}, because the spinning energy differs (${(a.E / 1000).toFixed(0)} vs ${(b.E / 1000).toFixed(0)} GW·s). ${res ? `Lowest point: A ${a.nad.toFixed(2)} Hz, B ${b.nad.toFixed(2)} Hz.` : 'Without reserves, inertia only slows the fall: nothing stops it.'} What matters for a loss in MW is the stored energy in MW·s, so a small night grid with a high H can fall as fast as a large midday one. Islanded model, as in Level 1.`;
+  }
+  function run(){ cancelAnimationFrame(anim); if (reduceMotion){ draw(1); return; } const t0 = performance.now(); const step = now => { const pr = Math.min(1, (now - t0) / 2500); draw(pr); if (pr < 1) anim = requestAnimationFrame(step); }; anim = requestAnimationFrame(step); }
+  $('#inLoss').oninput = e => { $('#inLossV').textContent = fmt(+e.target.value) + ' MW'; e.target.style.setProperty('--p', ((+e.target.value - 250) / 2750 * 100) + '%'); draw(1); };
+  $('#inLoss').style.setProperty('--p', ((1000 - 250) / 2750 * 100) + '%');
+  ['#inA', '#inB', '#inRes'].forEach(id => $(id).onchange = () => draw(1));
+  $('#inRun').onclick = run;
+  draw(1);
+})();
+
+/* ---------- Voltage panel (illustrative steady state) ---------- */
+// V = 400 + S * (Q injected - Q absorbed). Directions follow the reports; sizes are illustrative.
+const VQ = { S: 0.03, BASE: 1955, LINE: 60, REAC: 150, SYNC: 900, RES_PF: 0.15, RES_P: 6000, RES_VC: 1500, TRIP: 165 };
+const vs = {};
+function vReset(){ Object.assign(vs, { lines: 10, reac: 5, sync: 0.5, mode: 'pf', res: 100, tripped: false }); $('#vLines').value = 10; $('#vReac').value = 5; $('#vRes').value = 100;
+  document.querySelectorAll('[data-vs]').forEach(b => b.setAttribute('aria-pressed', b.dataset.vs === '0.5')); document.querySelectorAll('[data-vr]').forEach(b => b.setAttribute('aria-pressed', b.dataset.vr === 'pf')); vDraw(); }
+function vSolve(st){
+  let V = 410, parts;
+  for (let i = 0; i < 80; i++){
+    const inj = VQ.BASE + VQ.LINE * st.lines;
+    const reac = VQ.REAC * st.reac * (V / 400) ** 2;                                  // Q = B·V²
+    const sync = st.sync * Math.min(VQ.SYNC, Math.max(0, (V - 410) * 30));           // nothing inside the 405–410 kV dead band
+    const resP = VQ.RES_P * st.res / 100;
+    const res = st.mode === 'pf' ? VQ.RES_PF * resP : Math.min(VQ.RES_VC, Math.max(0, (V - 400) * 60));
+    const trip = st.tripped ? 0 : VQ.TRIP;
+    const net = inj - reac - sync - res - trip;
+    const Vn = 400 + VQ.S * net; V += (Vn - V) * 0.3;
+    parts = { inj, reac, sync, res, trip, net };
+  }
+  return { V, parts };
+}
+function vDraw(){
+  const { V, parts } = vSolve(vs);
+  $('#vBig').innerHTML = `${V.toFixed(0)} <small>kV</small>`;
+  const pill = $('#vPill'); const st = V >= 435 ? ['Above 435 kV limit: plants may trip', 'bad'] : V >= 420 ? ['Above EU band, inside Spain\'s', 'warn'] : V < 380 ? ['Too low', 'bad'] : ['Inside the band', ''];
+  pill.textContent = st[0]; pill.className = 'pill' + (st[1] ? ' ' + st[1] : '');
+  const svg = $('#vScale'); svg.innerHTML = ''; const x = v => 10 + 380 * (Math.max(375, Math.min(490, v)) - 380) / 110;
+  el('rect', { x: x(380), y: 18, width: x(435) - x(380), height: 14, rx: 4, fill: 'var(--accent-soft)' }, svg);
+  el('rect', { x: x(435), y: 18, width: x(490) - x(435), height: 14, rx: 4, fill: 'var(--bad-soft)' }, svg);
+  [[420, 'var(--accent)', '420'], [435, 'var(--warn)', '435'], [440, 'var(--warn)', ''], [480, 'var(--bad)', '480']].forEach(([v, c, t]) => { el('line', { x1: x(v), x2: x(v), y1: 14, y2: 36, stroke: c, 'stroke-width': 1.5 }, svg); if (t) el('text', { x: x(v), y: 50, 'text-anchor': 'middle', 'font-size': 10, fill: 'var(--ink-3)' }, svg).textContent = t; });
+  el('text', { x: x(380), y: 50, 'text-anchor': 'start', 'font-size': 10, fill: 'var(--ink-3)' }, svg).textContent = '380';
+  el('text', { x: x(400), y: 66, 'text-anchor': 'middle', 'font-size': 9, fill: 'var(--ink-3)' }, svg).textContent = 'operating band';
+  el('text', { x: x(460), y: 66, 'text-anchor': 'middle', 'font-size': 9, fill: 'var(--ink-3)' }, svg).textContent = 'ride-through, then line protection';
+  el('path', { d: `M${x(V)},14 l-6,-10 h12 z`, fill: 'var(--ink)' }, svg);
+  el('line', { x1: x(V), x2: x(V), y1: 14, y2: 36, stroke: 'var(--ink)', 'stroke-width': 2.5 }, svg);
+  const rows = [['Lines (injecting)', parts.inj, 'var(--warn)'], ['Shunt reactors', -parts.reac, 'var(--accent)'], ['Synchronous plants', -parts.sync, 'var(--c-nuc)'], ['Renewables', -parts.res, 'var(--c-pv)'], ['Granada-type plant', -parts.trip, 'var(--c-st)']];
+  $('#vBars').innerHTML = rows.map(([n, q, c]) => { const w = Math.min(50, Math.abs(q) / 1600 * 50); return `<div class="r"><span>${n}</span><div class="tr"><i style="left:${q < 0 ? 50 - w : 50}%;width:${w}%;background:${c}"></i></div><span class="num">${Math.round(q) > 0 ? '+' : ''}${fmt(q)}</span></div>`; }).join('');
+  $('#vLinesV').textContent = vs.lines; $('#vReacV').textContent = vs.reac; $('#vResV').textContent = vs.res + '%';
+  [['#vLines', 0, 10], ['#vReac', 0, 10], ['#vRes', 50, 100]].forEach(([id, a, b]) => { const e = $(id); e.style.setProperty('--p', ((+e.value - a) / (b - a) * 100) + '%'); });
+  $('#vTrip').disabled = vs.tripped;
+}
+$('#vLines').oninput = e => { vs.lines = +e.target.value; vDraw(); };
+$('#vReac').oninput = e => { vs.reac = +e.target.value; vDraw(); };
+$('#vRes').oninput = e => { vs.res = +e.target.value; vDraw(); };
+document.querySelectorAll('[data-vs]').forEach(b => b.onclick = () => { vs.sync = +b.dataset.vs; document.querySelectorAll('[data-vs]').forEach(x => x.setAttribute('aria-pressed', x === b)); vDraw(); });
+document.querySelectorAll('[data-vr]').forEach(b => b.onclick = () => { vs.mode = b.dataset.vr; document.querySelectorAll('[data-vr]').forEach(x => x.setAttribute('aria-pressed', x === b)); vDraw(); });
+$('#vTrip').onclick = () => { vs.tripped = true; vDraw(); };
+$('#vReset').onclick = vReset;
+vReset();
 
 </script>
 </body>
