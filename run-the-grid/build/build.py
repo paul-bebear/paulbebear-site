@@ -11,7 +11,8 @@ Field notes (checked against the government 28-A report at 12:30 on 28 April 202
   hid   hydro NET of pumped storage, so conventional hydro = hid - turb - conb
   turb  pumped-storage turbining (+), conb pumping consumption (-)
   inter net exchanges (+ import), icb Balearic link
-  other = coal + cogeneration + biomass + the remainder REE does not break out (about 300 MW)
+  other = coal + cogeneration + biomass + the remainder REE does not break out (about 300 MW).
+          REE's 'aut' field sometimes carries ~2.6 GW that is otherwise inside that remainder, so it stays in 'other'.
 """
 import json, os, re, sys, urllib.request
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -31,7 +32,7 @@ def fetch(d):
 def row(r):
     ex = r['inter'] + r['icb']
     listed = (r['solFot'] + r['solTer'] + r['eol'] + r['nuc'] + r['cc'] + r['car'] + r['cogenResto'] + r['bio'] + r['hid']
-              + ex + r['bat'] + r['consBat'] + r['gf'] + r['aut'] + r['vap'])
+              + ex + r['bat'] + r['consBat'] + r['gf'] + r['vap'])   # 'aut' left in the remainder: REE sometimes moves ~2.6 GW of it out of the unlisted rest
     return dict(dem=r['dem'], pv=r['solFot'], st=r['solTer'], wind=r['eol'], nuc=r['nuc'], gas=r['cc'],
                 other=r['dem'] - listed + r['cogenResto'] + r['bio'] + r['car'],
                 hydro=r['hid'] - r['turb'] - r['conb'], pump=r['turb'] + r['conb'], ex=ex)
