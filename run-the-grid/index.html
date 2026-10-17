@@ -971,7 +971,7 @@ const hhmm = i => `${String(Math.floor(i / 12)).padStart(2, '0')}:${String((i % 
     ['Demand', fmt(r.dem) + ' MW', 'Matches the government report exactly. <a class="src" href="#s-ree-data">REE data</a><a class="src" href="#s-gov">GOV</a>'],
     ['Solar PV', Math.round(r.pv / gen * 100) + '%', fmt(r.pv) + ' MW of ' + fmt(gen) + ' MW generated. <a class="src" href="#s-ree-data">REE data</a>'],
     ['Exports and pumping', fmt(-r.ex - r.pump) + ' MW', fmt(-r.ex) + ' MW to Portugal, Morocco, France and the Balearics; ' + fmt(-r.pump) + ' MW pumping water uphill. <a class="src" href="#s-ree-data">REE data</a>'],
-    ['System inertia', '2.2–2.7 s', 'Above the 2 s floor ENTSO-E recommends. <a class="src" href="#s-arxiv">ARXIV</a><a class="src" href="#s-ree">REE</a>']
+    ['System inertia', '2.2–2.7 s', 'Above ENTSO-E\'s recommended level, says REE; NREL compares 2.3 s with a 2 s floor. <a class="src" href="#s-arxiv">ARXIV</a><a class="src" href="#s-ree">REE</a><a class="src" href="#s-nrel">NREL</a>']
   ].map(s => `<div class="stat"><div class="k">${s[0]}</div><div class="v">${s[1]}</div><div class="s">${s[2]}</div></div>`).join('');
   $('#mixBar').innerHTML = MIX.map(m => `<i style="width:${r[m[0]] / gen * 100}%;background:var(${m[2]})" title="${m[1]}"></i>`).join('');
   $('#mixRows').innerHTML = MIX.slice().sort((a, b) => r[b[0]] - r[a[0]]).map(m => `<div class="mixrow"><span><i class="key" style="background:var(${m[2]})"></i>${m[1]}</span><div style="height:8px;border-radius:4px;background:var(--grid);overflow:hidden"><i style="display:block;height:100%;width:${r[m[0]] / r.pv * 100}%;background:var(${m[2]})"></i></div><span class="num">${fmt(r[m[0]])} MW</span></div>`).join('') +
