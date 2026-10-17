@@ -17,7 +17,7 @@ run-the-grid/index.html  Run the grid (balance a real Spanish grid day, replay t
 assets/                 thumbnails (1200x750 webp)
 ```
 
-Atlas Through Time and Indexable link out to their own live sites.
+Atlas Through Time, Indexable and beBEARlifts link out to their own live sites. beBEARlifts lives at lifts.paulbebear.com, served by its own Vercel project (bebearlifts) from github.com/paul-bebear/beBEARlifts.
 
 ## How pieces stay current
 
