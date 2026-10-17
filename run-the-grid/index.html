@@ -534,7 +534,7 @@ footer .coffee:hover{border-color:var(--ink-3)}
     <article class="idea">
       <span class="n">Idea 4</span>
       <h3>Voltage is pressure, and it's local</h3>
-      <p>Frequency is one number for the whole grid. <b>Voltage differs from place to place</b>, like water pressure in different streets. It is pushed up or down by <button class="t" data-k="q">reactive power</button>: injecting it raises nearby voltage, absorbing it lowers it. Spain's main grid must stay between <b>380 and 435 kV</b>. <a class="src" href="#s-gov">GOV</a></p>
+      <p>Frequency is one number for the whole grid. <b>Voltage differs from place to place</b>, like water pressure in different streets. It is pushed up or down mainly by <button class="t" data-k="q">reactive power</button>: injecting it raises nearby voltage, absorbing it lowers it. Spain's main grid must stay between <b>380 and 435 kV</b>. <a class="src" href="#s-gov">GOV</a></p>
       <div class="viz">
         <svg id="b4" viewBox="0 0 320 130" role="img" aria-label="Three towns on one grid: the same frequency everywhere, different voltages"></svg>
         <div class="ctl"><span>Town B</span><input type="range" id="b4q" min="-100" max="100" step="5" value="0" aria-label="Reactive power at town B: absorb to inject"><span class="sm" style="color:var(--ink-3)">absorb ← → inject</span></div>
@@ -544,7 +544,7 @@ footer .coffee:hover{border-color:var(--ink-3)}
     <article class="idea">
       <span class="n">Idea 5</span>
       <h3>Protection: plants disconnect to save themselves</h3>
-      <p>Every plant and line has relays that disconnect it if voltage or frequency goes beyond set limits, to avoid damage. Plants must <b>ride through</b> disturbances up to those limits. The danger is a chain: if one disconnection makes things worse, the next plant goes, then the next. That's a <b>cascade</b>.</p>
+      <p>Every plant and line has relays that disconnect it if voltage or frequency goes beyond set limits, to avoid damage. Plants are required to stay connected (<b>ride through</b>) within set ranges, so their protection shouldn't trip them sooner. The danger is a chain: if one disconnection makes things worse, the next plant goes, then the next. That's a <b>cascade</b>.</p>
       <div class="viz">
         <svg id="b5" viewBox="0 0 320 110" role="img" aria-label="A row of plants disconnecting one after another"></svg>
         <div class="ctl"><button class="btn ghost sm" type="button" id="b5go">Push one plant over its limit</button><button class="iconbtn" type="button" id="b5r" aria-label="Reset"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4v5h5M4.5 9A6 6 0 1 1 6 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
@@ -554,7 +554,7 @@ footer .coffee:hover{border-color:var(--ink-3)}
     <article class="idea">
       <span class="n">Idea 6</span>
       <h3>Spain is wired into Europe</h3>
-      <p>Spain and Portugal are part of one synchronous grid with continental Europe, running at the same 50 Hz, through AC lines and a <button class="t" data-k="hvdc">DC link</button> to France, plus a link to Morocco. <a class="src" href="#s-gov">GOV</a> Europe's size steadies them. If the links are cut, Iberia becomes an <b>island</b> on its own. That happened at 12:33:21 on 28 April.</p>
+      <p>AC lines to France tie Spain and Portugal into one synchronous grid with continental Europe, all turning at the same 50 Hz. A <button class="t" data-k="hvdc">DC link</button> to France and an AC link to Morocco carry power too. <a class="src" href="#s-gov">GOV</a> Europe's size steadies them. If the links are cut, Iberia becomes an <b>island</b> on its own. That happened at 12:33:21 on 28 April.</p>
       <div class="viz">
         <svg id="b6" viewBox="0 0 320 120" role="img" aria-label="Iberia connected to France and Morocco"></svg>
         <div class="ctl"><button class="btn ghost sm" type="button" id="b6go" aria-pressed="false">Cut the links</button><span class="sm" id="b6v" style="color:var(--ink-3)">Connected: Europe shares any imbalance.</span></div>
@@ -568,7 +568,7 @@ footer .coffee:hover{border-color:var(--ink-3)}
       <tbody>
         <tr><td>What it is</td><td>How fast the current swings back and forth</td><td>The electrical pressure on a line</td></tr>
         <tr><td>Where</td><td>One number for the whole connected grid</td><td>Different at every substation</td></tr>
-        <tr><td>Set by</td><td>Real power: generation vs demand (MW)</td><td>Reactive power: injected vs absorbed (Mvar)</td></tr>
+        <tr><td>Set by</td><td>Real power: generation vs demand (MW)</td><td>Mainly reactive power: injected vs absorbed (Mvar)</td></tr>
         <tr><td>Normal</td><td>50 Hz, within ±0.2</td><td>380–435 kV on Spain's 400 kV grid</td></tr>
         <tr><td>28 April</td><td>About 50 Hz until the last seconds</td><td><b style="color:var(--ink)">This is what failed first</b></td></tr>
       </tbody>
@@ -698,12 +698,12 @@ footer .coffee:hover{border-color:var(--ink-3)}
       <span><i class="lgd-dot" style="border-color:var(--bad);background:var(--bad-soft)"></i>Voltage-control gap</span>
     </div>
     <ol class="morning">
-      <li><span class="tm">19:47 (27th)</span><span class="rail"></span><div class="tx">One south&#8209;west thermal unit scheduled for <button class="t" data-k="vcontrol">voltage control</button> drops out. It is not replaced for the midday hours. <a class="src" href="#s-gov">GOV</a> On the morning of the 28th REE <q>concluded that it was not necessary to replace it</q> <a class="src" href="#s-factual">FACTUAL</a></div></li>
+      <li><span class="tm">19:47 (27th)</span><span class="rail"></span><div class="tx">One south&#8209;west thermal unit scheduled for <button class="t" data-k="vcontrol">voltage control</button> drops out. It is not replaced for the midday hours. <a class="src" href="#s-gov">GOV</a> On the morning of the 28th REE <q>concluded that it was not necessary to replace it</q>. <a class="src" href="#s-factual">FACTUAL</a></div></li>
       <li class="act"><span class="tm">06:00</span><span class="rail"></span><div class="tx">Export schedule to France cut from 2,590 MW to 1,600 MW. <a class="src" href="#s-gov">GOV</a></div></li>
-      <li class="osc"><span class="tm">09:00–10:30</span><span class="rail"></span><div class="tx">Voltage variability grows, with larger swings from 10:30. Voltages stay inside the Spanish 400 kV band of 380–435 kV. Small 0.2 Hz oscillations at 05:49, 08:52, 10:30, 11:06 and 11:23. <a class="src" href="#s-gov">GOV</a></div></li>
+      <li class="osc"><span class="tm">09:00–10:30</span><span class="rail"></span><div class="tx">Voltage variability grows, with larger swings from 10:30. Voltages stay inside the Spanish 400 kV band of 380–435 kV. Small 0.2 Hz oscillations come and go through the morning (05:49, 08:52, 10:30, 11:06, 11:23). <a class="src" href="#s-gov">GOV</a></div></li>
       <li class="act"><span class="tm">11:08–11:20</span><span class="rail"></span><div class="tx">Three 400 kV circuits connected to improve <button class="t" data-k="damping">damping</button>. <a class="src" href="#s-gov">GOV</a></div></li>
       <li class="osc"><span class="tm">12:03</span><span class="rail"></span><div class="tx"><b>Oscillation 1, at 0.63 Hz</b>, until 12:08. FINAL classes it as a local, converter&#8209;driven phenomenon, most active between Carmona and Almaraz. Voltage swings of over 30 kV peak&#8209;to&#8209;peak at Almaraz and Arroyo de San Serván. <a class="src" href="#s-gov">GOV</a><a class="src" href="#s-final">FINAL</a></div></li>
-      <li class="act"><span class="tm">12:04–12:24</span><span class="rail"></span><div class="tx">With voltages briefly low, operators switch <button class="t" data-k="reactor">shunt reactors</button> out: Villaviciosa, Guadame, Rueda, Aragón, then Cabra, Peñaflor, Palos, Morata. Seven more 400 kV circuits are connected. <a class="src" href="#s-gov">GOV</a></div></li>
+      <li class="act"><span class="tm">12:04–12:25</span><span class="rail"></span><div class="tx">With voltages briefly low, operators switch <button class="t" data-k="reactor">shunt reactors</button> out: Villaviciosa, Guadame, Rueda, Aragón, then Cabra, Peñaflor, Palos, Morata. Seven more 400 kV circuits are connected. <a class="src" href="#s-gov">GOV</a></div></li>
       <li class="act"><span class="tm">12:07–12:20</span><span class="rail"></span><div class="tx">Exports to France cut again, to 1,500 then 1,000 MW. At 12:11 the <button class="t" data-k="hvdc">HVDC</button> link to France is switched from AC&#8209;emulation to a fixed 1,000 MW export, held until the collapse. <a class="src" href="#s-gov">GOV</a></div></li>
       <li class="osc"><span class="tm">12:19</span><span class="rail"></span><div class="tx"><b>Oscillation 2, at 0.2 Hz</b>, until 12:22: the East–Centre–West mode that swings the whole continental grid. <a class="src" href="#s-gov">GOV</a><a class="src" href="#s-final">FINAL</a></div></li>
       <li class="crit"><span class="tm">12:26</span><span class="rail"></span><div class="tx">REE orders a voltage&#8209;controlling thermal unit in the south. The fastest available needs <b>1 h 30 min</b> to connect, so it is scheduled for 14:00. It never connects. Reactors go back in as voltages rise. <a class="src" href="#s-gov">GOV</a></div></li>
@@ -765,7 +765,7 @@ footer .coffee:hover{border-color:var(--ink-3)}
 <section class="panel wrap" id="restore">
   <p class="kicker">After 12:33</p>
   <h2>Bringing a country back from zero</h2>
-  <p class="intro">A dead grid can't simply be switched back on: power stations need power to start. Operators built small islands of supply and grew them. Islands around the lines from <b>France</b> (Catalonia, the Basque Country) and <b>Morocco</b> (the south), and <button class="t" data-k="blackstart">black&#8209;start</button> hydro plants in the Duero, Galicia and Asturias&#8209;Cantabria. Then they joined the islands together. Some attempts failed and had to be repeated. <a class="src" href="#s-gov">GOV</a><a class="src" href="#s-final">FINAL</a></p>
+  <p class="intro">A dead grid can't simply be switched back on: power stations need power to start. Operators built small islands of supply and grew them. They started from the lines to <b>France</b> (Catalonia, the Basque Country) and <b>Morocco</b> (the south), and from <button class="t" data-k="blackstart">black&#8209;start</button> hydro plants in the Duero, Galicia and Asturias&#8209;Cantabria. Then they joined the islands together. Some attempts failed and had to be repeated. <a class="src" href="#s-gov">GOV</a><a class="src" href="#s-final">FINAL</a></p>
   <div class="rest">
     <div class="bar"><button class="play" id="rmPlay" type="button" aria-label="Play the restoration"><svg viewBox="0 0 20 20" aria-hidden="true"><path id="rmIcon" d="M5 3l12 7-12 7z" fill="currentColor"/></svg></button><span class="now" id="rmNow">28 Apr 12:30</span><span class="cap" style="margin:0" id="rmVal"></span></div>
     <svg id="rmChart" viewBox="0 0 700 260" role="img" aria-label="Demand served in peninsular Spain from 12:30 on 28 April to 15:00 on 29 April, against a normal day, with restoration milestones"></svg>
@@ -982,7 +982,7 @@ const DATA = {"d22":{"dem":[23294,23494,23478,23382,23477,23474,23086,22800,2267
 const $ = s => document.querySelector(s);
 // REE's feed occasionally misses a 5-minute row: fill gaps in the 22 April series by linear interpolation.
 for (const k in DATA.d22){ const v = DATA.d22[k]; for (let i = 0; i < v.length; i++) if (v[i] == null){ let j = i; while (j < v.length && v[j] == null) j++; const lo = v[i - 1] ?? v[j], hi = v[j] ?? lo; for (let q = i; q < j; q++) v[q] = lo + (hi - lo) * (q - i + 1) / (j - i + 1); } }
-const fmt = n => (Math.round(n) || 0).toLocaleString('en-GB');
+const fmt = n => (Math.round(n) || 0).toLocaleString('en-GB').replace('-', '−');
 const SVGNS = 'http://www.w3.org/2000/svg';
 const el = (tag, attrs = {}, parent) => { const e = document.createElementNS(SVGNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1109,7 +1109,7 @@ const EVENTS = [
   { t: 80.18, title: 'Frequency 49.5 Hz: pumping shed begins', text: 'First threshold for disconnecting pumped-storage plants. 2,037 MW of pumping is shed in the first two steps.', f: 49.5, src: ['gov'] },
   { t: 80.473, title: 'Morocco link trips', text: 'The AC interconnection to Morocco trips on under-frequency (relay threshold 49.5 Hz, on the Moroccan side).', f: 49.314, src: ['final', 'gov'] },
   { t: 80.52, title: 'Power swing: 5,587 MW towards France', text: 'Losing synchronism, the flow on the French border swings from import to a 5,587 MW export.', src: ['gov'] },
-  { t: 80.56, title: 'RoCoF passes 1 Hz/s', text: 'The rate of change of frequency stayed within 1 Hz/s until here, at about 49 Hz. "System conditions had already degraded."', f: 49.03, src: ['final'] },
+  { t: 80.56, title: 'RoCoF passes 1 Hz/s', text: 'The rate of change of frequency stayed within 1 Hz/s until here, at about 49 Hz. "System conditions had already degraded."', src: ['final'] },
   { t: 80.6, big: 1, title: '49.0 Hz: load shedding step 1', text: 'The first automatic demand-disconnection step. About 1,402.5 MW of transmission-connected consumers are shed by step 3.', f: 49.0, src: ['gov'] },
   { t: 80.65, title: 'Overvoltage trip at 456 kV', text: 'Frequency 48.914 Hz. Shedding load also removes reactive load, which pushes voltage up further.', V: 456, Vat: 'a tripping plant', f: 48.914, src: ['gov'] },
   { t: 80.76, title: '48.8 Hz: shedding step 2', f: 48.8, src: ['gov'] },
@@ -1144,9 +1144,10 @@ function curIndex(t){ let k = -1; for (let i = 0; i < EVENTS.length; i++) if (EV
 function stateAt(t){
   let lost = 0, V = 413, Vat = 'Olmedilla', f = null;
   for (const e of EVENTS){ if (e.t > t) break; if (e.lost != null) lost = e.lost; if (e.V != null && e.V >= V){ V = e.V; Vat = e.Vat; } if (e.f != null) f = e.f; }
-  if (t < 57 && t > 0){ V = 413 + 15 * t / 57; Vat = 'Olmedilla'; } // GOV: near-linear rise, 413 to 428 kV in 57 s
+  let approx = false;
+  if (t < 57 && t > 0){ V = 413 + 15 * t / 57; Vat = 'Olmedilla'; approx = true; } // GOV: near-linear rise, 413 to 428 kV in 57 s; shown with ≈
   if (t >= 83.96) { return { lost, V, Vat, f, collapsed: true }; }
-  return { lost, V, Vat, f };
+  return { lost, V, Vat, f, approx };
 }
 
 let chart = null;
@@ -1224,7 +1225,7 @@ function render(){
   const t = RP.t, s = stateAt(t);
   $('#rvClock').textContent = clock(t);
   $('#rvLost').innerHTML = `${fmt(s.lost)} <small>MW</small>`;
-  $('#rvV').innerHTML = s.collapsed ? 'collapsed' : `${s.V.toFixed(s.V % 1 ? 1 : 0)} <small>kV</small>`;
+  $('#rvV').innerHTML = s.collapsed ? 'collapsed' : s.approx ? `≈${Math.round(s.V)} <small>kV</small>` : `${s.V.toFixed(s.V % 1 ? 1 : 0)} <small>kV</small>`;
   $('#rvF').innerHTML = s.collapsed ? 'collapsed' : s.f == null ? '≈50.0 <small>Hz</small>' : `${s.f.toFixed(s.f * 100 % 10 ? 3 : 1)} <small>Hz</small>`;
   $('#roV').className = 'ro' + (s.collapsed || s.V >= 435 ? ' bad' : s.V >= 420 ? ' warn' : '');
   $('#roF').className = 'ro' + (s.collapsed || (s.f != null && s.f <= 49.0) ? ' bad' : s.f != null ? ' warn' : '');
@@ -1539,7 +1540,7 @@ gReset();
     const t1 = (s, col) => { const p = s.out[10]; if (tMax >= 1) el('circle', { cx: X(1), cy: Y(p[1]), r: 3.5, fill: col }, svg); };
     t1(a, 'var(--warn)'); t1(b, 'var(--accent)');
     const ratio = a.rocof / b.rocof;
-    $('#inCap').innerHTML = `After 1 second, A has fallen ${(50 - a.out[10][1]).toFixed(2)} Hz and B ${(50 - b.out[10][1]).toFixed(2)} Hz: ${ratio >= 1 ? 'A falls ' + ratio.toFixed(1) + '× faster' : 'B falls ' + (1 / ratio).toFixed(1) + '× faster'}, because the spinning energy differs (${(a.E / 1000).toFixed(0)} vs ${(b.E / 1000).toFixed(0)} GW·s). ${res ? `Lowest point: A ${a.nad.toFixed(2)} Hz, B ${b.nad.toFixed(2)} Hz.` : 'Without reserves, inertia only slows the fall: nothing stops it.'} What matters for a loss in MW is the stored energy in MW·s, so a small night grid with a high H can fall as fast as a large midday one. Islanded model, as in Level 1.`;
+    $('#inCap').innerHTML = `After 1 second, A has fallen ${(50 - a.out[10][1]).toFixed(2)} Hz and B ${(50 - b.out[10][1]).toFixed(2)} Hz: ${ratio >= 1 ? 'A falls ' + ratio.toFixed(1) + '× faster' : 'B falls ' + (1 / ratio).toFixed(1) + '× faster'}, because the spinning energy differs (${(a.E / 1000).toFixed(0)} vs ${(b.E / 1000).toFixed(0)} GW·s). ${res ? `Lowest point: A ${a.nad.toFixed(2)} Hz, B ${b.nad.toFixed(2)} Hz.` : 'Without reserves, inertia only slows the fall: nothing stops it.'} What matters for a loss in MW is the stored energy in MW·s, so a small night grid with a high H can fall almost as fast as a large midday one. Islanded model, as in Level 1.`;
   }
   function run(){ cancelAnimationFrame(anim); if (reduceMotion){ draw(1); return; } const t0 = performance.now(); const step = now => { const pr = Math.min(1, (now - t0) / 2500); draw(pr); if (pr < 1) anim = requestAnimationFrame(step); }; anim = requestAnimationFrame(step); }
   $('#inLoss').oninput = e => { $('#inLossV').textContent = fmt(+e.target.value) + ' MW'; e.target.style.setProperty('--p', ((+e.target.value - 250) / 2750 * 100) + '%'); draw(1); };
@@ -1723,7 +1724,7 @@ wiDraw(1);
     el('rect', { x: 40, y: 78 - hg, width: 70, height: hg, rx: 6, fill: 'var(--c-pv)', opacity: .85 }, g1);
     el('rect', { x: 210, y: 78 - hd, width: 70, height: hd, rx: 6, fill: 'var(--ink-3)', opacity: .7 }, g1);
     el('text', { x: 75, y: 78 - hg - 6, 'text-anchor': 'middle' }, g1).textContent = 'generation';
-    el('text', { x: 245, y: 78 - hd - 6, 'text-anchor': 'middle' }, g1).textContent = 'demand ' + D1.toFixed(1);
+    el('text', { x: 245, y: 78 - hd - 6, 'text-anchor': 'middle' }, g1).textContent = 'demand ' + D1.toFixed(1) + ' GW';
     el('text', { x: 160, y: 14, 'text-anchor': 'middle', fill: ok ? 'var(--accent)' : 'var(--warn)', 'font-weight': 600 }, svg).textContent = ok ? 'Balanced' : d > 0 ? `Surplus +${d.toFixed(1)} GW: frequency rises` : `Short ${Math.abs(d).toFixed(1)} GW: frequency falls`;
     $('#b1v').textContent = g.toFixed(1) + ' GW';
     $('#b1g').style.setProperty('--p', ((g - 23) / 8 * 100) + '%');
@@ -1744,12 +1745,13 @@ wiDraw(1);
     const x0 = 135, w = 175, col = Math.abs(f2 - 50) > 0.2 ? 'var(--warn)' : 'var(--accent)';
     let d = ''; for (let i = 0; i <= 120; i++){ const x = x0 + w * i / 120; d += (i ? 'L' : 'M') + x.toFixed(1) + ',' + (60 - 28 * Math.sin(i / 120 * Math.PI * 2 * 3 * f2 / 50 + rot * Math.PI / 180)).toFixed(1); }
     el('path', { d, fill: 'none', stroke: col, 'stroke-width': 2.5 }, svg);
-    el('text', { class: 'sm', x: x0, y: 112 }, svg).textContent = 'the current, drawn slowed down';
+    el('text', { class: 'sm', x: x0, y: 112 }, svg).textContent = 'current slowed down · recovery sped up';
     $('#b2v').textContent = f2.toFixed(2) + ' Hz';
     if (run2 && visible.has('b2')) requestAnimationFrame(b2); else { run2 = false; last2 = 0; }
   }
-  $('#b2d').onclick = () => { kick = -0.9; if (reduceMotion){ f2 = 49.75; b2(performance.now()); } else go2(); };
-  $('#b2s').onclick = () => { kick = 0.9; if (reduceMotion){ f2 = 50.25; b2(performance.now()); } else go2(); };
+  const still = v => { f2 = 50; b2(performance.now()); $('#b2v').textContent = `${v} → 50.00 Hz`; };
+  $('#b2d').onclick = () => { if (reduceMotion) return still('49.70'); kick = -0.9; go2(); };
+  $('#b2s').onclick = () => { if (reduceMotion) return still('50.30'); kick = 0.9; go2(); };
   new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ visible.add('b2'); go2(); } })).observe($('#b2'));
   b2(performance.now());
   // 3. Two flywheels: the same loss on two real moments (same model as the inertia section)
@@ -1768,7 +1770,7 @@ wiDraw(1);
       const g = el('g', { transform: `rotate(${spin} ${cx} 52)` }, svg);
       el('line', { x1: cx, y1: 52, x2: cx, y2: 52 - r, stroke: 'var(--accent)', 'stroke-width': 3, 'stroke-linecap': 'round' }, g);
       el('text', { x: cx, y: 104, 'text-anchor': 'middle' }, svg).textContent = lab;
-      el('text', { class: 'sm', x: cx, y: 117, 'text-anchor': 'middle' }, svg).textContent = t3 > 0 ? `−${(rocof * t3).toFixed(2)} Hz after ${t3.toFixed(1)} s` : `${(lab.startsWith('Heavy') ? eMax : eLo) / 1000 | 0} GW·s stored`;
+      el('text', { class: 'sm', x: cx, y: 117, 'text-anchor': 'middle' }, svg).textContent = t3 > 0 ? `−${(rocof * t3).toFixed(2)} Hz after ${t3.toFixed(1)} s` : `${Math.round((lab.startsWith('Heavy') ? eMax : eLo) / 1000)} GW·s stored`;
     };
     wheel(85, 34, 14, 'Heavy: lots spinning', rHi, aH);
     wheel(235, 34, 4, 'Light: mostly solar', rLo, aL);
