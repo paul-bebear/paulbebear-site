@@ -1,0 +1,1467 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Your face in 10 layers</title>
+<meta name="description" content="A photo is a grid of numbers. The singular value decomposition splits it into layers ranked by importance. Stack the first few and your face appears from the blur. Runs in your browser: your photo never leaves your device.">
+<meta property="og:title" content="Your face in 10 layers">
+<meta property="og:description" content="A photo is a grid of numbers. Split it into layers ranked by importance, stack the first few, and your face appears from the blur. The maths behind PCA, eigenfaces and recommendations.">
+<meta property="og:image" content="https://paulbebear.com/assets/og/face-layers.jpg">
+<meta property="og:url" content="https://paulbebear.com/face-layers/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='34' y='8' width='58' height='58' rx='8' fill='%230e6b5c' opacity='.3'/%3E%3Crect x='21' y='21' width='58' height='58' rx='8' fill='%230e6b5c' opacity='.6'/%3E%3Crect x='8' y='34' width='58' height='58' rx='8' fill='%230e6b5c'/%3E%3C/svg%3E">
+<style>
+/* Design read: interactive explainer, same family as light-birthday and not-so-cosmic-cycles. Geist + Geist Mono,
+   one accent (deep teal), light/dark from the system. Teal = positive / the face, amber = negative / noise.
+   Image panels sit on a neutral frame in both themes. Radius: panels 12px, controls pill. */
+:root{
+  --bg:#f6f7f8; --surface:#ffffff; --ink:#15181c; --ink-2:#4b525b; --ink-3:#6c737c;
+  --rule:#e1e4e8; --grid:#eceef1; --accent:#0e6b5c; --accent-ink:#ffffff; --accent-soft:#e2f0ed; --accent-mid:#8cc3b8;
+  --warm:#b5651d; --warm-soft:#f6e8da; --frame:#e9ecef;
+  --shadow:0 1px 2px rgba(21,24,28,.05),0 12px 32px -12px rgba(21,24,28,.14);
+  --r:12px;
+  --sans:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111315; --surface:#181b1e; --ink:#eceef0; --ink-2:#b3b9c0; --ink-3:#8b929a;
+  --rule:#262a2f; --grid:#22262a; --accent:#4cc3ab; --accent-ink:#0b1714; --accent-soft:#16302b; --accent-mid:#2c6f62;
+  --warm:#f0b35a; --warm-soft:#3a2c1a; --frame:#0c0e10;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 32px -12px rgba(0,0,0,.6); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111315; --surface:#181b1e; --ink:#eceef0; --ink-2:#b3b9c0; --ink-3:#8b929a;
+  --rule:#262a2f; --grid:#22262a; --accent:#4cc3ab; --accent-ink:#0b1714; --accent-soft:#16302b; --accent-mid:#2c6f62;
+  --warm:#f0b35a; --warm-soft:#3a2c1a; --frame:#0c0e10;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 32px -12px rgba(0,0,0,.6); color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-underline-offset:3px}
+h1,h2,h3{margin:0;letter-spacing:-.025em;text-wrap:balance}
+p{margin:0}
+button,input,select{font:inherit;color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:clamp(16px,4vw,40px)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.top{padding-top:22px}
+.home{font:500 13px var(--mono);color:var(--ink-3);text-decoration:none}
+.home:hover{color:var(--ink)}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(28px,5vw,64px);align-items:center;padding-block:clamp(28px,5vw,56px) clamp(28px,4vw,40px)}
+.title-row{display:flex;align-items:center;gap:20px}
+.stackicon{width:clamp(64px,9vw,92px);height:auto;flex:none;color:var(--accent);overflow:visible}
+.hero h1{font-size:clamp(2.3rem,5vw,3.6rem);line-height:1.02;font-weight:650}
+.lede{margin-top:20px;color:var(--ink-2);font-size:1.15rem;max-width:46ch}
+.lede b{color:var(--ink);font-weight:600}
+.pick{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--shadow);padding:18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+.mini{position:relative;border-radius:10px;overflow:hidden;background:var(--frame);aspect-ratio:4/5;display:grid;place-items:center}
+.mini canvas{display:block;width:100%;height:100%;object-fit:contain}
+.mini .tag{position:absolute;left:6px;bottom:6px;font:500 .72rem var(--mono);background:color-mix(in srgb,var(--surface) 88%,transparent);color:var(--ink);padding:2px 7px;border-radius:999px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.pick .lab{font-weight:600;font-size:.98rem;line-height:1.3}
+.pick .btns{display:grid;gap:8px;margin-top:10px}
+.privacy{display:flex;gap:8px;align-items:flex-start;margin-top:10px;font-size:.82rem;line-height:1.4;color:var(--ink-2)}
+.privacy svg{flex:none;width:15px;height:15px;margin-top:1px;color:var(--accent)}
+.privacy b{color:var(--ink);font-weight:600}
+.samples{grid-column:1/-1;border-top:1px solid var(--grid);padding-top:12px}
+.samples .k{font:500 .72rem var(--mono);color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.chip{font:500 .86rem var(--sans);padding:6px 12px;border-radius:999px;border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.chip:hover{color:var(--ink);border-color:var(--ink-3)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.credit{margin-top:8px;font-size:.8rem;color:var(--ink-3);line-height:1.4}
+.status{font-size:.82rem;color:var(--ink-3);margin-top:6px;min-height:1.2em}
+.status.err{color:#c0453b}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:42px;padding:0 16px;border-radius:999px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);font:600 .92rem var(--sans);cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn svg{width:17px;height:17px}
+@media (pointer:fine){.selfie{display:none!important}}
+
+/* Sticky section nav */
+.tabs-bar{position:sticky;top:0;z-index:15;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--rule)}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-block:10px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;font:500 .92rem var(--sans);padding:8px 14px;border-radius:999px;border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);text-decoration:none;white-space:nowrap;transition:background .2s var(--ease),color .2s var(--ease),border-color .2s var(--ease)}
+.tab:hover{color:var(--ink);border-color:var(--ink-3)}
+.tab.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+
+/* Sections */
+.panel{padding-block:clamp(36px,5vw,64px) clamp(28px,4vw,48px);scroll-margin-top:56px}
+.panel h2{font-size:clamp(1.7rem,3.2vw,2.4rem);line-height:1.08;font-weight:650}
+.panel h3{font-size:1.15rem;font-weight:600;letter-spacing:-.015em}
+.intro{margin-top:14px;color:var(--ink-2);max-width:64ch;font-size:1.05rem}
+.intro b{color:var(--ink);font-weight:600}
+.block{margin-top:clamp(32px,4vw,48px)}
+.prose p{max-width:66ch;color:var(--ink-2)}
+.prose p+p{margin-top:12px}
+.prose b{color:var(--ink);font-weight:600}
+.prose h3{margin-top:28px;margin-bottom:8px}
+.cap{font-size:.86rem;color:var(--ink-3);margin-top:8px;line-height:1.45}
+.cap b{color:var(--ink-2);font-weight:600}
+.note{margin-top:14px;font-size:.95rem;color:var(--ink-2);max-width:70ch;background:var(--accent-soft);border-radius:var(--r);padding:12px 16px}
+.note b{color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.84rem;color:var(--ink-2);margin-top:10px}
+.key{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:4px;margin-right:6px}
+
+/* Rebuild */
+.studio{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:16px;margin-top:20px;align-items:start}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.frame{position:relative;border-radius:var(--r);overflow:hidden;background:var(--frame);border:1px solid var(--rule)}
+.frame canvas{display:block;width:100%;height:auto}
+.frame .tag{position:absolute;left:8px;top:8px;font:500 .76rem var(--mono);background:color-mix(in srgb,var(--surface) 88%,transparent);color:var(--ink);padding:3px 8px;border-radius:999px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.frame .tag.k{background:var(--accent);color:var(--accent-ink)}
+.busy{position:absolute;inset:0;display:grid;place-items:center;background:color-mix(in srgb,var(--frame) 55%,transparent);font:500 .82rem var(--mono);color:var(--ink);text-align:center;padding:12px}
+.ctrl{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:16px}
+.krow{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.kbig{font:600 2rem/1 var(--mono);letter-spacing:-.03em}
+.kbig small{font:500 .9rem var(--sans);color:var(--ink-3);letter-spacing:0;margin-left:6px}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:999px;padding:2px;background:var(--bg)}
+.seg button{border:0;background:none;padding:4px 10px;border-radius:999px;font:500 .8rem var(--sans);color:var(--ink-2);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 0 0 1px var(--rule)}
+.slide{display:grid;grid-template-columns:36px minmax(0,1fr) 36px;gap:8px;align-items:center;margin-top:14px}
+.step{width:36px;height:36px;border-radius:50%;border:1px solid var(--rule);background:var(--bg);font:500 1.1rem var(--mono);color:var(--ink);cursor:pointer;display:grid;place-items:center;padding:0}
+.step:hover{border-color:var(--ink-3)}
+.track{position:relative}
+.ticks{position:relative;height:16px;margin:2px 12px 0;font:500 .68rem var(--mono);color:var(--ink-3)}
+.ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.recmark{position:absolute;top:-6px;width:2px;height:10px;background:var(--warm);border-radius:2px;transform:translateX(-1px);pointer-events:none}
+.recmark::after{content:"you";position:absolute;top:-14px;left:50%;transform:translateX(-50%);font:600 .62rem var(--mono);color:var(--warm)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;cursor:pointer;margin:0;touch-action:pan-y}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:4px;background:linear-gradient(90deg,var(--accent) 0 var(--p,50%),var(--rule) var(--p,50%))}
+input[type=range]::-moz-range-track{height:4px;border-radius:4px;background:var(--rule)}
+input[type=range]::-moz-range-progress{height:4px;border-radius:4px;background:var(--accent)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--accent);border:3px solid var(--surface);box-shadow:0 0 0 1px var(--accent);margin-top:-10px}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--accent);border:3px solid var(--surface);box-shadow:0 0 0 1px var(--accent)}
+.meters{display:grid;gap:12px;margin-top:14px}
+.meter .k{display:flex;justify-content:space-between;gap:8px;font-size:.88rem;color:var(--ink-2)}
+.meter .k b{font:600 1rem var(--mono);color:var(--ink)}
+.meter .s{font-size:.82rem;color:var(--ink-3);margin-top:4px;line-height:1.4}
+.meter .s b{color:var(--ink-2);font-weight:600}
+.bar{height:6px;border-radius:6px;background:var(--grid);margin-top:6px;position:relative;overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:6px;transition:width .12s linear}
+.bar i.over{background:var(--warm)}
+.rec{margin-top:14px;border-top:1px solid var(--grid);padding-top:14px;display:grid;gap:8px}
+.rec p{font-size:.9rem;color:var(--ink-2)}
+.rec p b{color:var(--ink)}
+.rec .row{display:flex;gap:8px;flex-wrap:wrap}
+.rec .btn{flex:1 1 auto}
+
+/* Layers */
+.stackrow{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:16px;margin-top:20px;align-items:start}
+.stackview{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:12px}
+.stackview .frame{border:0}
+.stackview .eq{font:500 .82rem var(--mono);color:var(--ink-2);margin-top:10px;min-height:2.6em;line-height:1.35}
+.stackview .row{display:flex;gap:8px;margin-top:8px}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.tile{position:relative;border:1px solid var(--rule);border-radius:10px;background:var(--surface);padding:6px;cursor:pointer;text-align:left;transition:border-color .2s var(--ease),opacity .2s var(--ease)}
+.tile:hover{border-color:var(--ink-3)}
+.tile.in{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.tile .g{display:grid;grid-template-columns:7px minmax(0,1fr);grid-template-rows:7px auto;gap:2px}
+.tile .g canvas{display:block}
+.tile .g .lay{grid-column:2;grid-row:2;width:100%;height:auto;border-radius:4px;background:var(--frame)}
+.tile .g .vv{grid-column:2;grid-row:1;width:100%;height:7px;border-radius:2px}
+.tile .g .uu{grid-column:1;grid-row:2;width:7px;height:0;min-height:100%;border-radius:2px}
+.tile .cap2{display:block;font:500 .7rem var(--mono);color:var(--ink-3);margin-top:4px;line-height:1.3}
+.tile .cap2 b{color:var(--ink);font-weight:600}
+.tile .plus{position:absolute;left:-10px;top:50%;transform:translate(-50%,-50%);font:600 .9rem var(--mono);color:var(--ink-3);pointer-events:none}
+.tiles .tile:nth-child(4n+1) .plus{display:none}
+
+/* Curve */
+.chart{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:14px;margin-top:16px}
+.chart canvas{display:block;width:100%;height:320px;touch-action:pan-y;cursor:ew-resize}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:16px 18px}
+.stat .k{font-size:.88rem;color:var(--ink-3)}
+.stat .v{font:600 1.45rem/1.15 var(--mono);letter-spacing:-.02em;margin-top:6px}
+.stat .v.w{color:var(--warm)}
+.stat .s{font-size:.9rem;color:var(--ink-2);margin-top:6px}
+.stat .s b{color:var(--ink);font-weight:600}
+.noisepair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:420px;margin-top:14px}
+
+/* Matrix playground */
+.mxgrid{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:16px;margin-top:20px;align-items:start}
+.plane{position:relative;background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);overflow:hidden}
+.plane canvas{display:block;width:100%;aspect-ratio:1;touch-action:none}
+.plane .hint{position:absolute;left:10px;top:8px;font:500 .72rem var(--mono);color:var(--ink-3);pointer-events:none}
+.mxside{display:grid;gap:12px}
+.mat{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brk{display:grid;grid-template-columns:repeat(2,76px);gap:6px;padding:6px 10px;border-left:2px solid var(--ink);border-right:2px solid var(--ink);border-radius:8px}
+.brk input{width:100%;height:42px;border:1px solid var(--rule);border-radius:8px;background:var(--bg);text-align:center;font:600 1.05rem var(--mono);color:var(--ink);cursor:ew-resize;touch-action:none;-moz-appearance:textfield;appearance:none}
+.brk input::-webkit-inner-spin-button,.brk input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.brk input:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft);cursor:text}
+.brk input.c1{color:var(--accent)}
+.brk input.c2{color:var(--warm)}
+.mat .what{font-size:.9rem;color:var(--ink-2);max-width:28ch;line-height:1.45}
+.mat .what b{color:var(--ink)}
+.box{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:14px 16px}
+.box h3{font-size:1rem}
+.box p{font-size:.9rem;color:var(--ink-2);margin-top:4px}
+.box p b{color:var(--ink);font-weight:600}
+.steps{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px;counter-reset:st}
+.steps li{display:grid;grid-template-columns:26px minmax(0,1fr);gap:8px;align-items:start;font-size:.9rem;color:var(--ink-2);padding:6px 8px;border-radius:8px;transition:background .2s var(--ease)}
+.steps li::before{counter-increment:st;content:counter(st);width:22px;height:22px;border-radius:50%;border:1px solid var(--rule);display:grid;place-items:center;font:600 .75rem var(--mono);color:var(--ink-3)}
+.steps li.on{background:var(--accent-soft);color:var(--ink)}
+.steps li.on::before{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.steps li b{color:var(--ink);font-weight:600}
+.playrow{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center;margin-top:12px}
+.play{width:44px;height:44px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-ink);cursor:pointer;display:grid;place-items:center}
+.play svg{width:18px;height:18px}
+
+/* Uses */
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:20px}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:16px 18px}
+.card h3{font-size:1.05rem}
+.card .tagline{font:500 .74rem var(--mono);color:var(--accent);text-transform:uppercase;letter-spacing:.04em}
+.card p{font-size:.93rem;color:var(--ink-2);margin-top:8px}
+.card p b{color:var(--ink);font-weight:600}
+.card .src{font-size:.8rem;color:var(--ink-3);margin-top:10px}
+.card .src a{color:inherit}
+.card.myth{border-color:color-mix(in srgb,var(--warm) 45%,var(--rule))}
+.card.myth .tagline{color:var(--warm)}
+
+/* Formula */
+.formula{display:flex;flex-wrap:wrap;align-items:flex-start;gap:6px 14px;margin:18px 0 6px;padding:16px 18px;background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);max-width:720px}
+.formula .term{display:grid;justify-items:center;gap:4px;text-align:center}
+.formula .sym{font:600 1.7rem/1.1 var(--mono);color:var(--ink)}
+.formula .sym sup{font-size:.55em}
+.formula .op{font:500 1.5rem/1.1 var(--mono);color:var(--ink-3);padding-top:2px}
+.formula .lbl{font-size:.76rem;color:var(--ink-3);max-width:15ch;line-height:1.3}
+.formula.sum .sym{font-size:1.15rem}
+.formula.sum .op{font-size:1.1rem}
+
+/* Glossary terms: dotted underline, tap or hover for the meaning (same as not-so-cosmic-cycles) */
+.t{border:0;background:none;padding:0;font:inherit;color:inherit;cursor:help;text-decoration:underline dotted;text-decoration-color:var(--accent);text-underline-offset:4px;text-decoration-thickness:1.5px}
+.t:hover,.t[aria-expanded="true"]{color:var(--accent)}
+#pop{position:absolute;z-index:40;max-width:300px;background:var(--ink);color:var(--bg);font-size:.9rem;line-height:1.45;padding:10px 12px;border-radius:10px;box-shadow:var(--shadow);pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .15s,transform .15s}
+#pop.on{opacity:1;transform:none}
+#pop b{display:block;margin-bottom:2px}
+.gloss{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 40px;margin-top:20px}
+.gloss div{padding-block:8px;border-bottom:1px solid var(--grid);font-size:.93rem;color:var(--ink-2)}
+.gloss dt{font-weight:600;color:var(--ink)}
+.gloss dd{margin:2px 0 0}
+
+/* Sources and method */
+.sources{border-top:1px solid var(--rule);padding-block:clamp(40px,6vw,64px)}
+.sources h2{font-size:1.4rem;font-weight:650}
+.sources h2+p{margin-top:8px;color:var(--ink-2);font-size:.95rem}
+.srcgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 40px;margin-top:20px;font-size:.88rem;color:var(--ink-2)}
+.srcgrid .src{padding-block:6px}
+.srcgrid h3{font-size:.95rem;font-weight:600;color:var(--ink)}
+.srcgrid .src p{margin-top:4px}
+.srcgrid .lic{color:var(--ink-3)}
+.srcgrid .sub{grid-column:1/-1;font:500 .74rem var(--mono);color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;margin-top:14px;padding-top:12px;border-top:1px solid var(--grid)}
+.srcgrid .sub:first-child{margin-top:0;padding-top:0;border-top:0}
+.sources a{color:inherit;text-underline-offset:2px}
+.method{max-width:70ch;margin-top:28px;font-size:.92rem;color:var(--ink-2)}
+.method p+p{margin-top:10px}
+footer{border-top:1px solid var(--rule);padding-block:28px 48px;font-size:.88rem;color:var(--ink-3)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:center}
+footer a{color:var(--ink-2);text-decoration:none}
+footer a:hover{color:var(--ink)}
+footer .coffee{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--rule);border-radius:999px;padding:4px 12px;font-size:.84rem}
+footer .coffee:hover{border-color:var(--ink-3)}
+.toast{visibility:hidden;position:fixed;left:50%;top:16px;transform:translate(-50%,-80px);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:999px;font-size:.88rem;z-index:50;transition:transform .3s var(--ease)}
+.toast.on{transform:translate(-50%,0);visibility:visible}
+@media (prefers-reduced-motion:no-preference){
+  .stackicon .l1{animation:lay 4.8s var(--ease) infinite}
+  .stackicon .l2{animation:lay 4.8s var(--ease) infinite .25s}
+  .stackicon .l3{animation:lay 4.8s var(--ease) infinite .5s}
+  @keyframes lay{0%,8%{transform:translate(18px,-18px);opacity:0}22%,80%{transform:none;opacity:1}94%,100%{transform:translate(-6px,6px);opacity:0}}
+}
+@media (max-width:860px){
+  .hero,.studio,.stackrow,.mxgrid{grid-template-columns:1fr}
+  .stackview{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:12px;align-items:start}
+  .stackview .eq{margin-top:0}
+  .stats{grid-template-columns:1fr 1fr}
+  .stats .stat:first-child{grid-column:1/-1}
+  .plane{max-width:520px}
+}
+@media (max-width:640px){
+  body{font-size:16px}
+  .stats,.srcgrid,.gloss,.cards{grid-template-columns:1fr}
+  .title-row{gap:14px}
+  .pick{padding:14px;gap:12px;grid-template-columns:minmax(0,5fr) minmax(0,7fr)}
+  .chart{padding:10px}
+  .chart canvas{height:260px}
+  .tiles{gap:8px}
+  .tile{padding:4px}
+  .tile .plus{left:-8px}
+  .brk{grid-template-columns:repeat(2,68px)}
+  .formula .sym{font-size:1.4rem}
+}
+</style>
+<!-- seo, previews, analytics -->
+<link rel="canonical" href="https://paulbebear.com/face-layers/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Paul Bébéar">
+<link rel="alternate" type="application/rss+xml" title="Paul Bébéar" href="https://paulbebear.com/feed.xml">
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+<div class="wrap top"><a class="home" href="/">paulbebear.com</a></div>
+<header class="wrap hero">
+  <div>
+    <div class="title-row">
+      <svg class="stackicon" viewBox="0 0 100 100" aria-hidden="true">
+        <rect class="l3" x="36" y="6" width="58" height="58" rx="9" fill="currentColor" fill-opacity=".25"/>
+        <rect class="l2" x="22" y="20" width="58" height="58" rx="9" fill="currentColor" fill-opacity=".5"/>
+        <rect class="l1" x="8" y="34" width="58" height="58" rx="9" fill="currentColor"/>
+      </svg>
+      <h1>Your face in 10&nbsp;layers</h1>
+    </div>
+    <p class="lede"><b>Your face, rebuilt from layers.</b> A photo is a grid of numbers: a <button class="t" data-k="matrix">matrix</button>. One piece of maths, the <button class="t" data-k="svd">singular value decomposition</button>, splits any matrix into layers ranked by importance. Stack the first few and your face appears from the blur.</p>
+  </div>
+  <div class="pick" id="pick">
+    <div class="mini" id="miniBox"><canvas id="mini" width="205" height="256" role="img" aria-label="The chosen image rebuilt from 1 layer, then 2, up to 10"></canvas><span class="tag" id="miniTag">loading</span></div>
+    <div>
+      <div class="lab">Use your own face</div>
+      <div class="btns">
+        <label class="btn" for="file"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 14.5V16h14v-1.5M10 3v9m-4-4 4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Choose a photo</label>
+        <label class="btn ghost selfie" for="cam"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7h3l1.5-2h5L14 7h3v9H3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="10" cy="11.3" r="2.8" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>Take a selfie</label>
+      </div>
+      <input type="file" id="file" accept="image/*" class="sr" tabindex="-1">
+      <input type="file" id="cam" accept="image/*" capture="user" class="sr" tabindex="-1">
+      <p class="privacy"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 7V5a3.5 3.5 0 0 1 7 0v2M3.5 7h9v7h-9z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span><b>Your photo never leaves this device.</b> Everything runs in this browser: no upload, nothing stored. Close the tab and it's gone.</span></p>
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+    </div>
+    <div class="samples">
+      <div class="k">Or try a painting</div>
+      <div class="chips" id="sampleChips">
+        <button class="chip" data-s="pearl" aria-pressed="true">Vermeer</button>
+        <button class="chip" data-s="mona" aria-pressed="false">Leonardo</button>
+        <button class="chip" data-s="gogh" aria-pressed="false">Van Gogh</button>
+        <button class="chip" data-s="noise" aria-pressed="false">Random noise</button>
+      </div>
+      <p class="credit" id="credit"></p>
+    </div>
+  </div>
+</header>
+<nav class="tabs-bar" aria-label="Sections">
+  <div class="wrap">
+    <div class="tabs">
+      <a class="tab" href="#rebuild">Rebuild</a>
+      <a class="tab" href="#layers">The layers</a>
+      <a class="tab" href="#curve">Why so few</a>
+      <a class="tab" href="#moves">A matrix is a move</a>
+      <a class="tab" href="#uses">Where it's used</a>
+      <a class="tab" href="#how">How it works</a>
+    </div>
+  </div>
+</nav>
+<main>
+
+<!-- REBUILD -->
+<section class="panel wrap" id="rebuild">
+  <h2>Rebuild it, one layer at a time</h2>
+  <p class="intro">On the left, the picture as the computer sees it: <span id="dimsTxt">a grid of numbers</span>. On the right, the same picture rebuilt from only the first <b>k</b> layers. Drag the slider and watch it sharpen. Each layer costs one column of numbers, one row and one weight, so a few layers take far fewer numbers than the whole grid.</p>
+  <div class="studio">
+    <div class="duo">
+      <div class="frame"><canvas id="orig" width="205" height="256" role="img" aria-label="Original image, downscaled"></canvas><span class="tag">original</span></div>
+      <div class="frame"><canvas id="rank" width="205" height="256" role="img" aria-label="Image rebuilt from the first k layers"></canvas><span class="tag k" id="rankTag">k = 1</span><div class="busy" id="busy">Splitting into layers&hellip;</div></div>
+    </div>
+    <div class="ctrl">
+      <div class="krow">
+        <div class="kbig num"><span id="kNum">1</span><small id="kOf">layer of 205</small></div>
+        <div class="seg" role="group" aria-label="Colour or greyscale">
+          <button type="button" id="mColour" aria-pressed="true">Colour</button>
+          <button type="button" id="mGrey" aria-pressed="false">Grey</button>
+        </div>
+      </div>
+      <div class="slide">
+        <button class="step" type="button" id="kDown" aria-label="One layer fewer">&minus;</button>
+        <div class="track">
+          <span class="recmark" id="recMark" hidden></span>
+          <input type="range" id="k" min="0" max="1000" step="1" value="0" aria-label="Number of layers, k" disabled>
+          <div class="ticks" id="ticks" aria-hidden="true"></div>
+        </div>
+        <button class="step" type="button" id="kUp" aria-label="One layer more">+</button>
+      </div>
+      <div class="meters">
+        <div class="meter">
+          <div class="k"><span>Numbers stored</span><b id="storePct">&ndash;</b></div>
+          <div class="bar"><i id="storeBar" style="width:0"></i></div>
+          <p class="s" id="storeTxt"></p>
+        </div>
+        <div class="meter">
+          <div class="k"><span><button class="t" data-k="energy">Energy</button> kept</span><b id="energyPct">&ndash;</b></div>
+          <div class="bar"><i id="energyBar" style="width:0"></i></div>
+          <p class="s" id="energyTxt"></p>
+        </div>
+      </div>
+      <div class="rec">
+        <p id="recTxt">Start at k = 1 and slide right. Tap the button the moment you recognise who it is.</p>
+        <div class="row">
+          <button class="btn" type="button" id="recBtn" disabled>I recognise it now</button>
+          <button class="btn ghost" type="button" id="saveBtn" disabled><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 14.5V16h14v-1.5M10 3v9m-4-4 4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Save image</button>
+        </div>
+        <p class="cap" style="margin-top:0">"Save image" makes a picture card on this device. Nothing is uploaded.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LAYERS -->
+<section class="panel wrap" id="layers">
+  <h2>What one layer looks like</h2>
+  <p class="intro">Every layer is the simplest possible picture: one column of numbers (the teal and amber strip down the left) times one row of numbers (the strip along the top). So every row of a layer is the same pattern, just brighter or dimmer. One such pattern can't draw a face. Add them up, biggest first, and it appears. These are the first eight <button class="t" data-k="layer">layers</button> of the greyscale version.</p>
+  <div class="stackrow">
+    <div class="stackview">
+      <div class="frame"><canvas id="stack" width="205" height="256" role="img" aria-label="Sum of the first layers"></canvas><span class="tag k" id="stackTag">layer 1</span></div>
+      <div>
+        <p class="eq" id="stackEq">Layer 1</p>
+        <div class="row">
+          <button class="btn" type="button" id="stackPlay" disabled><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 4l10 6-10 6z" fill="currentColor"/></svg>Stack them</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="tiles" id="tiles"></div>
+      <div class="legend">
+        <span><i class="key" style="background:var(--accent)"></i>positive number</span>
+        <span><i class="key" style="background:var(--warm)"></i>negative number</span>
+        <span>In layers 2 to 8, mid-grey is zero, light adds brightness, dark takes it away. Contrast is boosted so you can see them.</span>
+      </div>
+    </div>
+  </div>
+  <p class="note">Layer 1 is a blurry average of the whole picture. Each later layer is a correction: it adds light in some places and takes it away in others. The weight in front of each layer, its <button class="t" data-k="sv">singular value</button> &sigma;, says how big that correction is. They always come out sorted, biggest first, and every layer is <button class="t" data-k="orthogonal">orthogonal</button> to the others: none repeats what another already said.</p>
+</section>
+
+<!-- CURVE -->
+<section class="panel wrap" id="curve">
+  <h2>Why a few layers carry most of a face</h2>
+  <p class="intro">This chart is the importance of each layer: its singular value &sigma;, relative to the first. The scale is logarithmic: each gridline is ten times smaller than the one above. A face falls off a cliff. A few big layers, then a long tail of tiny ones you can drop without noticing. <b>Random noise</b> is different: after its first layer, which is just its average grey, every layer matters about as much as the next. There's no shortcut, so noise can't be compressed.</p>
+  <div class="chart">
+    <canvas id="chart" role="img" aria-label="Singular values of your image and of random noise, on a log scale, with the current k marked"></canvas>
+  </div>
+  <div class="legend">
+    <span><i class="key" style="background:var(--accent)"></i><span id="legFace">Your image</span></span>
+    <span><i class="key" style="background:var(--warm)"></i>Random noise, same size</span>
+    <span><i class="key" style="background:var(--ink-3);width:2px;height:12px;vertical-align:-1px"></i>k, from the slider (tap the chart to move it)</span>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="k">Layers kept</div><div class="v num" id="cK">&ndash;</div><div class="s" id="cKs"></div></div>
+    <div class="stat"><div class="k">Your image: detail kept beyond layer 1</div><div class="v num" id="cFace">&ndash;</div><div class="s">Share of the energy in layers 2 and up that the first k layers keep.</div></div>
+    <div class="stat"><div class="k">Noise: detail kept beyond layer 1</div><div class="v num w" id="cNoise">&ndash;</div><div class="s">Same measure for noise. It grows in a straight-ish line: every layer is worth about the same.</div></div>
+  </div>
+  <div class="noisepair">
+    <div class="frame"><canvas id="noiseOrig" width="205" height="256" role="img" aria-label="Random noise"></canvas><span class="tag">noise</span></div>
+    <div class="frame"><canvas id="noiseRank" width="205" height="256" role="img" aria-label="Random noise rebuilt from k layers"></canvas><span class="tag k" id="noiseTag">k = 1</span></div>
+  </div>
+  <p class="cap">The same number of layers on random noise. It never "appears": it just gets slowly less wrong. Pick <button class="lnk t" data-k="noise" style="text-decoration-color:var(--warm)">Random noise</button> in the hero to try it at full size.</p>
+</section>
+
+<!-- MOVES -->
+<section class="panel wrap" id="moves">
+  <h2>A matrix is a move</h2>
+  <p class="intro">So far a matrix has been a picture. It is also an instruction: a way to move every point of a flat plane. A 2&times;2 matrix sends the arrow along the bottom edge (<span style="color:var(--accent);font-weight:600">teal</span>) to its first column, and the arrow up the side (<span style="color:var(--warm);font-weight:600">amber</span>) to its second. Everything else, your picture included, comes along for the ride. Drag the arrow tips, drag the numbers sideways, or type them.</p>
+  <div class="mxgrid">
+    <div class="plane"><canvas id="plane" role="img" aria-label="A grid and the photo, moved by the 2 by 2 matrix"></canvas><span class="hint">drag the arrow tips</span></div>
+    <div class="mxside">
+      <div class="mat">
+        <div class="brk" aria-label="2 by 2 matrix">
+          <input id="ma" class="c1" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="Top left">
+          <input id="mb" class="c2" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="Top right">
+          <input id="mc" class="c1" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="Bottom left">
+          <input id="md" class="c2" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="Bottom right">
+        </div>
+        <p class="what" id="mxWhat"></p>
+      </div>
+      <div class="chips" id="presets">
+        <button class="chip" data-p="1,0,0,1">Do nothing</button>
+        <button class="chip" data-p="rot">Rotate 30&deg;</button>
+        <button class="chip" data-p="1.6,0,0,0.6">Stretch</button>
+        <button class="chip" data-p="1,0.8,0,1">Shear</button>
+        <button class="chip" data-p="-1,0,0,1">Mirror</button>
+        <button class="chip" data-p="1,0.5,0.6,0.3">Squash flat</button>
+        <button class="chip" data-p="1.3,0.9,-0.2,0.8">Anything</button>
+      </div>
+      <div class="box">
+        <h3>What it does to area</h3>
+        <p id="mxDet"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Every move is rotate, stretch, rotate</h3>
+    <p class="intro" style="margin-top:8px">Here is the surprising part. Whatever numbers you put in, the move can be done in three simple steps: turn the picture, stretch it along the two straight axes, turn it again. That's the SVD of this little matrix. The circle shows it best: every matrix turns a circle into an ellipse, and the stretches are the ellipse's two half-widths, the <button class="t" data-k="sv">singular values</button>.</p>
+    <div class="mxgrid">
+      <div class="plane"><canvas id="svplane" role="img" aria-label="The same move split into rotate, stretch, rotate"></canvas><span class="hint" id="svHint">step 3 of 3</span></div>
+      <div class="mxside">
+        <ol class="steps" id="svSteps">
+          <li id="st1"></li>
+          <li id="st2"></li>
+          <li id="st3"></li>
+        </ol>
+        <div class="playrow">
+          <button class="play" type="button" id="svPlay" aria-label="Play the three steps"><svg viewBox="0 0 20 20" aria-hidden="true"><path id="svIcon" d="M5 3l12 7-12 7z" fill="currentColor"/></svg></button>
+          <input type="range" id="svT" min="0" max="300" step="1" value="300" aria-label="Scrub through the three steps">
+        </div>
+        <p class="cap">In symbols, M = U&Sigma;V<sup>T</sup>: V<sup>T</sup> is the first turn, &Sigma; the stretch, U the second turn. For a photo it's the same idea with hundreds of dimensions instead of two. If the matrix flips the picture, the flip is shown here as a negative stretch, to keep both turns as pure turns.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USES -->
+<section class="panel wrap" id="uses">
+  <h2>Where this is used</h2>
+  <p class="intro">The SVD is one of the workhorses of data science. Wherever data sits in a table, the first few layers often carry the signal and the rest carry noise. Some honest examples, and one common myth.</p>
+  <div class="cards">
+    <div class="card">
+      <div class="tagline">Statistics</div>
+      <h3>Principal component analysis (PCA)</h3>
+      <p>Put a dataset in a table, one row per person and one column per measurement, and subtract each column's average. The SVD of that table gives its <button class="t" data-k="pca">principal components</button>: the directions where the data varies most, ranked. It's how researchers squeeze 20,000 gene readings or 100 survey answers into a 2D map you can actually look at.</p>
+      <p class="src">Jolliffe and Cadima (2016), <a href="https://doi.org/10.1098/rsta.2015.0202" rel="noopener">Phil. Trans. R. Soc. A</a>.</p>
+    </div>
+    <div class="card">
+      <div class="tagline">Face recognition, 1987 to 1991</div>
+      <h3>Eigenfaces</h3>
+      <p>This page splits <i>one</i> picture into layers. Eigenfaces did it across <i>many</i>: stack hundreds of face photos as rows of a table and the SVD finds the shared "face ingredients". Sirovich and Kirby showed in 1987 that a few dozen of them describe a face well; Turk and Pentland used them for recognition in 1991. <b>Today's face recognition doesn't work this way</b>: it uses deep neural networks. Eigenfaces is the classic stepping stone.</p>
+      <p class="src">Sirovich and Kirby (1987), <a href="https://doi.org/10.1364/JOSAA.4.000519" rel="noopener">JOSA A</a>; Turk and Pentland (1991), <a href="https://doi.org/10.1162/jocn.1991.3.1.71" rel="noopener">J. Cognitive Neuroscience</a>.</p>
+    </div>
+    <div class="card">
+      <div class="tagline">Recommendations</div>
+      <h3>The Netflix Prize</h3>
+      <p>In 2006 Netflix offered $1 million to anyone who could beat its film recommender by 10%. Picture a table of users and films with each star rating filled in. The big idea that spread through the contest: explain that table with a few hidden layers, like "how much of a thriller is it" and "how much does this person like thrillers". Strictly, it's an SVD-like <i>factorisation</i>, because most of the table is empty and a true SVD needs every cell. A team won in 2009 by blending hundreds of models. Netflix said it put the two strongest early models, a factorisation and another method, into production, but not the full winning blend.</p>
+      <p class="src">Koren, Bell and Volinsky (2009), <a href="https://doi.org/10.1109/MC.2009.263" rel="noopener">IEEE Computer</a>; Funk (2006), <a href="https://sifter.org/~simon/journal/20061211.html" rel="noopener">"Try this at home"</a>; Netflix (2012), <a href="https://netflixtechblog.com/netflix-recommendations-beyond-the-5-stars-part-1-55838468f429" rel="noopener">tech blog</a>.</p>
+    </div>
+    <div class="card">
+      <div class="tagline">Signal processing</div>
+      <h3>Removing noise</h3>
+      <p>If the signal lives in a few big layers and noise is spread evenly across all of them (the flat amber line above), then throwing away the small layers throws away mostly noise. Gavish and Donoho worked out exactly where to cut: for an n&times;n table with noise of known size &sigma;, keep the singular values above (4/&radic;3)&middot;&radic;n&middot;&sigma; and drop the rest. Used in sensors, medical imaging and data cleaning. For everyday photos, dedicated denoisers do better.</p>
+      <p class="src">Gavish and Donoho (2014), <a href="https://doi.org/10.1109/TIT.2014.2323359" rel="noopener">IEEE Trans. Information Theory</a>.</p>
+    </div>
+    <div class="card myth">
+      <div class="tagline">Myth</div>
+      <h3>"This is how JPEG works"</h3>
+      <p>It isn't. JPEG cuts a photo into 8&times;8 blocks and uses the <button class="t" data-k="dct">discrete cosine transform</button>. That uses the same fixed set of wave patterns for every photo, so the patterns never need to be stored. The SVD finds the best patterns for <i>your</i> photo, but then you must store them: that's the k&times;(m+n+1) on the meter above, and it's why the SVD loses at compression.</p>
+      <p class="src">Wallace (1992), <a href="https://doi.org/10.1109/30.125072" rel="noopener">"The JPEG still picture compression standard"</a>.</p>
+    </div>
+    <div class="card">
+      <div class="tagline">The guarantee</div>
+      <h3>Why the first k layers are the best k</h3>
+      <p>The Eckart&ndash;Young theorem (1936) says that no picture of <button class="t" data-k="rank">rank</button> k is closer to the original than the first k SVD layers, measured by the sum of squared pixel errors. So the slider above isn't just one way to compress: by that measure it's the best way with k layers.</p>
+      <p class="src">Eckart and Young (1936), <a href="https://doi.org/10.1007/BF02288367" rel="noopener">Psychometrika</a>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="panel wrap prose" id="how">
+  <h2>How it works</h2>
+  <h3>A photo is a matrix</h3>
+  <p>A greyscale photo is a grid of brightness numbers, one per <button class="t" data-k="pixel">pixel</button>, from 0 (black) to 1 (white). That grid is a <button class="t" data-k="matrix">matrix</button>, with m rows and n columns. A colour photo is three of them, one each for red, green and blue. This page shrinks your photo so its long side is 256 pixels, then works on each colour separately (or on one grey matrix, with "Grey").</p>
+  <h3>Any matrix splits into layers</h3>
+  <p>The singular value decomposition says that any matrix A, of any shape, can be written as</p>
+  <div class="formula" aria-label="A equals U times Sigma times V transpose">
+    <div class="term"><span class="sym">A</span><span class="lbl">your image, m&times;n</span></div>
+    <span class="op">=</span>
+    <div class="term"><span class="sym">U</span><span class="lbl">columns: patterns down the image</span></div>
+    <div class="term"><span class="sym">&Sigma;</span><span class="lbl">weights, biggest first</span></div>
+    <div class="term"><span class="sym">V<sup>T</sup></span><span class="lbl">rows: patterns across the image</span></div>
+  </div>
+  <p>U and V are <button class="t" data-k="orthogonal">orthogonal</button>: their columns are at right angles to each other and have length 1, so they only turn things, never stretch them. All the stretching is in &Sigma;, a diagonal list of <button class="t" data-k="sv">singular values</button> &sigma;<sub>1</sub> &ge; &sigma;<sub>2</sub> &ge; &hellip; &ge; 0. Multiply it out and the same thing reads as a sum of layers:</p>
+  <div class="formula sum" aria-label="A equals sigma 1 u 1 v 1 transpose plus sigma 2 u 2 v 2 transpose and so on">
+    <div class="term"><span class="sym">A</span></div><span class="op">=</span>
+    <div class="term"><span class="sym">&sigma;<sub>1</sub>u<sub>1</sub>v<sub>1</sub><sup>T</sup></span><span class="lbl">layer 1</span></div><span class="op">+</span>
+    <div class="term"><span class="sym">&sigma;<sub>2</sub>u<sub>2</sub>v<sub>2</sub><sup>T</sup></span><span class="lbl">layer 2</span></div><span class="op">+</span>
+    <div class="term"><span class="sym">&hellip;</span></div><span class="op">+</span>
+    <div class="term"><span class="sym">&sigma;<sub>r</sub>u<sub>r</sub>v<sub>r</sub><sup>T</sup></span><span class="lbl">layer r</span></div>
+  </div>
+  <p>Each u<sub>i</sub>v<sub>i</sub><sup>T</sup> is a column times a row: a <button class="t" data-k="layer">rank-one layer</button>. The number of layers, r, is the <button class="t" data-k="rank">rank</button> of the matrix. For a photo it's almost always the length of the shorter side: 205 for the paintings here.</p>
+  <h3>Counting the numbers</h3>
+  <p>The full image stores m&times;n numbers. Keeping k layers stores k columns of m numbers, k rows of n numbers and k weights: k&times;(m+n+1). For a 256&times;205 picture, 10 layers is 4,620 numbers instead of 52,480, under 9%. Keep every layer and you store <i>more</i> than the image itself, which is one reason nobody compresses photos this way (see the JPEG card).</p>
+  <h3>Energy</h3>
+  <p>Square every pixel value and add them up: that's the image's <button class="t" data-k="energy">energy</button>. Because the layers are orthogonal, it splits exactly: layer i holds &sigma;<sub>i</sub><sup>2</sup> of it. So "energy kept" on the meter is &sigma;<sub>1</sub><sup>2</sup> + &hellip; + &sigma;<sub>k</sub><sup>2</sup> divided by the total. The part left over is exactly the squared error of the rebuilt picture. Energy is not the same as "looks right": layer 1 alone usually holds most of the energy (about 80% for the Vermeer), because it carries the overall brightness, yet it looks like a smudge. Your eyes care about edges, which live in the small layers.</p>
+  <h3>How the page computes it</h3>
+  <p>The decomposition runs in a background thread (a Web Worker) so the page never freezes. It uses the classic Golub&ndash;Kahan&ndash;Reinsch algorithm, ported from JAMA, a public-domain maths library from NIST. It takes a fraction of a second on a laptop and a second or two on a phone, for four matrices: red, green, blue and grey. After that, moving the slider only adds or removes layers from a running total, so it stays smooth. Your photo, its numbers and the layers stay in this tab's memory and vanish when you close it.</p>
+</section>
+
+</main>
+
+<section class="sources" id="words">
+  <div class="wrap">
+    <h2>Words used on this page</h2>
+    <p>Underlined words can also be tapped anywhere on the page.</p>
+    <dl class="gloss" id="gloss"></dl>
+  </div>
+</section>
+
+<section class="sources" id="sources">
+  <div class="wrap">
+    <h2>Sources and credits</h2>
+    <p>Every reference, sample image and piece of code behind this page, what it's used for and its licence.</p>
+    <div class="srcgrid">
+      <div class="sub">Sample images</div>
+      <div class="src"><h3><a href="https://commons.wikimedia.org/wiki/File:1665_Girl_with_a_Pearl_Earring.jpg" rel="noopener">Johannes Vermeer, Girl with a Pearl Earring (about 1665)</a></h3>
+        <p>Mauritshuis, The Hague. Photograph via Wikimedia Commons.</p>
+        <p><b>Used for:</b> the default sample and the page thumbnail. Cropped and downscaled.</p>
+        <p class="lic"><b>Licence:</b> public domain (faithful reproduction of a public-domain painting).</p></div>
+      <div class="src"><h3><a href="https://commons.wikimedia.org/wiki/File:Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg" rel="noopener">Leonardo da Vinci, Mona Lisa (1503 to 1506)</a></h3>
+        <p>Mus&eacute;e du Louvre, Paris. Photograph by the C2RMF, retouched, via Wikimedia Commons.</p>
+        <p><b>Used for:</b> a sample image. Cropped and downscaled.</p>
+        <p class="lic"><b>Licence:</b> public domain.</p></div>
+      <div class="src"><h3><a href="https://commons.wikimedia.org/wiki/File:Vincent_van_Gogh_-_Self-Portrait_-_Google_Art_Project_(454045).jpg" rel="noopener">Vincent van Gogh, Self-Portrait (1887)</a></h3>
+        <p>Art Institute of Chicago. Photograph via Google Arts &amp; Culture and Wikimedia Commons.</p>
+        <p><b>Used for:</b> a sample image. Cropped and downscaled.</p>
+        <p class="lic"><b>Licence:</b> public domain.</p></div>
+      <div class="src"><h3>Random noise</h3>
+        <p><b>Used for:</b> the noise sample and the comparison curve. Generated in your browser from a fixed random seed.</p>
+        <p class="lic"><b>Licence:</b> made for this page.</p></div>
+
+      <div class="sub">Maths and algorithm</div>
+      <div class="src"><h3><a href="https://math.nist.gov/javanumerics/jama/" rel="noopener">JAMA: A Java Matrix Package, version 1.0.3</a></h3>
+        <p>Hicklin, Moler, Webb, Boisvert, Miller, Pozo and Remington; The MathWorks and NIST.</p>
+        <p><b>Used for:</b> the SVD algorithm, ported line by line to JavaScript in <a href="https://github.com/paul-bebear/paulbebear-site/blob/main/face-layers/svd-worker.js" rel="noopener">svd-worker.js</a>, with one added guard for numbers too small for the computer to divide by. Checked against NumPy: singular values agree to about 15 decimal places.</p>
+        <p class="lic"><b>Licence:</b> released to the public domain by its authors.</p></div>
+      <div class="src"><h3><a href="https://doi.org/10.1007/BF02163027" rel="noopener">Golub and Reinsch (1970)</a></h3>
+        <p>"Singular value decomposition and least squares solutions", <i>Numerische Mathematik</i> 14, 403&ndash;420. Builds on Golub and Kahan (1965), <a href="https://doi.org/10.1137/0702016" rel="noopener">SIAM J. Numerical Analysis</a>.</p>
+        <p><b>Used for:</b> the algorithm JAMA implements.</p>
+        <p class="lic"><b>Licence:</b> published papers, cited here.</p></div>
+      <div class="src"><h3><a href="https://doi.org/10.1007/BF02288367" rel="noopener">Eckart and Young (1936)</a></h3>
+        <p>"The approximation of one matrix by another of lower rank", <i>Psychometrika</i> 1, 211&ndash;218.</p>
+        <p><b>Used for:</b> the claim that the first k layers are the best rank-k picture.</p>
+        <p class="lic"><b>Licence:</b> published paper, cited here.</p></div>
+      <div class="src"><h3><a href="https://math.mit.edu/~gs/linearalgebra/" rel="noopener">Strang, Introduction to Linear Algebra</a></h3>
+        <p>Gilbert Strang, Wellesley-Cambridge Press, 6th edition (2023), chapter 7.</p>
+        <p><b>Used for:</b> the plain-language framing of the SVD as rotate, stretch, rotate.</p>
+        <p class="lic"><b>Licence:</b> book, cited here.</p></div>
+
+      <div class="sub">Where it's used</div>
+      <div class="src"><h3><a href="https://doi.org/10.1098/rsta.2015.0202" rel="noopener">Jolliffe and Cadima (2016)</a></h3>
+        <p>"Principal component analysis: a review and recent developments", <i>Phil. Trans. R. Soc. A</i> 374, 20150202.</p>
+        <p><b>Used for:</b> PCA and its link to the SVD.</p>
+        <p class="lic"><b>Licence:</b> open-access paper, cited here.</p></div>
+      <div class="src"><h3><a href="https://doi.org/10.1364/JOSAA.4.000519" rel="noopener">Sirovich and Kirby (1987)</a></h3>
+        <p>"Low-dimensional procedure for the characterization of human faces", <i>JOSA A</i> 4(3), 519&ndash;524.</p>
+        <p><b>Used for:</b> the eigenfaces card.</p>
+        <p class="lic"><b>Licence:</b> published paper, cited here.</p></div>
+      <div class="src"><h3><a href="https://doi.org/10.1162/jocn.1991.3.1.71" rel="noopener">Turk and Pentland (1991)</a></h3>
+        <p>"Eigenfaces for recognition", <i>Journal of Cognitive Neuroscience</i> 3(1), 71&ndash;86.</p>
+        <p><b>Used for:</b> the eigenfaces card.</p>
+        <p class="lic"><b>Licence:</b> published paper, cited here.</p></div>
+      <div class="src"><h3><a href="https://doi.org/10.1109/MC.2009.263" rel="noopener">Koren, Bell and Volinsky (2009)</a></h3>
+        <p>"Matrix factorization techniques for recommender systems", <i>IEEE Computer</i> 42(8), 30&ndash;37.</p>
+        <p><b>Used for:</b> the Netflix Prize card.</p>
+        <p class="lic"><b>Licence:</b> published paper, cited here.</p></div>
+      <div class="src"><h3><a href="https://sifter.org/~simon/journal/20061211.html" rel="noopener">Simon Funk (2006), "Netflix Update: Try This at Home"</a></h3>
+        <p><b>Used for:</b> the SVD-style factorisation that spread through the Netflix Prize.</p>
+        <p class="lic"><b>Licence:</b> blog post, cited here.</p></div>
+      <div class="src"><h3><a href="https://netflixtechblog.com/netflix-recommendations-beyond-the-5-stars-part-1-55838468f429" rel="noopener">Amatriain and Basilico (2012), Netflix Technology Blog</a></h3>
+        <p>"Netflix Recommendations: Beyond the 5 stars (Part 1)".</p>
+        <p><b>Used for:</b> what Netflix did and didn't put into production.</p>
+        <p class="lic"><b>Licence:</b> blog post, cited here.</p></div>
+      <div class="src"><h3><a href="https://doi.org/10.1109/TIT.2014.2323359" rel="noopener">Gavish and Donoho (2014)</a></h3>
+        <p>"The optimal hard threshold for singular values is 4/&radic;3", <i>IEEE Trans. Information Theory</i> 60(8), 5040&ndash;5053.</p>
+        <p><b>Used for:</b> the noise removal card.</p>
+        <p class="lic"><b>Licence:</b> published paper, cited here.</p></div>
+      <div class="src"><h3><a href="https://doi.org/10.1109/30.125072" rel="noopener">Wallace (1992)</a></h3>
+        <p>"The JPEG still picture compression standard", <i>IEEE Trans. Consumer Electronics</i> 38(1), xviii&ndash;xxxiv. The standard itself is <a href="https://www.w3.org/Graphics/JPEG/itu-t81.pdf" rel="noopener">ITU-T T.81</a>.</p>
+        <p><b>Used for:</b> JPEG uses the DCT, not the SVD.</p>
+        <p class="lic"><b>Licence:</b> published paper and standard, cited here.</p></div>
+
+      <div class="sub">Type</div>
+      <div class="src"><h3><a href="https://vercel.com/font" rel="noopener">Geist and Geist Mono</a></h3>
+        <p><b>Used for:</b> the typefaces, served by Google Fonts.</p>
+        <p class="lic"><b>Licence:</b> SIL Open Font License 1.1.</p></div>
+      <div class="src"><h3>No other libraries</h3>
+        <p>Everything else on the page (the charts, the matrix playground, the picture card) is plain JavaScript written for it.</p>
+        <p class="lic"><b>Licence:</b> the page's own code, &copy; Paul B&eacute;b&eacute;ar.</p></div>
+    </div>
+    <div class="method">
+      <p><b>Method.</b> Your image is drawn into a canvas with its long side at most 256 pixels and read as numbers from 0 to 1 per colour channel. Grey is 0.299 red + 0.587 green + 0.114 blue (the ITU-R BT.601 weights). Each channel's full SVD is computed in double precision in a Web Worker, then kept in single precision for rebuilding. The colour rebuild adds the first k layers of red, green and blue separately; energy in colour mode sums all three channels. No mean is subtracted, so layer 1 carries the overall brightness. "Numbers stored" counts k&times;(m+n+1) per channel against m&times;n; it ignores how many bits each number would need. The noise comparison is uniform random grey of the same size as your image.</p>
+      <p><b>Privacy.</b> Your photo is read by this page in your browser and never sent anywhere: there is no server code behind this page. Nothing is saved, not even on your device, unless you press "Save image". Analytics records page views only. Version 1, October 2026.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Paul Bébéar, Madrid</span>
+    <span><a href="/">Home</a> &nbsp; <a href="/archive/">Archive</a> &nbsp; <a href="https://www.linkedin.com/in/pbebear/" rel="noopener">LinkedIn</a></span>
+    <a class="coffee" href="https://buymeacoffee.com/paulbebear" target="_blank" rel="noopener">&#9749; Buy me a coffee</a>
+  </div>
+</footer>
+
+<div id="pop" role="tooltip"></div>
+<div class="toast" id="toast"></div>
+<noscript><p class="wrap" style="padding-block:20px">This page needs JavaScript: all the maths runs in your browser.</p></noscript>
+
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const MAX_SIDE = 256;
+const WORKER_URL = '/face-layers/svd-worker.js';
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const fmt = x => Math.round(x).toLocaleString('en-GB');
+function pct(x){
+  const p = x * 100;
+  if (p > 0 && p < 0.1) return '<0.1%';
+  if (p > 99.9 && p < 100) return '>99.9%';
+  return (p >= 10 ? p.toFixed(1) : p.toFixed(2)).replace(/\.?0+$/, '') + '%';
+}
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+
+/* ---------- Theme colours (read once, refreshed when the system theme changes) ---------- */
+const C = {};
+function hexRGB(h){ h = h.replace('#', ''); if (h.length === 3) h = h.replace(/./g, c => c + c); const n = parseInt(h, 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+function readTheme(){
+  const cs = getComputedStyle(document.documentElement);
+  for (const k of ['bg', 'surface', 'ink', 'ink-2', 'ink-3', 'rule', 'grid', 'accent', 'accent-mid', 'accent-soft', 'warm', 'warm-soft', 'frame']) C[k] = cs.getPropertyValue('--' + k).trim();
+  C.accentRGB = hexRGB(C.accent); C.warmRGB = hexRGB(C.warm); C.surfaceRGB = hexRGB(C.surface);
+}
+readTheme();
+
+/* ---------- Glossary (same pattern as not-so-cosmic-cycles and light-birthday) ---------- */
+const GLOSS = {
+  matrix: ['Matrix', 'A grid of numbers in rows and columns. A greyscale photo is one: each number is how bright one pixel is.'],
+  pixel: ['Pixel', 'One dot of a digital image. In greyscale it is one number; in colour it is three, for red, green and blue.'],
+  svd: ['Singular value decomposition (SVD)', 'A way to split any matrix into a sum of simple layers, ranked by importance: A = UΣVᵀ. Every matrix has one.'],
+  sv: ['Singular value', 'The weight σ in front of a layer: how much that layer contributes. They come sorted, biggest first, and are never negative.'],
+  layer: ['Rank-one layer', 'A column of numbers times a row of numbers. Every row of it is the same pattern, scaled up or down. The simplest picture a matrix can hold.'],
+  rank: ['Rank', 'How many genuinely different patterns a matrix contains: the number of rank-one layers needed to build it exactly. A photo usually has full rank, the length of its shorter side.'],
+  orthogonal: ['Orthogonal', 'At right angles. Orthogonal patterns share nothing, so each layer adds something the others lack. An orthogonal matrix only turns (or flips) things, never stretches them.'],
+  energy: ['Energy', 'The sum of every number squared. For a matrix it equals the sum of its squared singular values, so each layer\'s share is its σ² over the total.'],
+  transpose: ['Transpose', 'Vᵀ, "V transpose": V flipped so its columns become rows.'],
+  determinant: ['Determinant', 'How much a 2×2 matrix scales areas. Negative means the picture is mirrored; zero means it is squashed flat onto a line.'],
+  pca: ['Principal components', 'The directions in a dataset along which it varies most, in order. Found with the SVD of the data table after subtracting each column\'s average.'],
+  dct: ['Discrete cosine transform (DCT)', 'Rewrites a block of pixels as a mix of fixed wave patterns. JPEG keeps the strong waves and rounds off the weak ones. The patterns are the same for every image, so they never need storing.'],
+  noise: ['Random noise', 'An image where every pixel is an independent random number. It has no shapes, so no layer is more important than another.']
+};
+const pop = $('#pop'); let popFor = null;
+function showPop(btn){
+  const g = GLOSS[btn.dataset.k]; if (!g) return;
+  pop.innerHTML = `<b>${g[0]}</b>${g[1]}`; pop.classList.add('on'); popFor = btn;
+  document.querySelectorAll('.t[aria-expanded="true"]').forEach(b => b.setAttribute('aria-expanded', 'false'));
+  btn.setAttribute('aria-expanded', 'true');
+  const r = btn.getBoundingClientRect(), pw = Math.min(300, innerWidth - 24);
+  pop.style.maxWidth = pw + 'px';
+  let x = r.left + scrollX + r.width / 2 - pw / 2; x = Math.max(12 + scrollX, Math.min(x, scrollX + innerWidth - pw - 12));
+  pop.style.left = x + 'px';
+  const ph = pop.offsetHeight; let y = r.top + scrollY - ph - 10; if (r.top - ph - 10 < 60) y = r.bottom + scrollY + 10;
+  pop.style.top = y + 'px';
+}
+function hidePop(){ pop.classList.remove('on'); if (popFor) popFor.setAttribute('aria-expanded', 'false'); popFor = null; }
+document.addEventListener('click', e => { const b = e.target.closest('.t'); if (b){ e.stopPropagation(); popFor === b ? hidePop() : showPop(b); } else hidePop(); });
+document.addEventListener('mouseover', e => { const b = e.target.closest('.t'); if (b && matchMedia('(hover:hover)').matches) showPop(b); });
+document.addEventListener('mouseout', e => { const b = e.target.closest('.t'); if (b && matchMedia('(hover:hover)').matches) hidePop(); });
+document.addEventListener('focusin', e => { const b = e.target.closest('.t'); if (b) showPop(b); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') hidePop(); });
+addEventListener('scroll', () => { if (popFor) hidePop(); }, { passive: true });
+document.querySelectorAll('.t').forEach(b => { b.type = 'button'; b.setAttribute('aria-expanded', 'false'); b.setAttribute('aria-describedby', 'pop'); });
+$('#gloss').innerHTML = Object.values(GLOSS).sort((a, b) => a[0].localeCompare(b[0])).map(g => `<div><dt>${g[0]}</dt><dd>${g[1]}</dd></div>`).join('');
+
+/* ---------- Toast ---------- */
+let toastT = 0;
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2400); }
+
+/* ---------- Samples ---------- */
+const SAMPLES = {
+  pearl: { src: '/face-layers/samples/pearl-earring.jpg', title: 'Girl with a Pearl Earring', credit: 'Johannes Vermeer, <i>Girl with a Pearl Earring</i>, about 1665. Mauritshuis, The Hague. Public domain.' },
+  mona: { src: '/face-layers/samples/mona-lisa.jpg', title: 'Mona Lisa', credit: 'Leonardo da Vinci, <i>Mona Lisa</i>, 1503 to 1506. Mus&eacute;e du Louvre. Public domain.' },
+  gogh: { src: '/face-layers/samples/van-gogh.jpg', title: 'Self-Portrait', credit: 'Vincent van Gogh, <i>Self-Portrait</i>, 1887. Art Institute of Chicago. Public domain.' },
+  noise: { noise: true, title: 'Random noise', credit: 'Random colour noise, made in your browser. Watch how long it takes to "appear".' }
+};
+
+/* Seeded random numbers, so the noise is the same every visit */
+function rng(seed){ return () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+/* ---------- Image to numbers ---------- */
+function imageToChannels(src, w, h){
+  // Downscale so the long side is at most MAX_SIDE. Big photos go down in two steps for a cleaner result.
+  const sc = Math.min(1, MAX_SIDE / Math.max(w, h));
+  const W = Math.max(1, Math.round(w * sc)), H = Math.max(1, Math.round(h * sc));
+  let from = src, fw = w, fh = h;
+  if (sc < 0.25){
+    const mid = document.createElement('canvas'); mid.width = W * 4; mid.height = H * 4;
+    const mx = mid.getContext('2d'); mx.imageSmoothingQuality = 'high'; mx.drawImage(src, 0, 0, mid.width, mid.height);
+    from = mid; fw = mid.width; fh = mid.height;
+  }
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const x = c.getContext('2d', { willReadFrequently: true });
+  x.imageSmoothingQuality = 'high';
+  x.drawImage(from, 0, 0, fw, fh, 0, 0, W, H);
+  const d = x.getImageData(0, 0, W, H).data, N = W * H;
+  const R = new Float32Array(N), G = new Float32Array(N), B = new Float32Array(N), Y = new Float32Array(N);
+  for (let p = 0; p < N; p++){
+    const r = d[p * 4] / 255, g = d[p * 4 + 1] / 255, b = d[p * 4 + 2] / 255;
+    R[p] = r; G[p] = g; B[p] = b; Y[p] = 0.299 * r + 0.587 * g + 0.114 * b;
+  }
+  return { m: H, n: W, R, G, B, Y };
+}
+function noiseChannels(m, n, seed, colour){
+  const rand = rng(seed), N = m * n;
+  const R = new Float32Array(N), G = new Float32Array(N), B = new Float32Array(N), Y = new Float32Array(N);
+  for (let p = 0; p < N; p++){
+    if (colour){ R[p] = rand(); G[p] = rand(); B[p] = rand(); Y[p] = 0.299 * R[p] + 0.587 * G[p] + 0.114 * B[p]; }
+    else { R[p] = G[p] = B[p] = Y[p] = rand(); }
+  }
+  return { m, n, R, G, B, Y };
+}
+
+/* ---------- The worker ---------- */
+let worker = null, jobId = 0, busyJob = 0;
+function startWorker(){ worker = new Worker(WORKER_URL); worker.onmessage = onWorker; worker.onerror = e => { fail('The maths worker failed to start' + (e.message ? ': ' + e.message : '.')); }; }
+function decompose(img, noise){
+  if (busyJob && worker){ worker.terminate(); worker = null; }   // a newer picture wins: stop the old job
+  if (!worker) startWorker();
+  const id = ++jobId; busyJob = id;
+  const { m, n } = img;
+  const channels = [{ name: 'Y', data: img.Y.slice() }, { name: 'R', data: img.R.slice() }, { name: 'G', data: img.G.slice() }, { name: 'B', data: img.B.slice() }, { name: 'noise', data: noise.Y }];
+  worker.postMessage({ id, m, n, channels }, channels.map(c => c.data.buffer));
+  return id;
+}
+function prep(d){
+  const { m, n, r, s, u, v } = d;
+  const us = new Float32Array(r * m);
+  for (let l = 0; l < r; l++){ const sl = s[l], o = l * m; for (let i = 0; i < m; i++) us[o + i] = u[o + i] * sl; }
+  const cum = new Float64Array(r + 1);
+  for (let l = 0; l < r; l++) cum[l + 1] = cum[l] + s[l] * s[l];
+  return { m, n, r, s, u, us, v, cum };
+}
+
+/* ---------- Rebuilding: keep a running total, add or remove layers as k moves ----------
+   One layer costs m*n multiply-adds per channel. The slider usually moves a few layers per frame, so this is cheap.
+   Snapshots every 16 layers make big jumps cheap too. */
+class Rebuilder {
+  constructor(decs){
+    this.decs = decs; this.m = decs[0].m; this.n = decs[0].n;
+    this.acc = decs.map(() => new Float32Array(this.m * this.n));
+    this.k = 0; this.snaps = new Map();
+  }
+  _add(from, to, sign){
+    const { m, n } = this;
+    for (let c = 0; c < this.decs.length; c++){
+      const { us, v } = this.decs[c], A = this.acc[c];
+      for (let l = from; l < to; l++){
+        const uo = l * m, vo = l * n;
+        for (let i = 0; i < m; i++){
+          const a = sign * us[uo + i]; if (a === 0) continue;
+          const row = i * n;
+          for (let j = 0; j < n; j++) A[row + j] += a * v[vo + j];
+        }
+      }
+    }
+  }
+  setK(k){
+    if (k === this.k) return;
+    let base = this.k, cost = Math.abs(k - this.k);
+    for (const s of this.snaps.keys()) if (Math.abs(k - s) + 1 < cost){ base = s; cost = Math.abs(k - s) + 1; }
+    if (k + 1 < cost){ base = 0; cost = k; }
+    if (base !== this.k){
+      if (base === 0) this.acc.forEach(a => a.fill(0));
+      else { const snap = this.snaps.get(base); this.acc.forEach((a, c) => a.set(snap[c])); }
+      this.k = base;
+    }
+    while (this.k < k){
+      const next = Math.min(k, (Math.floor(this.k / 16) + 1) * 16);
+      this._add(this.k, next, 1); this.k = next;
+      if (next % 16 === 0 && !this.snaps.has(next)) this.snaps.set(next, this.acc.map(a => a.slice()));
+    }
+    if (this.k > k){ this._add(k, this.k, -1); this.k = k; }
+  }
+  paint(ctx, imgData){
+    const d = imgData.data, N = this.m * this.n, A = this.acc;
+    if (A.length === 1){ const Y = A[0]; for (let p = 0, q = 0; p < N; p++, q += 4){ const v = Y[p] * 255; d[q] = v; d[q + 1] = v; d[q + 2] = v; } }
+    else { const [R, G, B] = A; for (let p = 0, q = 0; p < N; p++, q += 4){ d[q] = R[p] * 255; d[q + 1] = G[p] * 255; d[q + 2] = B[p] * 255; } }
+    ctx.putImageData(imgData, 0, 0);
+  }
+}
+function newImageData(ctx, w, h){ const id = ctx.createImageData(w, h); for (let q = 3; q < id.data.length; q += 4) id.data[q] = 255; return id; }
+function paintChannels(cv, img, grey){
+  cv.width = img.n; cv.height = img.m;
+  const ctx = cv.getContext('2d'), id = newImageData(ctx, img.n, img.m), d = id.data;
+  for (let p = 0, q = 0; p < img.m * img.n; p++, q += 4){
+    if (grey){ const v = img.Y[p] * 255; d[q] = d[q + 1] = d[q + 2] = v; }
+    else { d[q] = img.R[p] * 255; d[q + 1] = img.G[p] * 255; d[q + 2] = img.B[p] * 255; }
+  }
+  ctx.putImageData(id, 0, 0);
+}
+
+/* ---------- State ---------- */
+const S = {
+  img: null, label: '', sample: 'pearl', dec: {}, ready: false, mode: 'colour',
+  k: 1, kRec: null, r: 1,
+  main: null, mainGrey: null, hero: null, stack: null, noise: null, noiseImg: null
+};
+const cv = { orig: $('#orig'), rank: $('#rank'), mini: $('#mini'), stack: $('#stack'), noiseOrig: $('#noiseOrig'), noiseRank: $('#noiseRank') };
+const ctx = {}; const imgData = {};
+function sizeCanvas(name, m, n){ const c = cv[name]; c.width = n; c.height = m; ctx[name] = c.getContext('2d'); imgData[name] = newImageData(ctx[name], n, m); }
+
+function setStatus(msg, err){ const s = $('#status'); s.textContent = msg; s.classList.toggle('err', !!err); }
+function fail(msg){ setStatus(msg, true); $('#busy').textContent = msg; busyJob = 0; }
+
+async function useImage(img, label, sampleKey){
+  stopHero(); stopStack();
+  S.img = img; S.label = label; S.sample = sampleKey || null; S.ready = false; S.dec = {}; S.kRec = null; S.noise = null;
+  S.r = Math.min(img.m, img.n);
+  for (const b of document.querySelectorAll('#sampleChips .chip')) b.setAttribute('aria-pressed', String(b.dataset.s === sampleKey));
+  $('#credit').innerHTML = sampleKey ? SAMPLES[sampleKey].credit : 'Your photo. It stays in this browser tab.';
+  $('#legFace').textContent = sampleKey === 'noise' ? 'Your image (here, colour noise)' : sampleKey ? SAMPLES[sampleKey].title : 'Your photo';
+  for (const name of ['orig', 'rank', 'mini', 'stack', 'noiseOrig', 'noiseRank']) sizeCanvas(name, img.m, img.n);
+  paintChannels(cv.orig, img, S.mode === 'grey'); ctx.orig = cv.orig.getContext('2d');
+  paintChannels(cv.mini, img, false);
+  S.noiseImg = noiseChannels(img.m, img.n, 1234, false);
+  paintChannels(cv.noiseOrig, S.noiseImg, true);
+  $('#miniTag').textContent = 'original';
+  $('#busy').hidden = false; $('#busy').textContent = 'Splitting into layers…';
+  for (const id of ['#k', '#recBtn', '#saveBtn', '#stackPlay']) $(id).disabled = true;
+  $('#dimsTxt').textContent = `${img.m} rows by ${img.n} columns of numbers for each colour, ${fmt(img.m * img.n * 3)} in all`;
+  $('#kOf').textContent = `layer${S.k === 1 ? '' : 's'} of ${S.r}`;
+  $('#tiles').innerHTML = '';
+  drawPlane(); drawSV();
+  setStatus('Splitting into layers…');
+  S.t0 = performance.now();
+  decompose(img, S.noiseImg);
+}
+
+function onWorker(e){
+  const d = e.data;
+  if (d.id !== jobId) return;
+  if (d.type === 'error'){ fail('Something went wrong with the maths: ' + d.message); return; }
+  if (d.type === 'done'){ busyJob = 0; return; }
+  S.dec[d.name] = prep(d);
+  const got = ['Y', 'R', 'G', 'B'].filter(k => S.dec[k]).length;
+  if (d.name === 'noise'){ S.noise = new Rebuilder([S.dec.noise]); renderNoise(); drawChart(); updateCurveStats(); return; }
+  if (got < 4){ setStatus(`Splitting into layers… ${got} of 4 colour channels`); $('#busy').textContent = `Splitting into layers… ${got} of 4`; return; }
+  onReady();
+}
+
+function onReady(){
+  const D = S.dec;
+  S.main = new Rebuilder([D.R, D.G, D.B]);
+  S.mainGrey = new Rebuilder([D.Y]);
+  S.hero = new Rebuilder([D.R, D.G, D.B]);
+  S.stack = new Rebuilder([D.Y]);
+  S.ready = true;
+  const secs = (performance.now() - S.t0) / 1000;
+  setStatus(`Done: ${S.r} layers per colour, found in ${secs < 1 ? secs.toFixed(2) : secs.toFixed(1)} s on this device.`);
+  $('#busy').hidden = true;
+  for (const id of ['#k', '#recBtn', '#saveBtn', '#stackPlay']) $(id).disabled = false;
+  S.k = clamp(S.k, 1, S.r);
+  buildTicks(); setK(S.k, true);
+  buildTiles(); setStack(1);
+  startHero();
+  drawChart(); updateCurveStats();
+}
+
+/* ---------- Main slider: logarithmic, so the first 20 layers get most of the travel ---------- */
+const slider = $('#k');
+const kFromT = t => clamp(Math.round(Math.pow(S.r, t / 1000)), 1, S.r);
+const tFromK = k => S.r <= 1 ? 1000 : 1000 * Math.log(k) / Math.log(S.r);
+function buildTicks(){
+  const marks = [1, 2, 5, 10, 20, 50, 100, S.r].filter((v, i, a) => v <= S.r && a.indexOf(v) === i && (v === S.r || S.r / v > 1.6));
+  $('#ticks').innerHTML = marks.map(v => `<span style="left:${tFromK(v) / 10}%">${v}</span>`).join('');
+}
+let raf = 0, wantK = 1;
+function setK(k, force){
+  k = clamp(Math.round(k), 1, S.r);
+  if (k === S.k && !force) return;
+  S.k = k; wantK = k;
+  const t = tFromK(k);
+  if (kFromT(+slider.value) !== k) slider.value = Math.round(t);
+  slider.style.setProperty('--p', (t / 10) + '%');
+  slider.setAttribute('aria-valuetext', `k = ${k} layers`);
+  if (!raf) raf = requestAnimationFrame(frame);
+}
+function frame(){
+  raf = 0;
+  if (!S.ready) return;
+  const k = wantK;
+  const grey = S.mode === 'grey';
+  const rb = grey ? S.mainGrey : S.main;
+  rb.setK(k); rb.paint(ctx.rank, imgData.rank);
+  $('#rankTag').textContent = `k = ${k}`;
+  $('#kNum').textContent = k;
+  $('#kOf').textContent = `layer${k === 1 ? '' : 's'} of ${S.r}`;
+  updateMeters();
+  renderNoise();
+  drawChart(); updateCurveStats();
+}
+slider.addEventListener('input', () => { if (S.ready) setK(kFromT(+slider.value)); });
+slider.addEventListener('keydown', e => {
+  const d = { ArrowRight: 1, ArrowUp: 1, ArrowLeft: -1, ArrowDown: -1, PageUp: 10, PageDown: -10 }[e.key];
+  if (e.key === 'Home'){ e.preventDefault(); setK(1); } else if (e.key === 'End'){ e.preventDefault(); setK(S.r); }
+  else if (d){ e.preventDefault(); setK(S.k + d); }
+});
+$('#kDown').onclick = () => S.ready && setK(S.k - 1);
+$('#kUp').onclick = () => S.ready && setK(S.k + 1);
+
+function storeFrac(k){ const { m, n } = S.img; return k * (m + n + 1) / (m * n); }
+function energyFrac(k){
+  const chans = S.mode === 'grey' ? ['Y'] : ['R', 'G', 'B'];
+  let a = 0, t = 0; for (const c of chans){ const D = S.dec[c]; a += D.cum[k]; t += D.cum[D.r]; }
+  return t > 0 ? a / t : 1;
+}
+function updateMeters(){
+  const { m, n } = S.img, k = S.k, f = storeFrac(k), en = energyFrac(k);
+  $('#storePct').textContent = pct(f);
+  const sb = $('#storeBar'); sb.style.width = Math.min(100, f * 100) + '%'; sb.classList.toggle('over', f > 1);
+  const per = S.mode === 'grey' ? '' : ' per colour';
+  $('#storeTxt').innerHTML = f > 1
+    ? `<b>${fmt(k * (m + n + 1))}</b> numbers${per}: more than the <b>${fmt(m * n)}</b> in the image itself. Past this point, layers cost more than pixels.`
+    : `${k} &times; (${m} + ${n} + 1) = <b>${fmt(k * (m + n + 1))}</b> numbers${per}, against <b>${fmt(m * n)}</b> in the image.`;
+  $('#energyPct').textContent = pct(en);
+  $('#energyBar').style.width = (en * 100) + '%';
+  $('#energyTxt').innerHTML = k === 1 ? 'Layer 1 holds most of the energy: it carries the overall brightness. It still looks like a smudge.' : `The squared error left over is <b>${pct(1 - en)}</b> of the total.`;
+  updateRec();
+}
+function updateRec(){
+  const mark = $('#recMark');
+  if (S.kRec == null){ mark.hidden = true; $('#recTxt').innerHTML = 'Start at k = 1 and slide right. Tap the button the moment you recognise who it is.'; return; }
+  mark.hidden = false; mark.style.left = `calc(12px + (100% - 24px) * ${tFromK(S.kRec) / 1000})`;
+  $('#recTxt').innerHTML = `You recognised it at <b>k = ${S.kRec}</b>, using <b>${pct(storeFrac(S.kRec))}</b> of the numbers and keeping ${pct(energyFrac(S.kRec))} of the energy.` + (S.kRec > 60 ? ' That took a lot of layers: is it noise?' : '');
+}
+$('#recBtn').onclick = () => { if (!S.ready) return; S.kRec = S.k; updateRec(); toast(`Recognisable at k = ${S.k}`); };
+
+/* Colour or grey */
+function setMode(mode){
+  S.mode = mode;
+  $('#mColour').setAttribute('aria-pressed', String(mode === 'colour'));
+  $('#mGrey').setAttribute('aria-pressed', String(mode === 'grey'));
+  if (S.img) paintChannels(cv.orig, S.img, mode === 'grey');
+  if (S.ready){ wantK = S.k; if (!raf) raf = requestAnimationFrame(frame); }
+}
+$('#mColour').onclick = () => setMode('colour');
+$('#mGrey').onclick = () => setMode('grey');
+
+/* ---------- Hero: rebuild 1 to 10 layers on a loop ---------- */
+let heroT = 0, heroK = 0, heroVisible = true;
+function heroStep(){
+  heroT = 0;
+  if (!S.ready || !heroVisible) return;
+  heroK = heroK >= 10 ? 1 : heroK + 1;
+  S.hero.setK(Math.min(heroK, S.r)); S.hero.paint(ctx.mini, imgData.mini);
+  $('#miniTag').textContent = `${heroK} layer${heroK === 1 ? '' : 's'}`;
+  heroT = setTimeout(heroStep, heroK === 10 ? 2600 : heroK === 1 ? 900 : 420);
+}
+function startHero(){
+  stopHero();
+  if (REDUCED){ S.hero.setK(Math.min(10, S.r)); S.hero.paint(ctx.mini, imgData.mini); $('#miniTag').textContent = '10 layers'; return; }
+  heroK = 0; heroStep();
+}
+function stopHero(){ clearTimeout(heroT); heroT = 0; }
+new IntersectionObserver(es => { heroVisible = es[0].isIntersecting; if (heroVisible && S.ready && !heroT && !REDUCED) heroStep(); }).observe($('#miniBox'));
+
+/* ---------- Picking images ---------- */
+async function loadSample(key){
+  const s = SAMPLES[key];
+  if (s.noise){ const img = noiseChannels(256, 205, 99, true); useImage(img, s.title, key); return; }
+  try {
+    setStatus('Loading ' + s.title + '…');
+    const im = new Image(); im.src = s.src; await im.decode();
+    useImage(imageToChannels(im, im.naturalWidth, im.naturalHeight), s.title, key);
+  } catch (err){ fail('Could not load the sample image.'); }
+}
+async function loadFile(file){
+  if (!file) return;
+  if (file.type && !file.type.startsWith('image/')){ setStatus('That file is not an image.', true); return; }
+  const url = URL.createObjectURL(file);
+  try {
+    setStatus('Reading your photo…');
+    const im = new Image(); im.src = url; await im.decode();
+    useImage(imageToChannels(im, im.naturalWidth, im.naturalHeight), 'Your photo', null);
+    document.querySelector('#rebuild').scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth' });
+  } catch (err){
+    setStatus('This browser could not read that image. Try a JPEG or PNG.', true);
+  } finally { URL.revokeObjectURL(url); }
+}
+for (const id of ['#file', '#cam']) $(id).addEventListener('change', e => { loadFile(e.target.files[0]); e.target.value = ''; });
+$('#sampleChips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (b) loadSample(b.dataset.s); });
+
+/* ---------- Layer tiles and the stacking view (greyscale) ---------- */
+function divergingStrip(cv, vals){
+  // One strip: teal for positive, amber for negative, faded toward the surface colour near zero.
+  const N = vals.length, horiz = cv.width > 1;
+  const c = cv.getContext('2d'), id = c.createImageData(cv.width, cv.height), d = id.data;
+  let mx = 0; for (let i = 0; i < N; i++) mx = Math.max(mx, Math.abs(vals[i]));
+  const S0 = C.surfaceRGB;
+  for (let i = 0; i < N; i++){
+    const t = mx ? vals[i] / mx : 0, a = Math.min(1, Math.abs(t) * 1.15), col = t >= 0 ? C.accentRGB : C.warmRGB;
+    d[i * 4] = S0[0] + (col[0] - S0[0]) * a; d[i * 4 + 1] = S0[1] + (col[1] - S0[1]) * a; d[i * 4 + 2] = S0[2] + (col[2] - S0[2]) * a; d[i * 4 + 3] = 255;
+  }
+  c.putImageData(id, 0, 0);
+}
+function buildTiles(){
+  const D = S.dec.Y, { m, n } = D, L = Math.min(8, D.r), box = $('#tiles');
+  box.innerHTML = '';
+  S.tiles = [];
+  for (let l = 0; l < L; l++){
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'tile'; b.dataset.l = l + 1;
+    b.setAttribute('aria-label', `Stack layers 1 to ${l + 1}`);
+    b.innerHTML = `<span class="plus" aria-hidden="true">+</span><span class="g"><canvas class="vv" width="${n}" height="1"></canvas><canvas class="uu" width="1" height="${m}"></canvas><canvas class="lay" width="${n}" height="${m}"></canvas></span><span class="cap2">Layer <b>${l + 1}</b> &middot; ${pct((D.s[l] ** 2) / D.cum[D.r])}</span>`;
+    box.appendChild(b);
+    S.tiles.push(b);
+    drawTile(b, l);
+  }
+}
+function drawTile(b, l){
+  const D = S.dec.Y, { m, n } = D;
+  const u = D.u.subarray(l * m, (l + 1) * m), v = D.v.subarray(l * n, (l + 1) * n), sg = D.s[l];
+  // Layer 1's vectors come out all one sign; show them positive so the strips read naturally.
+  let sign = 1; if (l === 0){ let su = 0; for (let i = 0; i < m; i++) su += u[i]; if (su < 0) sign = -1; }
+  divergingStrip(b.querySelector('.uu'), u.map(x => x * sign));
+  divergingStrip(b.querySelector('.vv'), v.map(x => x * sign));
+  const c = b.querySelector('.lay').getContext('2d'), id = newImageData(c, n, m), d = id.data;
+  let mx = 0; for (let i = 0; i < m; i++) mx = Math.max(mx, Math.abs(u[i])); let mv = 0; for (let j = 0; j < n; j++) mv = Math.max(mv, Math.abs(v[j]));
+  const scale = l === 0 ? sg : 0.5 / (sg * mx * mv || 1) * sg;
+  for (let i = 0; i < m; i++) for (let j = 0; j < n; j++){
+    const x = u[i] * v[j] * scale, val = l === 0 ? x * 255 : (0.5 + x) * 255, q = (i * n + j) * 4;
+    d[q] = d[q + 1] = d[q + 2] = val;
+  }
+  c.putImageData(id, 0, 0);
+}
+let stackT = 0;
+function setStack(j){
+  if (!S.ready) return;
+  S.stackJ = j;
+  S.stack.setK(Math.min(j, S.r)); S.stack.paint(ctx.stack, imgData.stack);
+  $('#stackTag').textContent = j === 1 ? 'layer 1' : `layers 1 to ${j}`;
+  $('#stackEq').innerHTML = j === 1 ? 'Layer 1 on its own: a blur with the right overall light and dark.' : `Layer 1 + ${j === 2 ? 'layer 2' : `&hellip; + layer ${j}`}, keeping ${pct(S.dec.Y.cum[j] / S.dec.Y.cum[S.dec.Y.r])} of the energy.`;
+  (S.tiles || []).forEach((t, i) => t.classList.toggle('in', i < j));
+}
+function stopStack(){ clearTimeout(stackT); stackT = 0; }
+$('#stackPlay').onclick = () => {
+  stopStack(); let j = 1; const L = Math.min(8, S.r);
+  const go = () => { setStack(j); if (j < L){ j++; stackT = setTimeout(go, REDUCED ? 500 : 750); } };
+  go();
+};
+$('#tiles').addEventListener('click', e => { const b = e.target.closest('.tile'); if (b){ stopStack(); setStack(+b.dataset.l); } });
+
+/* ---------- Noise rebuilt at the same k ---------- */
+function renderNoise(){
+  if (!S.noise || !S.ready) return;
+  const k = Math.min(S.k, S.noise.decs[0].r);
+  S.noise.setK(k); S.noise.paint(ctx.noiseRank, imgData.noiseRank);
+  $('#noiseTag').textContent = `k = ${k}`;
+}
+
+/* ---------- Singular value chart ---------- */
+const chart = $('#chart');
+const CH = { padL: 66, padR: 14, padT: 14, padB: 30 };
+function chartGeom(){
+  const w = chart.clientWidth, h = chart.clientHeight;
+  return { w, h, x0: CH.padL, x1: w - CH.padR, y0: CH.padT, y1: h - CH.padB };
+}
+function drawChart(){
+  if (!S.ready) return;
+  const dpr = Math.min(2, devicePixelRatio || 1), g = chartGeom();
+  if (!g.w) return;
+  if (chart.width !== Math.round(g.w * dpr) || chart.height !== Math.round(g.h * dpr)){ chart.width = Math.round(g.w * dpr); chart.height = Math.round(g.h * dpr); }
+  const c = chart.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, g.w, g.h);
+  const face = S.dec.Y, noise = S.dec.noise, r = S.r;
+  // Range: from 1 down to the smallest non-zero relative value, rounded to a decade, at most 10^-5
+  let lo = 1;
+  for (const D of [face, noise]) if (D) for (let i = 0; i < D.r; i++){ const v = D.s[i] / D.s[0]; if (v > 1e-7 && v < lo) lo = v; }
+  const dec = Math.max(1, Math.min(5, Math.ceil(-Math.log10(lo))));
+  const X = i => g.x0 + (r <= 1 ? 0 : (i - 1) / (r - 1)) * (g.x1 - g.x0);
+  const Y = v => g.y0 + (-Math.log10(Math.max(v, Math.pow(10, -dec)))) / dec * (g.y1 - g.y0);
+  c.font = '500 11px "Geist Mono", ui-monospace, monospace'; c.textBaseline = 'middle';
+  for (let e = 0; e <= dec; e++){
+    const y = Y(Math.pow(10, -e));
+    c.strokeStyle = C.grid; c.lineWidth = 1; c.beginPath(); c.moveTo(g.x0, y); c.lineTo(g.x1, y); c.stroke();
+    c.fillStyle = C['ink-3']; c.textAlign = 'right'; c.fillText(e === 0 ? '1' : '1/' + fmt(Math.pow(10, e)), g.x0 - 8, y);
+  }
+  c.textAlign = 'center'; c.textBaseline = 'top';
+  const xt = [1, 10, 50, 100, 150, 200, 250].filter(v => v <= r && (v === 1 || r - v > r * 0.06)); if (xt[xt.length - 1] !== r) xt.push(r);
+  for (const v of xt) c.fillText(String(v), X(v), g.y1 + 8);
+  // k marker and shaded "kept" region
+  const xk = X(S.k);
+  c.fillStyle = C['accent-soft']; c.globalAlpha = 0.55; c.fillRect(g.x0, g.y0, Math.max(1, xk - g.x0), g.y1 - g.y0); c.globalAlpha = 1;
+  const line = (D, col, wdt) => {
+    if (!D) return;
+    c.strokeStyle = col; c.lineWidth = wdt; c.lineJoin = 'round'; c.beginPath();
+    for (let i = 0; i < D.r; i++){ const x = X(i + 1), y = Y(D.s[i] / D.s[0]); i ? c.lineTo(x, y) : c.moveTo(x, y); }
+    c.stroke();
+  };
+  line(noise, C.warm, 2);
+  line(face, C.accent, 2.5);
+  c.strokeStyle = C.ink; c.lineWidth = 1.5; c.setLineDash([4, 3]); c.beginPath(); c.moveTo(xk, g.y0); c.lineTo(xk, g.y1); c.stroke(); c.setLineDash([]);
+  c.fillStyle = C.ink; c.font = '600 12px "Geist Mono", ui-monospace, monospace'; c.textBaseline = 'top';
+  const lab = `k = ${S.k}`, tw = c.measureText(lab).width;
+  c.textAlign = 'left'; c.fillText(lab, Math.min(xk + 6, g.x1 - tw), g.y0 + 4);
+  // Dots on both curves at k
+  for (const [D, col] of [[noise, C.warm], [face, C.accent]]) if (D && S.k <= D.r){ c.fillStyle = col; c.beginPath(); c.arc(xk, Y(D.s[S.k - 1] / D.s[0]), 4, 0, 7); c.fill(); }
+}
+function updateCurveStats(){
+  if (!S.ready) return;
+  const k = S.k, F = S.dec.Y, N = S.dec.noise;
+  const beyond = (D, k) => { const t = D.cum[D.r] - D.cum[1]; return t > 0 ? (D.cum[Math.min(k, D.r)] - D.cum[1]) / t : 1; };
+  $('#cK').textContent = `${k} of ${S.r}`;
+  $('#cKs').innerHTML = `That's <b>${pct(storeFrac(k))}</b> of the numbers.`;
+  $('#cFace').textContent = k === 1 ? '0%' : pct(beyond(F, k));
+  $('#cNoise').textContent = N ? (k === 1 ? '0%' : pct(beyond(N, k))) : '…';
+}
+let chartDrag = false;
+function chartPick(e){ const g = chartGeom(), r = chart.getBoundingClientRect(); const f = clamp((e.clientX - r.left - g.x0) / (g.x1 - g.x0), 0, 1); setK(1 + f * (S.r - 1)); }
+chart.addEventListener('pointerdown', e => { if (!S.ready) return; chartDrag = true; chartPick(e); });
+chart.addEventListener('pointermove', e => { if (chartDrag) chartPick(e); });
+addEventListener('pointerup', () => { chartDrag = false; });
+addEventListener('pointercancel', () => { chartDrag = false; });
+
+/* ---------- 2x2 matrix playground ---------- */
+const M = { a: 1, b: 0.5, c: 0, d: 1 };   // first column (a, c) is where the teal arrow goes, second (b, d) the amber
+const plane = $('#plane'), svplane = $('#svplane');
+const inputs = { a: $('#ma'), b: $('#mb'), c: $('#mc'), d: $('#md') };
+const r2 = x => Math.round(x * 100) / 100;
+function showM(skip){ for (const k in inputs) if (inputs[k] !== skip) inputs[k].value = r2(M[k]); describeM(); drawPlane(); svT = 300; $('#svT').value = 300; drawSV(); }
+function describeM(){
+  const { a, b, c, d } = M, det = a * d - b * c;
+  const ortho = Math.abs(a * a + c * c - 1) < 0.02 && Math.abs(b * b + d * d - 1) < 0.02 && Math.abs(a * b + c * d) < 0.02;
+  let what;
+  if (Math.abs(a - 1) < 1e-9 && Math.abs(d - 1) < 1e-9 && Math.abs(b) < 1e-9 && Math.abs(c) < 1e-9) what = '<b>The identity.</b> Every point stays put.';
+  else if (Math.abs(det) < 0.02) what = '<b>Rank 1.</b> The whole plane is squashed onto a line. Information is lost: you can\'t undo it.';
+  else if (ortho && det > 0) what = '<b>A pure rotation.</b> Lengths and angles are kept: this matrix is <button class="t" data-k="orthogonal">orthogonal</button>.';
+  else if (ortho) what = '<b>A mirror.</b> Lengths and angles are kept, but the picture is flipped.';
+  else if (Math.abs(b) < 1e-9 && Math.abs(c) < 1e-9) what = `<b>A stretch</b> along the axes: &times;${r2(a)} across, &times;${r2(d)} up.`;
+  else what = '<b>A general move:</b> some mix of rotating, stretching and shearing. Below, the SVD splits it into simple steps.';
+  $('#mxWhat').innerHTML = what;
+  $('#mxDet').innerHTML = `The <button class="t" data-k="determinant">determinant</button> is ${r2(a)} &times; ${r2(d)} &minus; ${r2(b)} &times; ${r2(c)} = <b>${r2(det)}</b>. ` +
+    (Math.abs(det) < 0.02 ? 'Zero: every area collapses to nothing.' : `Every area is multiplied by ${r2(Math.abs(det))}${det < 0 ? ', and the picture is mirrored' : ''}.`);
+  document.querySelectorAll('#mxWhat .t, #mxDet .t').forEach(t => { t.type = 'button'; t.setAttribute('aria-expanded', 'false'); t.setAttribute('aria-describedby', 'pop'); });
+}
+function fitCanvas(cnv){
+  const dpr = Math.min(2, devicePixelRatio || 1), w = cnv.clientWidth;
+  if (!w) return null;
+  if (cnv.width !== Math.round(w * dpr)){ cnv.width = cnv.height = Math.round(w * dpr); }
+  const c = cnv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { c, w, u: w / 4.6, cx: w / 2, cy: w / 2 };
+}
+function arrow(c, x0, y0, x1, y1, col, wdt){
+  const ang = Math.atan2(y1 - y0, x1 - x0), len = Math.hypot(x1 - x0, y1 - y0), hl = Math.min(12, len * 0.4);
+  c.strokeStyle = col; c.fillStyle = col; c.lineWidth = wdt; c.lineCap = 'round';
+  c.beginPath(); c.moveTo(x0, y0); c.lineTo(x1 - Math.cos(ang) * hl * 0.6, y1 - Math.sin(ang) * hl * 0.6); c.stroke();
+  c.beginPath(); c.moveTo(x1, y1); c.lineTo(x1 - Math.cos(ang - 0.42) * hl, y1 - Math.sin(ang - 0.42) * hl); c.lineTo(x1 - Math.cos(ang + 0.42) * hl, y1 - Math.sin(ang + 0.42) * hl); c.closePath(); c.fill();
+}
+/* Draw the plane moved by matrix T = [a b; c d]. Maths y points up; the canvas y points down. */
+function drawMoved(G, T, opts = {}){
+  const { c, w, u, cx, cy } = G, { a, b, c: cc, d } = T;
+  c.clearRect(0, 0, w, w);
+  const P = (x, y) => [cx + u * (a * x + b * y), cy - u * (cc * x + d * y)];
+  // Fixed background grid
+  c.strokeStyle = C.grid; c.lineWidth = 1;
+  for (let i = -3; i <= 3; i++){ c.beginPath(); c.moveTo(cx + i * u, 0); c.lineTo(cx + i * u, w); c.moveTo(0, cy + i * u); c.lineTo(w, cy + i * u); c.stroke(); }
+  // The photo in the unit square, moved
+  const src = cv.orig;
+  if (src && src.width > 1){
+    const L = Math.max(src.width, src.height), iw = src.width / L, ih = src.height / L;
+    c.save();
+    c.setTransform(c.getTransform().multiply(new DOMMatrix([u * a, -u * cc, -u * b, u * d, cx + u * b * ih, cy - u * d * ih])));
+    c.globalAlpha = 0.92; c.imageSmoothingQuality = 'high';
+    c.drawImage(src, 0, 0, iw, ih);
+    c.restore();
+  }
+  // Moved grid
+  c.strokeStyle = C['accent-mid']; c.lineWidth = 1; c.globalAlpha = 0.9;
+  for (let i = -4; i <= 4; i++){
+    let p = P(i, -4), q = P(i, 4); c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); c.stroke();
+    p = P(-4, i); q = P(4, i); c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); c.stroke();
+  }
+  c.globalAlpha = 1;
+  // Unit circle and its image (an ellipse)
+  if (opts.circle){
+    c.strokeStyle = C['ink-3']; c.setLineDash([3, 4]); c.lineWidth = 1.2;
+    c.beginPath(); c.arc(cx, cy, u, 0, 7); c.stroke(); c.setLineDash([]);
+    c.strokeStyle = C.ink; c.lineWidth = 2; c.beginPath();
+    for (let s = 0; s <= 64; s++){ const t = s / 64 * Math.PI * 2, p = P(Math.cos(t), Math.sin(t)); s ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]); }
+    c.stroke();
+  }
+  // Basis arrows
+  const e1 = P(1, 0), e2 = P(0, 1);
+  arrow(c, cx, cy, e1[0], e1[1], C.accent, 3);
+  arrow(c, cx, cy, e2[0], e2[1], C.warm, 3);
+  if (opts.handles){
+    for (const [p, col] of [[e1, C.accent], [e2, C.warm]]){ c.fillStyle = C.surface; c.strokeStyle = col; c.lineWidth = 2.5; c.beginPath(); c.arc(p[0], p[1], 9, 0, 7); c.fill(); c.stroke(); }
+  }
+  return { e1, e2 };
+}
+let planeG = null;
+function drawPlane(){ planeG = fitCanvas(plane); if (planeG) drawMoved(planeG, M, { handles: true }); }
+// Dragging the arrow tips
+let dragTip = null;
+function planePoint(e){ const r = plane.getBoundingClientRect(), G = planeG; return [(e.clientX - r.left - G.cx) / G.u, (G.cy - (e.clientY - r.top)) / G.u]; }
+const snap = v => { const s = Math.round(v * 20) / 20; return Math.abs(s - Math.round(s)) < 0.08 ? Math.round(s) : s; };
+plane.addEventListener('pointerdown', e => {
+  if (!planeG) return;
+  const r = plane.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+  const p1 = [planeG.cx + planeG.u * M.a, planeG.cy - planeG.u * M.c], p2 = [planeG.cx + planeG.u * M.b, planeG.cy - planeG.u * M.d];
+  const d1 = Math.hypot(x - p1[0], y - p1[1]), d2 = Math.hypot(x - p2[0], y - p2[1]);
+  const hit = Math.min(d1, d2) < 30 ? (d1 <= d2 ? 1 : 2) : 0;
+  if (!hit) return;
+  dragTip = hit; plane.setPointerCapture(e.pointerId); e.preventDefault();
+});
+plane.addEventListener('pointermove', e => {
+  if (!dragTip) return;
+  const [x, y] = planePoint(e).map(v => clamp(snap(v), -2.2, 2.2));
+  if (dragTip === 1){ M.a = x; M.c = y; } else { M.b = x; M.d = y; }
+  showM();
+});
+plane.addEventListener('pointerup', () => { dragTip = null; });
+plane.addEventListener('pointercancel', () => { dragTip = null; });
+// Typing or sideways-dragging the numbers
+for (const k in inputs){
+  const el = inputs[k];
+  el.addEventListener('input', () => { const v = parseFloat(el.value.replace(',', '.').replace('−', '-')); if (isFinite(v)){ M[k] = clamp(v, -3, 3); showM(el); } });
+  el.addEventListener('blur', () => { el.value = r2(M[k]); });
+  let sx = 0, sv = 0, moved = false, pid = null;
+  el.addEventListener('pointerdown', e => { if (document.activeElement === el) return; sx = e.clientX; sv = M[k]; moved = false; pid = e.pointerId; el.setPointerCapture(pid); e.preventDefault(); });
+  el.addEventListener('pointermove', e => {
+    if (pid !== e.pointerId) return;
+    const dx = e.clientX - sx; if (Math.abs(dx) > 3) moved = true;
+    if (moved){ M[k] = clamp(Math.round((sv + dx / 60) * 20) / 20, -3, 3); showM(); }
+  });
+  el.addEventListener('pointerup', e => { if (pid !== e.pointerId) return; pid = null; if (!moved){ el.focus(); el.select(); } });
+  el.addEventListener('pointercancel', () => { pid = null; });
+}
+$('#presets').addEventListener('click', e => {
+  const b = e.target.closest('.chip'); if (!b) return;
+  const p = b.dataset.p === 'rot' ? [Math.cos(Math.PI / 6), -Math.sin(Math.PI / 6), Math.sin(Math.PI / 6), Math.cos(Math.PI / 6)] : b.dataset.p.split(',').map(Number);
+  animateTo({ a: p[0], b: p[1], c: p[2], d: p[3] });
+});
+let mxAnim = 0;
+function animateTo(T){
+  cancelAnimationFrame(mxAnim);
+  const F = { ...M }, t0 = performance.now(), dur = REDUCED ? 0 : 450;
+  const step = now => {
+    const t = dur ? clamp((now - t0) / dur, 0, 1) : 1, e = 1 - Math.pow(1 - t, 3);
+    for (const k in M) M[k] = F[k] + (T[k] - F[k]) * e;
+    showM();
+    if (t < 1) mxAnim = requestAnimationFrame(step);
+  };
+  mxAnim = requestAnimationFrame(step);
+}
+
+/* ---------- SVD of the 2x2: M = Rot(phi) * diag(s1, s2) * Rot(theta) ----------
+   Closed form via the "E, F, G, H" split. s2 is signed: negative when the matrix mirrors. */
+function svd2(a, b, c, d){
+  const E = (a + d) / 2, F = (a - d) / 2, G = (c + b) / 2, H = (c - b) / 2;
+  const Q = Math.hypot(E, H), R = Math.hypot(F, G);
+  const a1 = Math.atan2(G, F), a2 = Math.atan2(H, E);
+  let theta = (a2 - a1) / 2, phi = (a2 + a1) / 2;
+  const wrap = x => { x = (x + Math.PI) % (2 * Math.PI); if (x < 0) x += 2 * Math.PI; return x - Math.PI; };
+  if (Math.abs(theta) > Math.PI / 2){ theta = wrap(theta + Math.PI); phi = phi + Math.PI; }   // keep the first turn small
+  return { s1: Q + R, s2: Q - R, theta, phi: wrap(phi) };
+}
+const rot = t => ({ a: Math.cos(t), b: -Math.sin(t), c: Math.sin(t), d: Math.cos(t) });
+const mul = (X, Y) => ({ a: X.a * Y.a + X.b * Y.c, b: X.a * Y.b + X.b * Y.d, c: X.c * Y.a + X.d * Y.c, d: X.c * Y.b + X.d * Y.d });
+const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+let svT = 300, svPlaying = 0;
+function drawSV(){
+  const G = fitCanvas(svplane); if (!G) return;
+  const { s1, s2, theta, phi } = svd2(M.a, M.b, M.c, M.d);
+  const t = svT / 100, p1 = ease(clamp(t, 0, 1)), p2 = ease(clamp(t - 1, 0, 1)), p3 = ease(clamp(t - 2, 0, 1));
+  const T = mul(rot(phi * p3), mul({ a: 1 + (s1 - 1) * p2, b: 0, c: 0, d: 1 + (s2 - 1) * p2 }, rot(theta * p1)));
+  drawMoved(G, T, { circle: true });
+  const deg = x => Math.round(x * 180 / Math.PI);
+  const turn = x => Math.abs(deg(x)) < 1 ? 'no turn needed' : `${Math.abs(deg(x))}&deg; ${x > 0 ? 'anticlockwise' : 'clockwise'}`;
+  $('#st1').innerHTML = `<span><b>Turn</b> ${turn(theta)}. This is V<sup>T</sup>.</span>`;
+  $('#st2').innerHTML = `<span><b>Stretch</b> &times;${r2(s1)} across and &times;${r2(Math.abs(s2))} up${s2 < 0 ? ', with a flip' : ''}. These are the singular values &sigma;<sub>1</sub> and &sigma;<sub>2</sub>: &Sigma;.</span>`;
+  $('#st3').innerHTML = `<span><b>Turn</b> ${turn(phi)}. This is U.</span>`;
+  const stage = t >= 3 ? 3 : Math.floor(t) + 1;
+  for (let i = 1; i <= 3; i++) $('#st' + i).classList.toggle('on', svPlaying ? i === stage : t >= 3 ? false : i === stage);
+  $('#svHint').textContent = t >= 3 ? 'all three steps: same as the matrix above' : t <= 0 ? 'start: nothing moved yet' : `step ${stage} of 3`;
+}
+$('#svT').addEventListener('input', e => { stopSV(); svT = +e.target.value; drawSV(); });
+function stopSV(){ cancelAnimationFrame(svPlaying); svPlaying = 0; $('#svIcon').setAttribute('d', 'M5 3l12 7-12 7z'); }
+$('#svPlay').onclick = () => {
+  if (svPlaying){ stopSV(); drawSV(); return; }
+  $('#svIcon').setAttribute('d', 'M5 3h3.5v14H5zM11.5 3H15v14h-3.5z');
+  let last = performance.now(); if (svT >= 300) svT = 0;
+  const step = now => {
+    svT = Math.min(300, svT + (now - last) / (REDUCED ? 8 : 16)); last = now;
+    $('#svT').value = Math.round(svT); drawSV();
+    if (svT < 300) svPlaying = requestAnimationFrame(step); else { stopSV(); drawSV(); }
+  };
+  svPlaying = requestAnimationFrame(step);
+};
+
+/* ---------- Save image: a card made on this device ---------- */
+async function makeCard(){
+  const W = 1200, H = 675, cnv = document.createElement('canvas'); cnv.width = W; cnv.height = H;
+  const c = cnv.getContext('2d');
+  try { await document.fonts.ready; } catch (_){}
+  const ink = '#15181c', ink2 = '#4b525b', ink3 = '#6c737c', acc = '#0e6b5c';
+  c.fillStyle = '#f6f7f8'; c.fillRect(0, 0, W, H);
+  const k = S.kRec ?? S.k, grey = S.mode === 'grey';
+  // Rebuild at k on a fresh rebuilder so the on-screen slider state is untouched
+  const rb = new Rebuilder(grey ? [S.dec.Y] : [S.dec.R, S.dec.G, S.dec.B]); rb.setK(k);
+  const tmp = document.createElement('canvas'); tmp.width = S.img.n; tmp.height = S.img.m;
+  const tc = tmp.getContext('2d'); rb.paint(tc, newImageData(tc, S.img.n, S.img.m));
+  const org = document.createElement('canvas'); paintChannels(org, S.img, grey);
+  const boxW = 340, boxH = 470, top = 100;
+  const rr = (x, y, w, h) => { c.beginPath(); if (c.roundRect) c.roundRect(x, y, w, h, 14); else c.rect(x, y, w, h); };
+  const fit = (src, x) => {
+    const sc = Math.min(boxW / src.width, boxH / src.height), w = src.width * sc, h = src.height * sc;
+    c.fillStyle = '#e9ecef'; rr(x, top, boxW, boxH); c.fill();
+    c.save(); rr(x, top, boxW, boxH); c.clip();
+    c.imageSmoothingQuality = 'high'; c.drawImage(src, x + (boxW - w) / 2, top + (boxH - h) / 2, w, h); c.restore();
+  };
+  fit(org, 56); fit(tmp, 412);
+  c.textBaseline = 'alphabetic';
+  c.font = '500 18px "Geist Mono", ui-monospace, monospace'; c.fillStyle = ink3;
+  c.fillText('original', 56, top + boxH + 34);
+  c.fillStyle = acc; c.fillText(`rank k = ${k}`, 412, top + boxH + 34);
+  c.font = '650 30px Geist, system-ui, sans-serif'; c.fillStyle = ink; c.fillText('Your face in 10 layers', 56, 58);
+  const tx = 800;
+  c.fillStyle = ink3; c.font = '500 20px Geist, system-ui, sans-serif';
+  c.fillText(S.kRec != null ? 'Recognisable at' : 'Rebuilt from', tx, 222);
+  c.fillStyle = acc; c.font = '650 84px Geist, system-ui, sans-serif'; c.fillText(`k = ${k}`, tx, 308);
+  c.fillStyle = ink; c.font = '600 30px Geist, system-ui, sans-serif';
+  c.fillText(`using ${pct(storeFrac(k))}`, tx, 368); c.fillText('of the numbers', tx, 406);
+  c.fillStyle = ink2; c.font = '400 20px Geist, system-ui, sans-serif';
+  c.fillText(`${pct(energyFrac(k))} of the energy kept`, tx, 454);
+  c.fillText(`${k} of ${S.r} layers${grey ? ', greyscale' : ''}`, tx, 484);
+  c.fillStyle = ink3; c.font = '500 16px "Geist Mono", ui-monospace, monospace'; c.textAlign = 'right';
+  c.fillText('paulbebear.com', W - 56, H - 28); c.textAlign = 'left';
+  return new Promise(res => cnv.toBlob(res, 'image/png'));
+}
+$('#saveBtn').onclick = async () => {
+  if (!S.ready) return;
+  const btn = $('#saveBtn'); btn.disabled = true;
+  try {
+    const blob = await makeCard(), k = S.kRec ?? S.k, name = `face-layers-k${k}.png`;
+    const file = new File([blob], name, { type: 'image/png' });
+    // On phones the share sheet is the way to put an image in the photo library. It stays on the device until you pick an app.
+    if (matchMedia('(pointer:coarse)').matches && navigator.canShare && navigator.canShare({ files: [file] })){
+      try { await navigator.share({ files: [file] }); return; } catch (err){ if (err && err.name === 'AbortError') return; }
+    }
+    const url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    toast('Saved ' + name);
+  } catch (err){ toast('Could not make the image on this browser.'); }
+  finally { btn.disabled = false; }
+};
+
+/* ---------- Tabs highlight (same as light-birthday) ---------- */
+{ const tabs = [...document.querySelectorAll('.tab')], secs = tabs.map(t => $(t.getAttribute('href')));
+  const io = new IntersectionObserver(es => { for (const e of es) if (e.isIntersecting){ const i = secs.indexOf(e.target); tabs.forEach((t, j) => t.classList.toggle('on', j === i)); const t = tabs[i]; t && t.parentElement.scrollTo({ left: t.offsetLeft - 16, behavior: 'smooth' }); } }, { rootMargin: '-45% 0px -50% 0px' });
+  secs.forEach(s => io.observe(s)); }
+
+/* ---------- Resize and theme ---------- */
+let rsT = 0;
+addEventListener('resize', () => { clearTimeout(rsT); rsT = setTimeout(() => { drawChart(); drawPlane(); drawSV(); }, 80); });
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { readTheme(); drawChart(); drawPlane(); drawSV(); if (S.ready){ buildTiles(); setStack(S.stackJ || 1); } });
+
+/* ---------- Start ---------- */
+startWorker();
+showM();
+loadSample('pearl');
+</script>
+</body>
+</html>

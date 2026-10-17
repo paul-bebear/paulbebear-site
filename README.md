@@ -14,6 +14,7 @@ archive/index.html      full list of linked work (nav: Archive)
 labour-economics/index.html  Labour economics study guide
 light-birthday/index.html  Your light-birthday stars (stars whose light left them when you were born; data build in light-birthday/build/)
 run-the-grid/index.html  Run the grid (balance a real Spanish grid day, replay the 28 April 2025 Iberian blackout; research brief in RESEARCH.md, REE data build in build/)
+face-layers/index.html  Your face in 10 layers (SVD of a photo, in the browser; the SVD runs in face-layers/svd-worker.js, sample paintings in face-layers/samples/)
 assets/                 thumbnails (1200x750 webp)
 ```
 
@@ -34,6 +35,7 @@ Each piece has one source of truth. The site copy is the published version.
 | Not-so-cosmic cycles | built from scripts in a Claude session (template, Gallup/NBER/Damodaran data, logo geometry); the page embeds all data. Glossary terms live in the GLOSS object in the script | /not-so-cosmic-cycles/ |
 | Your light-birthday stars | `light-birthday/index.html` itself. Star data is one embedded line, rebuilt by `light-birthday/build/` (see its README) | /light-birthday/ |
 | Run the grid | `run-the-grid/index.html` itself. REE data is one embedded line, rebuilt by `run-the-grid/build/build.py`; facts trace to `run-the-grid/RESEARCH.md` | /run-the-grid/ |
+| Your face in 10 layers | `face-layers/index.html` itself, plus `svd-worker.js` (a port of JAMA's public-domain SVD). No data build: everything is computed from the image in the browser | /face-layers/ |
 
 When a piece changes: replace its `index.html` here, refresh the thumbnail if the top of the page changed, commit, push. Vercel redeploys in about a minute. URLs never change.
 
