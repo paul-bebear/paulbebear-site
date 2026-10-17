@@ -198,6 +198,34 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 .feed li button:hover{color:var(--ink)}
 
 
+
+/* Basics primer */
+.skip{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font:500 .9rem var(--sans);color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent-mid)}
+.skip:hover{border-bottom-style:solid}
+.ideas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:20px}
+.idea{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:16px 18px 18px;display:flex;flex-direction:column}
+.idea .n{font:600 .74rem var(--mono);color:var(--accent);letter-spacing:.06em;text-transform:uppercase}
+.idea h3{font-size:1.15rem;margin-top:4px}
+.idea p{font-size:.94rem;color:var(--ink-2);margin-top:8px}
+.idea p b{color:var(--ink);font-weight:600}
+.viz{margin-top:14px;border:1px solid var(--grid);border-radius:10px;background:var(--bg);padding:10px 12px}
+.viz svg{display:block;width:100%;height:auto}
+.viz svg text{font-size:11px;fill:var(--ink-2)}
+.viz svg .sm{font-size:10px;fill:var(--ink-3)}
+.viz .ctl{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin-top:8px;font-size:.84rem;color:var(--ink-2)}
+.viz .ctl input[type=range]{flex:1;min-width:140px}
+.viz .ro{border:0;padding:0;font:600 .9rem var(--mono);color:var(--ink);white-space:nowrap}
+.fvv{margin-top:16px;background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:6px 18px 10px;overflow-x:auto}
+.fvv table{width:100%;border-collapse:collapse;font-size:.92rem}
+.fvv th,.fvv td{text-align:left;padding:9px 10px 9px 0;border-bottom:1px solid var(--grid);vertical-align:top;color:var(--ink-2)}
+.fvv tr:last-child td{border-bottom:0}
+.fvv th{color:var(--ink);font-size:.95rem}
+.fvv th:nth-child(2){color:var(--accent)}
+.fvv th:nth-child(3){color:var(--warn)}
+.fvv td:first-child{color:var(--ink-3);font-size:.84rem;width:22%}
+.next{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px}
+@media (max-width:760px){ .ideas{grid-template-columns:1fr} .fvv{padding:4px 12px 8px} .fvv table{font-size:.84rem} .fvv td:first-child{width:24%} }
+
 /* Level 1 game */
 .game{margin-top:18px;background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--shadow);padding:14px;position:relative}
 .gbar{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center}
@@ -434,8 +462,8 @@ footer .coffee:hover{border-color:var(--ink-3)}
     </div>
     <p class="lede">At 12:33 on <b>28 April 2025</b>, Spain and Portugal went dark in seconds. A power grid has to match supply and demand every second, and hold its <button class="t" data-k="voltage">voltage</button> in a narrow band while it does it. Can you keep the lights on?</p>
     <div class="cta">
-      <a class="btn" href="#day" id="ctaPlay">Can you keep the lights on?</a>
-      <a class="btn ghost" href="#replay">Skip to the blackout</a>
+      <a class="btn" href="#basics" id="ctaPlay">Can you keep the lights on?</a>
+      <a class="btn ghost" href="#day">Skip to the game</a>
     </div>
   </div>
   <figure class="herofig" style="margin:0">
@@ -448,6 +476,7 @@ footer .coffee:hover{border-color:var(--ink-3)}
 <nav class="tabs-bar" aria-label="Sections">
   <div class="wrap">
     <div class="tabs" id="tabs">
+      <a class="tab" href="#basics">Basics</a>
       <a class="tab" href="#day">Normal day</a>
       <a class="tab" href="#inertia">Inertia</a>
       <a class="tab" href="#voltage">Voltage</a>
@@ -463,6 +492,90 @@ footer .coffee:hover{border-color:var(--ink-3)}
 </nav>
 
 <main>
+
+<!-- BASICS -->
+<section class="panel wrap" id="basics">
+  <p class="kicker">Start here · two minutes</p>
+  <h2>The grid in six ideas</h2>
+  <p class="intro">Everything on this page rests on six ideas. None needs any maths. Each one has a small thing to tap or drag.</p>
+  <a class="skip" href="#day">Know this already? Skip to the game →</a>
+  <div class="ideas">
+
+    <article class="idea">
+      <span class="n">Idea 1</span>
+      <h3>Supply must match demand, every second</h3>
+      <p>The wires store almost nothing. Every second, power stations must produce exactly what homes, offices and factories use. On a normal spring day, peninsular Spain used between <b>20 and 32 GW</b> (a gigawatt is 1,000 megawatts, about what one large power station makes). <a class="src" href="#s-ree-data">REE data</a></p>
+      <div class="viz">
+        <svg id="b1" viewBox="0 0 320 120" role="img" aria-label="A seesaw with generation on one side and demand on the other"></svg>
+        <div class="ctl"><span>Generation</span><input type="range" id="b1g" min="23" max="31" step="0.1" value="25" aria-label="Generation, GW"><span class="ro num" id="b1v">25.0 GW</span></div>
+      </div>
+    </article>
+
+    <article class="idea">
+      <span class="n">Idea 2</span>
+      <h3>Frequency is the grid's heartbeat</h3>
+      <p>Alternating current swings back and forth <b>50 times a second</b>, and every big generator spins in step with it. Use more power than is produced and the generators slow down, so frequency falls. Produce too much and it rises. Normal is within <b>±0.2 Hz</b> of 50. <a class="src" href="#s-entsoe-fcr">ENTSO-E</a></p>
+      <div class="viz">
+        <svg id="b2" viewBox="0 0 320 120" role="img" aria-label="A spinning generator with its frequency readout"></svg>
+        <div class="ctl"><button class="btn ghost sm" type="button" id="b2d">Demand jumps</button><button class="btn ghost sm" type="button" id="b2s">Supply jumps</button><span class="ro num" id="b2v">50.00 Hz</span></div>
+      </div>
+    </article>
+
+    <article class="idea">
+      <span class="n">Idea 3</span>
+      <h3>Inertia: the grid's flywheel</h3>
+      <p>Spinning generators (nuclear, gas, hydro) store energy in their heavy rotors. When a plant suddenly trips, that stored energy slows the fall in frequency and buys seconds for reserves to react. <b>Solar panels and most wind turbines</b> connect through electronics and don't add any.</p>
+      <div class="viz">
+        <svg id="b3" viewBox="0 0 320 120" role="img" aria-label="A heavy flywheel and a light flywheel losing the same power"></svg>
+        <div class="ctl"><button class="btn ghost sm" type="button" id="b3go">Lose 1,000 MW</button><span class="sm" id="b3v" style="color:var(--ink-3)">Same loss, two real moments from REE's data.</span></div>
+      </div>
+    </article>
+
+    <article class="idea">
+      <span class="n">Idea 4</span>
+      <h3>Voltage is pressure, and it's local</h3>
+      <p>Frequency is one number for the whole grid. <b>Voltage differs from place to place</b>, like water pressure in different streets. It is pushed up or down by <button class="t" data-k="q">reactive power</button>: injecting it raises nearby voltage, absorbing it lowers it. Spain's main grid must stay between <b>380 and 435 kV</b>. <a class="src" href="#s-gov">GOV</a></p>
+      <div class="viz">
+        <svg id="b4" viewBox="0 0 320 130" role="img" aria-label="Three towns on one grid: the same frequency everywhere, different voltages"></svg>
+        <div class="ctl"><span>Town B</span><input type="range" id="b4q" min="-100" max="100" step="5" value="0" aria-label="Reactive power at town B: absorb to inject"><span class="sm" style="color:var(--ink-3)">absorb ← → inject</span></div>
+      </div>
+    </article>
+
+    <article class="idea">
+      <span class="n">Idea 5</span>
+      <h3>Protection: plants disconnect to save themselves</h3>
+      <p>Every plant and line has relays that disconnect it if voltage or frequency goes beyond set limits, to avoid damage. Plants must <b>ride through</b> disturbances up to those limits. The danger is a chain: if one disconnection makes things worse, the next plant goes, then the next. That's a <b>cascade</b>.</p>
+      <div class="viz">
+        <svg id="b5" viewBox="0 0 320 110" role="img" aria-label="A row of plants disconnecting one after another"></svg>
+        <div class="ctl"><button class="btn ghost sm" type="button" id="b5go">Push one plant over its limit</button><button class="iconbtn" type="button" id="b5r" aria-label="Reset"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4v5h5M4.5 9A6 6 0 1 1 6 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+      </div>
+    </article>
+
+    <article class="idea">
+      <span class="n">Idea 6</span>
+      <h3>Spain is wired into Europe</h3>
+      <p>Spain and Portugal are part of one synchronous grid with continental Europe, running at the same 50 Hz, through AC lines and a <button class="t" data-k="hvdc">DC link</button> to France, plus a link to Morocco. <a class="src" href="#s-gov">GOV</a> Europe's size steadies them. If the links are cut, Iberia becomes an <b>island</b> on its own. That happened at 12:33:21 on 28 April.</p>
+      <div class="viz">
+        <svg id="b6" viewBox="0 0 320 120" role="img" aria-label="Iberia connected to France and Morocco"></svg>
+        <div class="ctl"><button class="btn ghost sm" type="button" id="b6go" aria-pressed="false">Cut the links</button><span class="sm" id="b6v" style="color:var(--ink-3)">Connected: Europe shares any imbalance.</span></div>
+      </div>
+    </article>
+  </div>
+
+  <div class="fvv">
+    <table>
+      <thead><tr><th></th><th>Frequency</th><th>Voltage</th></tr></thead>
+      <tbody>
+        <tr><td>What it is</td><td>How fast the current swings back and forth</td><td>The electrical pressure on a line</td></tr>
+        <tr><td>Where</td><td>One number for the whole connected grid</td><td>Different at every substation</td></tr>
+        <tr><td>Set by</td><td>Real power: generation vs demand (MW)</td><td>Reactive power: injected vs absorbed (Mvar)</td></tr>
+        <tr><td>Normal</td><td>50 Hz, within ±0.2</td><td>380–435 kV on Spain's 400 kV grid</td></tr>
+        <tr><td>28 April</td><td>About 50 Hz until the last seconds</td><td><b style="color:var(--ink)">This is what failed first</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="next"><a class="btn" href="#day">Now try it: run a normal day →</a><a class="btn ghost" href="#replay">Or go straight to 28 April</a></div>
+</section>
 
 <!-- LEVEL 1 -->
 <section class="panel wrap" id="day">
@@ -1592,6 +1705,130 @@ wiDraw(1);
     raf = requestAnimationFrame(st);
   };
   draw(); addEventListener('resize', () => { if (!playing) draw(); });
+})();
+
+/* ---------- Basics primer ---------- */
+(function basics(){
+  const visible = new Set();
+  const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? visible.add(e.target.id) : visible.delete(e.target.id)));
+  ['b2', 'b3'].forEach(id => io.observe($('#' + id)));
+  // 1. Seesaw: demand fixed at 22 April 12:30, generation on the slider
+  const D1 = DATA.d22.dem[150] / 1000;
+  function b1(){
+    const g = +$('#b1g').value, d = g - D1, svg = $('#b1'); svg.innerHTML = '';
+    const ang = Math.max(-8, Math.min(8, -d * 3)), ok = Math.abs(d) < 0.3, hg = 8 + g * 0.9, hd = 8 + D1 * 0.9;
+    el('path', { d: 'M160 108 L146 84 L174 84 Z', fill: 'var(--ink-3)' }, svg);
+    const g1 = el('g', { transform: `rotate(${ang} 160 82)` }, svg);
+    el('rect', { x: 30, y: 78, width: 260, height: 6, rx: 3, fill: ok ? 'var(--accent)' : 'var(--warn)' }, g1);
+    el('rect', { x: 40, y: 78 - hg, width: 70, height: hg, rx: 6, fill: 'var(--c-pv)', opacity: .85 }, g1);
+    el('rect', { x: 210, y: 78 - hd, width: 70, height: hd, rx: 6, fill: 'var(--ink-3)', opacity: .7 }, g1);
+    el('text', { x: 75, y: 78 - hg - 6, 'text-anchor': 'middle' }, g1).textContent = 'generation';
+    el('text', { x: 245, y: 78 - hd - 6, 'text-anchor': 'middle' }, g1).textContent = 'demand ' + D1.toFixed(1);
+    el('text', { x: 160, y: 14, 'text-anchor': 'middle', fill: ok ? 'var(--accent)' : 'var(--warn)', 'font-weight': 600 }, svg).textContent = ok ? 'Balanced' : d > 0 ? `Surplus +${d.toFixed(1)} GW: frequency rises` : `Short ${Math.abs(d).toFixed(1)} GW: frequency falls`;
+    $('#b1v').textContent = g.toFixed(1) + ' GW';
+    $('#b1g').style.setProperty('--p', ((g - 23) / 8 * 100) + '%');
+  }
+  $('#b1g').oninput = b1; b1();
+  // 2. Spinning generator: a kick, then reserves bring it back
+  let f2 = 50, kick = 0, rot = 0, last2 = 0, run2 = false;
+  const go2 = () => { if (!run2 && !reduceMotion){ run2 = true; last2 = 0; requestAnimationFrame(b2); } };
+  function b2(now){
+    const dt = last2 ? Math.min(.05, (now - last2) / 1000) : 0; last2 = now;
+    kick *= Math.exp(-dt / 0.6); f2 += (kick - (f2 - 50) * 0.5) * dt; // toy: a short push, then a slow return
+    rot = (rot + dt * f2 * 7.2) % 360;                                // 50 Hz drawn as 1 turn per second-ish: slowed down to see
+    const svg = $('#b2'); svg.innerHTML = '';
+    el('circle', { cx: 70, cy: 60, r: 42, fill: 'none', stroke: 'var(--rule)', 'stroke-width': 10 }, svg);
+    const g = el('g', { transform: `rotate(${rot} 70 60)` }, svg);
+    for (let k = 0; k < 3; k++) el('line', { x1: 70, y1: 60, x2: 70 + 36 * Math.cos(k * 2.094), y2: 60 + 36 * Math.sin(k * 2.094), stroke: 'var(--accent)', 'stroke-width': 6, 'stroke-linecap': 'round' }, g);
+    el('circle', { cx: 70, cy: 60, r: 7, fill: 'var(--ink)' }, svg);
+    const x0 = 135, w = 175, col = Math.abs(f2 - 50) > 0.2 ? 'var(--warn)' : 'var(--accent)';
+    let d = ''; for (let i = 0; i <= 120; i++){ const x = x0 + w * i / 120; d += (i ? 'L' : 'M') + x.toFixed(1) + ',' + (60 - 28 * Math.sin(i / 120 * Math.PI * 2 * 3 * f2 / 50 + rot * Math.PI / 180)).toFixed(1); }
+    el('path', { d, fill: 'none', stroke: col, 'stroke-width': 2.5 }, svg);
+    el('text', { class: 'sm', x: x0, y: 112 }, svg).textContent = 'the current, drawn slowed down';
+    $('#b2v').textContent = f2.toFixed(2) + ' Hz';
+    if (run2 && visible.has('b2')) requestAnimationFrame(b2); else { run2 = false; last2 = 0; }
+  }
+  $('#b2d').onclick = () => { kick = -0.9; if (reduceMotion){ f2 = 49.75; b2(performance.now()); } else go2(); };
+  $('#b2s').onclick = () => { kick = 0.9; if (reduceMotion){ f2 = 50.25; b2(performance.now()); } else go2(); };
+  new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ visible.add('b2'); go2(); } })).observe($('#b2'));
+  b2(performance.now());
+  // 3. Two flywheels: the same loss on two real moments (same model as the inertia section)
+  const E = r => G.K * (G.H.nuc * r.nuc + G.H.gas * r.gas + G.H.other * r.other + G.H.st * r.st + G.H.hydro * r.hydro + G.H.pump * Math.abs(r.pump));
+  let iMax = 0, eMax = 0; for (let i = 0; i < 288; i++){ const e = E(at(DATA.d22, i)); if (e > eMax){ eMax = e; iMax = i; } }
+  const eLo = E(at(DATA.d28, 150)), rHi = 1000 * 50 / (2 * eMax), rLo = 1000 * 50 / (2 * eLo);
+  let t3 = 0, aH = 0, aL = 0, run3 = false, last3 = 0, loop3 = false;
+  const go3 = () => { if (!loop3 && !reduceMotion){ loop3 = true; last3 = 0; requestAnimationFrame(b3); } };
+  function b3(now){
+    const dt = last3 ? Math.min(.05, (now - last3) / 1000) : 0; last3 = now;
+    if (run3){ t3 = Math.min(1, t3 + dt); if (t3 >= 1) run3 = false; }
+    aH = (aH + dt * 220 * (1 - 0.6 * t3 * rHi)) % 360; aL = (aL + dt * 220 * (1 - 0.6 * t3 * rLo)) % 360;
+    const svg = $('#b3'); svg.innerHTML = '';
+    const wheel = (cx, r, w, lab, rocof, spin) => {
+      el('circle', { cx, cy: 52, r, fill: 'none', stroke: 'var(--ink-3)', 'stroke-width': w }, svg);
+      const g = el('g', { transform: `rotate(${spin} ${cx} 52)` }, svg);
+      el('line', { x1: cx, y1: 52, x2: cx, y2: 52 - r, stroke: 'var(--accent)', 'stroke-width': 3, 'stroke-linecap': 'round' }, g);
+      el('text', { x: cx, y: 104, 'text-anchor': 'middle' }, svg).textContent = lab;
+      el('text', { class: 'sm', x: cx, y: 117, 'text-anchor': 'middle' }, svg).textContent = t3 > 0 ? `−${(rocof * t3).toFixed(2)} Hz after ${t3.toFixed(1)} s` : `${(lab.startsWith('Heavy') ? eMax : eLo) / 1000 | 0} GW·s stored`;
+    };
+    wheel(85, 34, 14, 'Heavy: lots spinning', rHi, aH);
+    wheel(235, 34, 4, 'Light: mostly solar', rLo, aL);
+    if (loop3 && visible.has('b3')) requestAnimationFrame(b3); else { loop3 = false; last3 = 0; }
+  }
+  $('#b3go').onclick = () => { t3 = reduceMotion ? 1 : 0; run3 = true; if (reduceMotion) b3(performance.now()); else go3();
+    $('#b3v').textContent = `Heavy (22 April, ${hhmm(iMax)}) falls ${rHi.toFixed(2)} Hz/s; light (28 April, 12:30) ${rLo.toFixed(2)} Hz/s.`; };
+  new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ visible.add('b3'); go3(); } })).observe($('#b3'));
+  b3(performance.now());
+  // 4. Three towns: same frequency, different voltages (illustrative)
+  function b4(){
+    const q = +$('#b4q').value, svg = $('#b4'); svg.innerHTML = '';
+    const V = [404 + q * 0.04, 412 + q * 0.12, 408 + q * 0.05];
+    const xs = [45, 160, 275];
+    el('line', { x1: 45, x2: 275, y1: 70, y2: 70, stroke: 'var(--rule)', 'stroke-width': 4 }, svg);
+    el('rect', { x: 100, y: 4, width: 120, height: 22, rx: 11, fill: 'var(--accent-soft)' }, svg);
+    el('text', { x: 160, y: 19, 'text-anchor': 'middle', fill: 'var(--accent)', 'font-weight': 600 }, svg).textContent = '50.00 Hz everywhere';
+    xs.forEach((x, i) => {
+      const hi = V[i] > 435, mid = V[i] > 420;
+      el('circle', { cx: x, cy: 70, r: 14, fill: hi ? 'var(--bad-soft)' : mid ? 'var(--warn-soft)' : 'var(--surface)', stroke: hi ? 'var(--bad)' : mid ? 'var(--warn)' : 'var(--ink-3)', 'stroke-width': 2 }, svg);
+      el('text', { x, y: 74, 'text-anchor': 'middle', 'font-weight': 600 }, svg).textContent = 'ABC'[i];
+      el('text', { x, y: 104, 'text-anchor': 'middle', 'font-weight': 600, fill: hi ? 'var(--bad)' : mid ? 'var(--warn)' : 'var(--ink)' }, svg).textContent = V[i].toFixed(0) + ' kV';
+    });
+    el('text', { class: 'sm', x: 160, y: 124, 'text-anchor': 'middle' }, svg).textContent = 'illustrative: B moves most, its neighbours less';
+    $('#b4q').style.setProperty('--p', ((q + 100) / 2) + '%');
+  }
+  $('#b4q').oninput = b4; b4();
+  // 5. Cascade dominoes
+  let n5 = 0, tm5 = 0;
+  function b5(){
+    const svg = $('#b5'); svg.innerHTML = '';
+    for (let i = 0; i < 6; i++){
+      const x = 30 + i * 52, down = i < n5;
+      const g = el('g', { transform: down ? `rotate(70 ${x + 8} 78)` : '' }, svg);
+      el('rect', { x, y: 30, width: 16, height: 48, rx: 3, fill: down ? 'var(--bad)' : 'var(--accent)', opacity: down ? .75 : 1 }, g);
+    }
+    el('line', { x1: 10, x2: 310, y1: 79, y2: 79, stroke: 'var(--rule)', 'stroke-width': 2 }, svg);
+    el('text', { class: 'sm', x: 160, y: 102, 'text-anchor': 'middle' }, svg).textContent = n5 ? `${n5} disconnected: each one tips the next` : 'six plants, each with its own protection limit';
+  }
+  $('#b5go').onclick = () => { if (n5) return; clearInterval(tm5); n5 = 1; b5(); tm5 = setInterval(() => { n5++; b5(); if (n5 >= 6) clearInterval(tm5); }, reduceMotion ? 1 : 350); };
+  $('#b5r').onclick = () => { clearInterval(tm5); n5 = 0; b5(); };
+  b5();
+  // 6. Interconnection
+  let cut = false;
+  function b6(){
+    const svg = $('#b6'); svg.innerHTML = '';
+    el('rect', { x: 170, y: 6, width: 140, height: 46, rx: 10, fill: 'var(--accent-soft)', stroke: 'var(--accent-mid)' }, svg);
+    el('text', { x: 240, y: 26, 'text-anchor': 'middle', 'font-weight': 600 }, svg).textContent = 'Continental Europe';
+    el('text', { class: 'sm', x: 240, y: 41, 'text-anchor': 'middle' }, svg).textContent = cut ? 'still at 50 Hz' : 'one 50 Hz grid';
+    el('rect', { x: 20, y: 52, width: 120, height: 46, rx: 10, fill: cut ? 'var(--bad-soft)' : 'var(--accent-soft)', stroke: cut ? 'var(--bad)' : 'var(--accent-mid)' }, svg);
+    el('text', { x: 80, y: 72, 'text-anchor': 'middle', 'font-weight': 600 }, svg).textContent = 'Spain + Portugal';
+    el('text', { class: 'sm', x: 80, y: 87, 'text-anchor': 'middle' }, svg).textContent = cut ? 'now an island' : 'in step with Europe';
+    const link = (x1, y1, x2, y2, lab, lx, ly) => { el('line', { x1, y1, x2, y2, stroke: cut ? 'var(--bad)' : 'var(--accent)', 'stroke-width': 3, 'stroke-dasharray': cut ? '4 5' : '' }, svg); el('text', { class: 'sm', x: lx, y: ly }, svg).textContent = lab; };
+    link(140, 64, 172, 40, 'AC + DC to France', 178, 66);
+    link(80, 98, 80, 116, 'Morocco', 88, 114);
+    $('#b6v').textContent = cut ? 'Island: any imbalance is Iberia\'s alone, and it moves frequency fast.' : 'Connected: Europe shares any imbalance.';
+    $('#b6go').textContent = cut ? 'Reconnect' : 'Cut the links'; $('#b6go').setAttribute('aria-pressed', cut);
+  }
+  $('#b6go').onclick = () => { cut = !cut; b6(); };
+  b6();
 })();
 
 </script>
