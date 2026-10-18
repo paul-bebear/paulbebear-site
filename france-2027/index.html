@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Three plans for France</title>
+<meta name="description" content="Macron's government, Le Pen's RN and Mélenchon's LFI compared sector by sector, with what independent evaluators say about each. Status as of October 2026.">
+<meta property="og:title" content="Three plans for France">
+<meta property="og:description" content="Macron's government, Le Pen's RN and Mélenchon's LFI compared sector by sector, with what independent evaluators say about each.">
+<meta property="og:image" content="https://paulbebear.com/assets/og/france-2027.jpg">
+<meta property="og:url" content="https://paulbebear.com/france-2027/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Sibling of /bottom-wage/ and /half-line/: same tokens and type. One reading column: hero, sector switcher, tax calculator, energy costs, takes tested, unknowns, sources. */
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#14171c; --ink-2:#4b525d; --ink-3:#6b7380;
+  --rule:#dde1e7; --grid:#e9ecf0; --accent:#2a78d6; --accent-soft:#d6e6f9; --bar:#b9c2ce;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --f-data:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111418; --panel:#181c21; --ink:#eef0f3; --ink-2:#b4bac3; --ink-3:#8f97a2;
+  --rule:#2a3038; --grid:#232930; --accent:#3987e5; --accent-soft:#1d3554; --bar:#4a525d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111418; --panel:#181c21; --ink:#eef0f3; --ink-2:#b4bac3; --ink-3:#8f97a2;
+  --rule:#2a3038; --grid:#232930; --accent:#3987e5; --accent-soft:#1d3554; --bar:#4a525d; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55}
+.wrap{max-width:1040px;margin:0 auto;padding:28px 20px 72px}
+a{color:var(--accent);text-underline-offset:3px}
+h1,h2,h3{font-family:var(--f-display);margin:0;letter-spacing:-.01em;text-wrap:balance}
+h1{font-size:clamp(34px,5vw,52px);line-height:1.04;font-weight:700}
+h2{font-size:clamp(22px,3vw,28px);font-weight:700;line-height:1.15}
+h3{font-size:16px;font-weight:700}
+p{margin:0}
+.num{font-family:var(--f-data);font-variant-numeric:tabular-nums}
+.small{font-size:14px;color:var(--ink-2)}
+.home{display:inline-block;font:500 13px var(--f-data);color:var(--ink-3);text-decoration:none;margin-bottom:36px}
+.home:hover{color:var(--ink)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:40px;align-items:end;margin-bottom:56px}
+.lede{font-size:19px;color:var(--ink-2);margin-top:18px;max-width:42ch}
+.status{margin-top:22px;font:13px/1.5 var(--f-data);color:var(--ink-3);max-width:52ch}
+.cmp{background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:20px 20px 16px}
+.cmp h3{font:500 12px var(--f-data);color:var(--ink-3);margin-bottom:6px}
+.cmp table{width:100%;border-collapse:collapse}
+.cmp th,.cmp td{text-align:left;padding:10px 0;font-weight:400;vertical-align:top}
+.cmp td+td{padding-left:14px}
+.cmp tbody tr+tr td{border-top:1px solid var(--grid)}
+.cmp td:first-child{font:600 15px var(--f-body);width:30%}
+.cmp .big{display:block;font:500 20px var(--f-data);font-variant-numeric:tabular-nums}
+.cmp .sub{display:block;font:12px/1.45 var(--f-data);color:var(--ink-3);margin-top:3px}
+.cmp .warn{color:var(--accent)}
+.cmp-note{font-size:13px;color:var(--ink-3);margin-top:10px;line-height:1.45}
+
+/* sections */
+section{margin-top:72px}
+.intro{max-width:64ch;color:var(--ink-2);margin-top:12px}
+
+/* sector switcher */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-top:22px}
+.tabs button{flex:0 0 auto;scroll-snap-align:start;font:500 13px var(--f-data);padding:9px 14px;border:1px solid var(--rule);border-radius:8px;background:var(--panel);color:var(--ink-2);cursor:pointer;white-space:nowrap;transition:background-color .2s,color .2s}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tabs button:active{transform:translateY(1px)}
+.sector{margin-top:18px}
+.parties{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.party{background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:18px 18px 16px}
+.party h3{font-size:17px}
+.party .who{display:block;font:12px var(--f-data);color:var(--ink-3);margin-top:2px}
+.party ul{margin:12px 0 0;padding-left:18px;display:grid;gap:8px;font-size:15px;line-height:1.5}
+.verdict{margin-top:14px;border-left:3px solid var(--accent);padding:4px 0 4px 18px;display:grid;gap:8px}
+.verdict h3{font-size:15px}
+.verdict ul{margin:0;padding-left:18px;display:grid;gap:7px;font-size:15px;color:var(--ink-2);max-width:78ch}
+.verdict b,.party b{color:var(--ink);font-weight:600}
+.fade{animation:fade .35s cubic-bezier(.16,1,.3,1)}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* tax calculator */
+.calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:28px;margin-top:22px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:20px}
+.calc label{display:block;font:500 13px var(--f-data);color:var(--ink-2);margin-bottom:8px}
+.calc output.inc{display:block;font:500 30px var(--f-data);font-variant-numeric:tabular-nums;margin-bottom:10px}
+input[type=range]{width:100%;accent-color:var(--accent);margin:4px 0 2px}
+.ticks{display:flex;justify-content:space-between;font:11px var(--f-data);color:var(--ink-3)}
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.presets button{font:500 12px var(--f-data);padding:6px 10px;border:1px solid var(--rule);border-radius:8px;background:transparent;color:var(--ink-2);cursor:pointer}
+.presets button:hover{color:var(--ink);border-color:var(--ink-3)}
+.res{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:20px;padding-top:16px;border-top:1px solid var(--grid)}
+.res span{display:block;font:12px var(--f-data);color:var(--ink-3)}
+.res strong{display:block;font:500 19px var(--f-data);font-variant-numeric:tabular-nums;margin-top:3px}
+.res em{display:block;font:normal 12px var(--f-data);color:var(--ink-3);margin-top:2px}
+.res .up{color:var(--accent)}
+.chartbox h3{font:500 13px var(--f-data);color:var(--ink-2)}
+.chartbox svg{display:block;width:100%;height:auto;margin-top:10px;overflow:visible}
+.chartbox .axis{stroke:var(--rule)}
+.chartbox .zero{stroke:var(--ink-3);stroke-dasharray:3 3}
+.chartbox .line{fill:none;stroke:var(--accent);stroke-width:2}
+.chartbox .lab{font:13px var(--f-data);fill:var(--ink-3)}
+.chartbox .dot{fill:var(--accent);stroke:var(--panel);stroke-width:2}
+.chartbox .dotlab{font:500 14px var(--f-data);fill:var(--ink)}
+.calc-note{margin-top:14px;font-size:14px;color:var(--ink-2);max-width:70ch}
+
+/* energy bars */
+.bars{margin-top:22px}
+.brow{display:grid;grid-template-columns:200px minmax(0,1fr);gap:14px;align-items:center;padding:9px 0}
+.brow+.brow{border-top:1px solid var(--grid)}
+.brow b{font:600 15px var(--f-body);display:block}
+.brow span{display:block;font:12px/1.4 var(--f-data);color:var(--ink-3);margin-top:2px}
+.btrack{position:relative;height:26px;margin-right:64px}
+.bfill{position:absolute;left:0;top:3px;height:20px;border-radius:0 4px 4px 0;background:var(--bar);width:0;transition:width .7s cubic-bezier(.16,1,.3,1)}
+.bfill.nuc{background:var(--accent)}
+.bval{position:absolute;top:3px;line-height:20px;font:500 13px var(--f-data);margin-left:8px;white-space:nowrap;transition:left .7s cubic-bezier(.16,1,.3,1)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font:12px var(--f-data);color:var(--ink-3);margin-top:12px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:6px}
+.closest{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 32px;margin-top:22px}
+.closest div{display:grid;gap:4px;align-content:start}
+.closest p{font-size:15px;color:var(--ink-2)}
+
+/* takes */
+.takes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 40px;margin-top:20px}
+.take{padding:16px 0;border-top:1px solid var(--rule);display:grid;gap:6px;align-content:start}
+.take h3{font-size:16px}
+.take .v{font:500 12px var(--f-data);color:var(--accent)}
+.take p{font-size:15px;color:var(--ink-2)}
+
+/* unknowns, caveats, sources */
+.prose{max-width:68ch;margin-top:16px}
+.prose ul{margin:0;padding-left:20px;display:grid;gap:8px}
+.src{margin-top:18px;display:grid;gap:12px;max-width:76ch}
+.src p{font-size:14px;color:var(--ink-2)}
+.src b{color:var(--ink);font-weight:600}
+.related{margin-top:56px;padding-top:18px;border-top:1px solid var(--rule);font-size:16px}
+.stamp{margin-top:14px;font:12px var(--f-data);color:var(--ink-3)}
+
+@media (max-width:860px){
+  .parties{grid-template-columns:1fr}
+  .calc{grid-template-columns:1fr}
+  .closest{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  .wrap{padding:20px 16px 56px}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x proximity;margin:22px -16px 0;padding:0 16px 6px;scrollbar-width:thin}
+  .hero{grid-template-columns:1fr;gap:28px;margin-bottom:40px}
+  .brow{grid-template-columns:112px minmax(0,1fr);gap:10px}
+  .takes{grid-template-columns:1fr}
+  .res strong{font-size:16px}
+  section{margin-top:56px}
+}
+@media (prefers-reduced-motion: reduce){
+  .fade{animation:none}
+  .bfill,.bval{transition:none}
+}
+</style>
+<!-- seo, previews, analytics -->
+<link rel="canonical" href="https://paulbebear.com/france-2027/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Paul Bébéar">
+<link rel="alternate" type="application/rss+xml" title="Paul Bébéar" href="https://paulbebear.com/feed.xml">
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <a class="home" href="/">paulbebear.com</a>
+
+  <header class="hero">
+    <div>
+      <h1>Three plans for France, checked.</h1>
+      <p class="lede">Macron's government, Le Pen's RN and Mélenchon's LFI, sector by sector, next to what independent evaluators say.</p>
+      <p class="status">Status on 17 October 2026: Le Pen is eligible after her appeal and is the RN candidate, with Bardella as prospective Prime Minister. Mélenchon is LFI's candidate. Lecornu is Prime Minister.</p>
+    </div>
+    <div class="cmp" aria-label="The fiscal starting point for each camp">
+      <h3>What each plan says about the deficit</h3>
+      <table>
+        <tbody>
+          <tr><td>Government</td><td><span class="big">5.0% of GDP</span><span class="sub">2027 target. The public-finance watchdog (HCFP) calls the forecasts optimistic; 2026 is tracking 5.4%.</span></td></tr>
+          <tr><td>RN</td><td><span class="big">3.7% of GDP</span><span class="sub">2027 claim, from €125bn of savings. <span class="warn">No independent costing found.</span></span></td></tr>
+          <tr><td>LFI</td><td><span class="big">€179bn gap</span><span class="sub">Institut Montaigne on the 2024 version: €233bn of new spending against €54bn of new revenue, about 6 points of GDP.</span></td></tr>
+        </tbody>
+      </table>
+      <p class="cmp-note">Starting point: debt near 118% of GDP, an EU excessive-deficit procedure, and a 10-year bond yield at its highest since 2002.</p>
+    </div>
+  </header>
+
+  <section style="margin-top:0" aria-labelledby="sector-title">
+    <h2 id="sector-title">Sector by sector</h2>
+    <p class="intro">What is in force under the current government, what the RN and LFI propose, and what evaluators found. Pick a sector.</p>
+    <div class="tabs" role="tablist" aria-label="Sector" id="tabs"></div>
+    <div class="sector" id="sector" role="tabpanel" aria-live="polite"></div>
+  </section>
+
+  <section aria-labelledby="tax-title">
+    <h2 id="tax-title">Who pays more under LFI's 14 brackets?</h2>
+    <p class="intro">Income tax today has five brackets. LFI's January 2026 amendment has fourteen, from 5% to 70%. Move the slider to compare the tax on one tax share's taxable income.</p>
+    <div class="calc">
+      <div class="panel">
+        <label for="inc">Taxable income per tax share, per year</label>
+        <output class="inc" id="incOut" for="inc">€40,000</output>
+        <input type="range" id="inc" min="5000" max="500000" step="1000" value="40000" aria-describedby="incHelp">
+        <div class="ticks" aria-hidden="true"><span>€5k</span><span>€500k</span></div>
+        <p class="small" id="incHelp" style="margin-top:8px">A single person has one share; a couple has two, so halve the household's taxable income.</p>
+        <div class="presets" id="presets"></div>
+        <div class="res">
+          <div><span>Today</span><strong id="rCur"></strong><em id="mCur"></em></div>
+          <div><span>LFI scale</span><strong id="rLfi"></strong><em id="mLfi"></em></div>
+          <div><span>Difference</span><strong id="rDiff"></strong><em id="pDiff"></em></div>
+        </div>
+      </div>
+      <div class="panel chartbox">
+        <h3>LFI minus today, in euros of tax per share</h3>
+        <svg id="taxChart" viewBox="0 0 520 300" role="img" aria-label="Line chart of the tax difference between the LFI scale and today's scale, by taxable income per share. Negative below about 47,000 euros, rising steeply above 100,000 euros."></svg>
+      </div>
+    </div>
+    <p class="calc-note">The lines cross near <b>€47,000</b> per share, about €4,300 net a month for a single employee, close to LFI's own "below €4,000 net pays less" claim. Two narrow bands (around €10,500 to €12,400 and €27,000 to €31,000) pay slightly more under LFI, by under €100. Gross tax only: this ignores the low-income rebate (décote), family-quotient caps, the high-income surtaxes and LFI's separate plan to make the CSG social levy progressive.</p>
+  </section>
+
+  <section aria-labelledby="energy-title">
+    <h2 id="energy-title">The energy question has a price tag</h2>
+    <p class="intro">RTE, the grid operator, costed six ways to reach carbon neutrality. All six get there. The difference is cost: full system cost per year around 2060, against about €45bn today.</p>
+    <div class="panel bars" id="bars" aria-label="RTE scenario costs"></div>
+    <div class="legend">
+      <span><i style="background:var(--bar)"></i>100% renewable, no new reactors</span>
+      <span><i style="background:var(--accent)"></i>Renewables plus new nuclear</span>
+    </div>
+    <div class="closest">
+      <div><h3>Government</h3><p>Closest to N2 and N03: six EPR2 reactors confirmed and eight more under study, with solar targets cut in the final energy plan (PPE3, February 2026).</p></div>
+      <div><h3>RN</h3><p>Matches none of them. Every scenario, even N03, needs large renewables growth because new reactors cannot arrive before about 2037 while the existing fleet starts retiring in the 2040s. A wind and solar moratorium fails that test.</p></div>
+      <div><h3>LFI</h3><p>Closest to M0, the most demanding case: about €18bn a year more than N03, with large batteries, demand flexibility and build rates above the best European performances.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="takes-title">
+    <h2 id="takes-title">Common takes, tested</h2>
+    <p class="intro">Seven things people often say about these programmes, held against the evidence.</p>
+    <div class="takes" id="takes"></div>
+  </section>
+
+  <section aria-labelledby="unk-title">
+    <h2 id="unk-title">What isn't known yet</h2>
+    <div class="prose">
+      <ul>
+        <li><b>LFI's 2027 programme comes out on 6 November 2026.</b> It may change the tax scale (70% or 90% top rate), the NATO exit timing and retirement at 60.</li>
+        <li><b>The RN platform is not final.</b> Le Pen and Bardella disagree openly on pensions, and the financial-wealth tax has no published scale.</li>
+        <li><b>Le Pen has appealed to the Cour de cassation.</b> If elected, presidential immunity would suspend the firm part of her sentence, so she may campaign under an electronic tag.</li>
+        <li><b>The 2027 budget may not pass.</b> The finance committee rejected its revenue side 31 to 3 on 9 October. Moody's reviews France's rating on 23 October and S&amp;P on 27 November.</li>
+        <li><b>No causal French study exists</b> on whether the 1981 and 1997 regularisations attracted more migrants.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="cav-title">
+    <h2 id="cav-title">Caveats</h2>
+    <div class="prose">
+      <ul>
+        <li><b>The LFI costing is from 2024.</b> Montaigne's page labels its figures as yearly but also describes the €233bn as spread over three years. Read the gap as an order of magnitude, somewhere between €60bn and €180bn a year.</li>
+        <li><b>Bond-market figures</b> (the 10-year yield and the spread over German bonds, about 1.37 points on 16 October) come from market-data aggregators, not the Banque de France series.</li>
+        <li><b>Some RN details</b> (the integrated-command exit, the financial-wealth tax threshold) come from candidate-comparison sites, not an official RN document.</li>
+        <li><b>The tax calculator is my own model</b> of today's scale and LFI's amendment CF767. It is gross tax per share only.</li>
+        <li><b>Parties' own claims are shown as claims.</b> Where no independent costing exists, the page says so rather than filling the gap.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="src-title">
+    <h2 id="src-title">Sources</h2>
+    <div class="src">
+      <p><b>Programmes and costings.</b> <a href="https://www.institutmontaigne.org/legislatives-2024/nouveau-front-populaire/synthese/">Institut Montaigne, Nouveau Front Populaire costing</a> and its <a href="https://www.institutmontaigne.org/legislatives-2024/nouveau-front-populaire/augmenter-le-smic-a-1600-e-net/">€1,600 SMIC note</a>; <a href="https://www.assemblee-nationale.fr/dyn/17/amendements/2247/CION_FIN/CF767.pdf">LFI amendment CF767</a> (14-bracket scale); <a href="https://www.planetegrandesecoles.com/budget-marine-le-pen-2027-mesures-contre-budget-rn">RN 2027 counter-budget summary</a>; <a href="https://www.parlons-politique.fr/elections/programme-rn-2027-les-choix-de-bardella-pourraient-changer-les-retraites-limmigration-et-les-finances-publiques_25925/">RN programme and Bardella's choices</a>; <a href="https://lafranceinsoumise.fr/2026/01/19/le-groupe-parlementaire-de-la-france-insoumise-propose-de-sortir-de-lotan/">LFI's NATO-exit resolution, January 2026</a>.</p>
+      <p><b>Public finances.</b> <a href="https://www.hcfp.fr/liste-avis/avis-ndeg2026-5-lois-de-finances-2027">HCFP opinion 2026-5 on the 2027 budget</a>; <a href="https://ofce.github.io/budget2026/">OFCE on the 2026 budget</a>; <a href="https://www.legiwatch.fr/post/decryptage-plf-2027-2026-10-11">PLF 2027 decryption</a>; <a href="https://www.aft.gouv.fr/en/frances-credit-ratings">Agence France Trésor, credit ratings</a>; <a href="https://www.centraledesscpi.com/article/taux-oat-10-ans-seuil-crise-france-2026">10-year OAT level</a>; <a href="https://www.ideal-investisseur.fr/en/markets/oat-bund-spread.html">OAT-Bund spread</a>.</p>
+      <p><b>Wages and wealth.</b> <a href="https://www.strategie-plan.gouv.fr/files/files/Publications/2025/2025-12-12%20-%20Rapport%20SMIC/SMIC-RAPPORT-2025-11decembre13h30-complet-2.pdf">Groupe d'experts SMIC, December 2025</a>; <a href="https://www.ofce-legislatives2024.fr/analyses/pouvoir_achat.html">OFCE on a higher SMIC</a>; <a href="https://www.ifrap.org/emploi-et-politiques-sociales/laugmentation-du-smic-1-600-euros-detruirait-240-000-emplois">IFRAP estimate</a>; <a href="https://www.strategie-plan.gouv.fr/files/files/Publications/Rapport/fs-2023-rapport-isf-quatrieme_rapport_complet_17octobre_avis_0.pdf">France Stratégie, evaluation of the 2018 wealth-tax reform</a>; <a href="http://econ.lse.ac.uk/staff/clandais/cgi-bin/Articles/WealthMig_R.pdf">Jakobsen, Kleven, Kolsrud, Landais and Muñoz on wealth-tax migration</a>; <a href="https://www.nber.org/system/files/working_papers/w35854/w35854.pdf">NBER on Norway's 2022 reform</a>.</p>
+      <p><b>Pensions and services.</b> <a href="https://www.ifrap.org/retraite/suspension-de-la-reforme-des-retraites-20-milliards-de-dette-en-plus-en-2035">IFRAP on the pension-reform suspension and COR projections</a>; <a href="https://www.franceinfo.fr/economie/retraite/reforme-des-retraites/la-suspension-de-la-reforme-des-retraites-coutera-1-4-milliard-d-euros-en-2027-les-complementaires-sante-et-les-retraites-mis-a-contribution_7570171.html">franceinfo on its cost</a>; <a href="https://www.publicsenat.fr/actualites/politique/au-rn-la-reforme-des-retraites-divise-jordan-bardella-et-marine-le-pen-sur-le-programme-pour-la-presidentielle-2027">Public Sénat on the Le Pen and Bardella split</a>.</p>
+      <p><b>Immigration.</b> <a href="https://www.conseil-etat.fr/publications-colloques/decryptages/decryptage-le-pacte-europeen-sur-la-migration-et-l-asile-et-la-justice-administrative">Conseil d'État on the EU Migration Pact</a>; <a href="https://econ-papers.upf.edu/papers/1762.pdf">Elias, Monras and Vázquez-Grenno on Spain's 2005 regularisation</a>; <a href="https://www.cidob.org/en/publications/understanding-spains-extraordinary-regularisation-key-elements">CIDOB</a>; <a href="https://cepr.org/voxeu/columns/impact-regularising-migrant-workers">VoxEU on Italy</a>; Pinotti, "Clicking on heaven's door", American Economic Review, 2017; <a href="https://www.icmpd.org/content/download/48103/file/Regularisations%20in%20Europe%20Study%20on%20practices%20in%20the%20area%20of%20regularisation%20of%20illegally%20staying%20third-country%20nationals%20in%20the%20Member%20States%20%20EN.pdf">ICMPD REGINE study for the European Commission</a>.</p>
+      <p><b>Security.</b> <a href="https://www.senat.fr/rap/l17-132/l17-1325.html">Senate report on police de proximité</a>; <a href="https://www.cairn.info/la-frenesie-securitaire--9782707154323-page-77.htm">Mouhanna in La frénésie sécuritaire</a>; Cour des comptes, report on the quartiers de reconquête républicaine, April 2023.</p>
+      <p><b>Energy.</b> <a href="https://rte-futursenergetiques2050.com/">RTE, Futurs énergétiques 2050</a>; <a href="https://www.sfen.org/rgn/decryptage-benefices-mix-nucleaire-renouvelables-2050-mis-evidence-scenarios-rte/">SFEN on RTE's scenario costs</a>; <a href="https://www.sciences-et-democratie.net/expertise-et-decision/energie-et-nucleaire-32940-ppe-3-cap-2035-sans-vote-parlement">PPE3 adopted by decree</a>; <a href="https://www.europe1.fr/societe/sondage-73-des-francais-favorables-au-developpement-du-nucleaire-912583">CSA poll on nuclear, March 2026</a>.</p>
+      <p><b>Candidates.</b> <a href="https://www.rts.ch/info/monde/2026/article/condamnee-en-appel-marine-le-pen-pourra-se-presenter-en-2027-29296439.html">RTS on Le Pen's appeal ruling</a>; <a href="https://www.decideurs-juridiques.com/affaires-juridiques/64880-proces-du-rn-marine-le-pen-condamnee-en-appel-a-trois-ans-de-prison-dont-deux-avec-sursis-et-un-sous-bracelet-electronique.html">Décideurs juridiques on the sentence</a>.</p>
+    </div>
+    <p class="stamp">Status as of 17 October 2026. Compiled from programme documents and independent evaluations; parties' claims are labelled as claims.</p>
+  </section>
+
+  <p class="related">Related: <a href="/bottom-wage/">The Bottom Wage</a>, what a minimum wage buys in eight US cities, and <a href="/run-the-grid/">Run the grid</a>, how a power system stays balanced.</p>
+</div>
+
+<script>
+(function(){
+const SECTORS = [
+ {id:"tax", name:"Wages and tax",
+  gov:["<b>Minimum wage (SMIC)</b> €1,477.93 net a month since 1 June 2026, raised automatically with prices. No discretionary boost.","<b>Income tax</b> in 5 brackets (0, 11, 30, 41, 45%), plus a 20% minimum effective rate on very high incomes since 2026.","<b>Wealth tax</b> on real estate only, above €1.3M (IFI). A tax on holding companies passed in 2026 with a narrowed base.","<b>Zucman tax</b> (2% floor on fortunes over €100M) rejected in October 2025, and again on 16 October 2026."],
+  rn:["<b>No legislated SMIC rise.</b> Instead, cuts to employer contributions so firms can raise pay by up to 10%.","<b>Income-tax exemption for under-30s</b> and a full tax share from the second child.","<b>Replace the real-estate wealth tax</b> with a tax on financial wealth; the main home is out.","Voted against the Zucman tax. Cut VAT on energy from 20% to 5.5%."],
+  lfi:["<b>SMIC to €1,600 net</b> (+8.3% on today) and all wages indexed to inflation.","<b>14 income-tax brackets</b> from 5% to 70% (90% in earlier versions). See the calculator below.","<b>Restore a strengthened ISF</b>, the general wealth tax, with a climate component.","Backs the Zucman 2% minimum tax on fortunes over €100M."],
+  ev:["France's SMIC is already <b>62.5% of the median wage</b>, the highest ratio in Europe, propped up by about €75bn a year of employer-contribution relief (Groupe d'experts SMIC, 2025).","OFCE found a 12% SMIC rise costs only about 29,000 jobs net, but <b>only if the state pays ~€20bn more relief</b>. IFRAP, ignoring demand effects, puts it at 240,000.","Montaigne puts LFI's wealth tax at <b>€3.5bn a year</b>, against €15bn claimed.","Under the old ISF about 950 rich households left a year and 370 came back; under the real-estate tax, 260 left and 380 came back (France Stratégie). Most of the revenue leak in the €10M to €100M range is avoidance, not departures."]},
+ {id:"money", name:"Public finances",
+  gov:["<b>2026 deficit</b> revised to about 5.4% of GDP from the 5.0% voted.","<b>2027 target</b> 5.0%, from about €40bn of structural effort.","Debt near 118% of GDP. In an EU excessive-deficit procedure, due to exit by 2029.","The 2026 budget passed only after three uses of Article 49.3."],
+  rn:["<b>Claims €125bn of savings</b> and a 3.7% deficit in 2027.","Immigration savings put at €15bn in 2027, rising to €29bn by 2031.","Cut France's contribution to the EU budget and end renewable subsidies (about €5bn in year one)."],
+  lfi:["<b>Spending-led programme</b> financed by taxes on high incomes, wealth and large companies.","Institut Montaigne's costing of the 2024 version: €233bn of new spending and tax cuts, €54bn of new revenue.","Willing to disobey EU fiscal rules that block the programme."],
+  ev:["HCFP: the 2027 budget's ambition is a minimum given the alarming state of public finances, and debt keeps rising.","<b>No independent 2026 costing of the RN figures</b> was found. The immigration savings rely on national-priority rules that are probably unconstitutional without a constitutional referendum.","Montaigne's LFI gap: <b>€179bn, about 6.3 points of GDP</b>, excluding any feedback from growth.","Context: 10-year bond yield 4.90% on 1 October 2026; Moody's Aa3 with a negative outlook; Fitch and S&amp;P at A+. Every extra point of interest on €3.4tn of debt eventually costs about €34bn a year."]},
+ {id:"pensions", name:"Pensions and services",
+  gov:["<b>2023 reform suspended</b> until 1 January 2028: age frozen at 62 years 9 months, 170 quarters of contributions.","Cost about €1.9bn in 2027 (ministry), paid partly by a levy on supplementary health insurers.","No structural expansion of public services."],
+  rn:["<b>Le Pen: retirement between 60 and 62</b> depending on when people started work. Bardella prefers a contribution-length rule with some funded pensions.","Priority for French nationals in social housing; pensions re-indexed on inflation."],
+  lfi:["<b>Retirement at 60</b> with 40 years of contributions.","Free school meals, supplies and transport; more teachers and carers; 500,000 childcare places.","200,000 public homes a year for five years, and rent control nationwide."],
+  ev:["Montaigne: retirement at 60 costs about <b>€58bn a year</b>; free schooling about €13bn.","The pension system heads to about €15bn of deficit in 2035 even with the 2023 reform (COR, via IFRAP). Every camp is postponing the adjustment.","Staffing is the binding constraint, not money: <b>883 secondary-teaching posts went unfilled</b> in the 2025 exams, one in four of the maths posts.","200,000 social homes a year is about 1.7 times the 117,689 funded in 2025."]},
+ {id:"immig", name:"Immigration",
+  gov:["<b>2024 immigration law</b>, heavily cut back by the Conseil constitutionnel.","<b>EU Migration Pact</b> applied since 12 June 2026 by circular and decree: screening at external borders, Eurodac biometrics, a border procedure."],
+  rn:["<b>Constitutional referendum</b> on immigration.","<b>National priority</b> for jobs, social housing and benefits.","End birthright citizenship and family reunification; expel foreign offenders.","The Assembly voted in October 2025, on an RN motion, to denounce the 1968 Franco-Algerian agreement."],
+  lfi:["<b>Easier visas</b> and regularisation of undocumented workers, students and parents of schoolchildren.","A 10-year residence card as the default; repeal the 2024 law.","More housing for asylum seekers and a status for people displaced by climate disasters."],
+  ev:["Spain's 2005 regularisation legalised about 576,000 people. Payroll-tax revenue rose by about €4,000 a year per person and <b>there was no measurable magnet effect</b> (Elias, Monras and Vázquez-Grenno, 2025).","In Italy, legal status cut migrants' crime rate (Pinotti, 2017). A review of 43 EU programmes found only limited evidence of a pull effect (REGINE, 2009).","That evidence covers <b>one-off, job-linked regularisations</b>. An open-ended liberalisation has not been tested, and no programme sets ceilings or a housing plan for it.","The national-priority rules collide with the Constitution and EU law, hence the RN's referendum route."]},
+ {id:"security", name:"Security and society",
+  gov:["Intervention-led policing; the 2018 \"police de sécurité du quotidien\".","Cannabis illegal, with a €200 on-the-spot fine.","2021 law against \"separatism\"; abortion written into the Constitution in March 2024."],
+  rn:["More police, minimum sentences, a presumption of self-defence for officers.","Its 2022 programme proposed banning the headscarf in public space.","Against cannabis legalisation. Most RN MPs voted for the abortion amendment."],
+  lfi:["<b>Restore neighbourhood policing</b> (police de proximité); dissolve the BAC anti-crime squads and BRAV-M motorbike units; replace the police inspectorate with an independent body; ban rubber-bullet launchers in crowd control.","Legal cannabis under a state monopoly.","Voted against the separatism law; the strongest anti-discrimination line, including on anti-Muslim discrimination."],
+  ev:["The 1998 to 2003 neighbourhood-policing experiment gave mixed results and was cut short. The Cour des comptes (2023) names rigid national instructions as one cause of its failure.","LFI proposes a national doctrine change with independent oversight, <b>not locally controlled police</b>.","Antisemitism controversies around LFI: its refusal to call Hamas terrorist after 7 October 2023, its absence from the November 2023 march against antisemitism, Mélenchon calling antisemitism in France \"residual\", and a withdrawn poster compared to 1930s caricatures.","LFI says it condemns antisemitism and that criticism of Israel's government is being conflated with it. These are political controversies, not court findings against the party."]},
+ {id:"energy", name:"Energy",
+  gov:["<b>PPE3 energy plan</b> (decree, February 2026): six new EPR2 reactors, with a decision due on eight more.","Solar 48 GW by 2030; offshore wind 15 GW by 2035; solar ambitions cut from the draft."],
+  rn:["<b>Nuclear-centred mix</b> with a large reactor programme.","<b>Moratorium on new wind and solar</b>, gradual dismantling of wind farms, and an end to renewable subsidies."],
+  lfi:["<b>100% renewable by 2050</b>, exit nuclear, cancel EPR2.","State-led ecological planning, building renovation and public transport."],
+  ev:["In RTE's scenarios, keeping new nuclear is about <b>€10bn to €18bn a year cheaper</b> by 2060. See the chart below.","Even the most nuclear scenario needs large renewables growth before 2040, so a wind and solar freeze is as unsupported as a nuclear exit.","Flamanville's cost and delays are a real argument against EPR2, and LFI uses it.","Polling cuts against reading LFI's stance as voter-chasing: <b>70% of LFI sympathisers back nuclear</b> (CSA, March 2026). It comes from the alliance with the Greens and post-Fukushima politics."]},
+ {id:"inst", name:"Institutions",
+  gov:["Fifth Republic. A hung Assembly since the June 2024 dissolution.","Budgets passed by Article 49.3; the energy plan adopted by decree without a vote."],
+  rn:["Keep the Fifth Republic but add referendums, including on immigration.","Proportional representation with a majority bonus; a citizens' initiative referendum."],
+  lfi:["<b>A Sixth Republic</b> drafted by a constituent assembly and approved by referendum.","A weaker presidency, recall referendums for officials, citizens' initiative referendums, proportional representation."],
+  ev:["Changing the Constitution under Article 89 needs both chambers to agree. <b>The Senate, held by the right and centre, has an effective veto.</b>","Going round it with an Article 11 referendum, as de Gaulle did in 1962, is legally contested.","The same problem hits the RN's immigration referendum."]},
+ {id:"europe", name:"Europe and defence",
+  gov:["European strategic autonomy inside NATO; strong support for Ukraine.","Recognised Palestine in September 2025. Defence budget rising."],
+  rn:["National law above EU law; cut the EU contribution. No exit from the EU.","Leave NATO's integrated command (per secondary sources; check the final platform). Defence at 3% of GDP under Bardella.","Opposes sending troops to Ukraine."],
+  lfi:["<b>Leave NATO</b>, starting with the integrated command (resolution tabled January 2026).","Non-alignment; disobey EU rules that block the programme; oppose EU military integration.","Recognise Palestine and sanction Israel."],
+  ev:["In 1966 de Gaulle left the integrated command but <b>stayed in the Alliance</b> and its mutual-defence guarantee. France returned in 2009.","Full withdrawal (one year's notice under Article 13) has no precedent among NATO's founding members. It would cost France Article 5 cover and its say in allied planning.","France's nuclear deterrent is national and outside NATO's nuclear planning, so it is legally unaffected either way."]}
+];
+const PARTIES=[["gov","Government","Macron, PM Lecornu: in force"],["rn","RN","Le Pen, Bardella: proposed"],["lfi","LFI","Mélenchon: proposed"]];
+const tabs=document.getElementById("tabs"), box=document.getElementById("sector");
+function li(a){return "<ul>"+a.map(x=>"<li>"+x+"</li>").join("")+"</ul>";}
+function show(i,focus){
+  const s=SECTORS[i];
+  [...tabs.children].forEach((b,j)=>{b.setAttribute("aria-selected",j===i);b.tabIndex=j===i?0:-1;});
+  box.setAttribute("aria-labelledby","tab-"+s.id);
+  box.innerHTML='<div class="fade"><div class="parties">'+PARTIES.map(p=>'<div class="party"><h3>'+p[1]+'</h3><span class="who">'+p[2]+'</span>'+li(s[p[0]])+'</div>').join("")+'</div><div class="verdict"><h3>What evaluators say</h3>'+li(s.ev)+'</div></div>';
+  if(focus) tabs.children[i].focus();
+}
+SECTORS.forEach((s,i)=>{const b=document.createElement("button");b.type="button";b.role="tab";b.id="tab-"+s.id;b.textContent=s.name;b.addEventListener("click",()=>show(i));tabs.appendChild(b);});
+tabs.addEventListener("keydown",e=>{const cur=[...tabs.children].findIndex(b=>b.getAttribute("aria-selected")==="true");let n=null;if(e.key==="ArrowRight")n=(cur+1)%SECTORS.length;if(e.key==="ArrowLeft")n=(cur-1+SECTORS.length)%SECTORS.length;if(n!==null){e.preventDefault();show(n,true);}});
+show(0);
+
+/* tax */
+const CUR=[[11497,0],[29315,.11],[83823,.30],[180294,.41],[Infinity,.45]];
+const LFI=[[10434,0],[15639,.05],[20856,.10],[28152,.15],[32290,.20],[35415,.25],[38836,.275],[44849,.325],[62579,.40],[104291,.45],[146015,.50],[261173,.55],[400000,.65],[Infinity,.70]];
+function tax(x,s){let t=0,lo=0;for(const [hi,r] of s){if(x>lo)t+=(Math.min(x,hi)-lo)*r;lo=hi;}return t;}
+function marg(x,s){let lo=0;for(const [hi,r] of s){if(x<=hi)return r;lo=hi;}return s[s.length-1][1];}
+const fmt=n=>"€"+Math.round(n).toLocaleString("en-GB");
+const pct=r=>(Math.round(r*1000)/10)+"%";
+const inc=document.getElementById("inc"), out=document.getElementById("incOut");
+const svg=document.getElementById("taxChart"), W=520,H=300,L=58,R=14,T=14,B=34, XMAX=200000;
+const ymin=-1000,ymax=Math.ceil((tax(XMAX,LFI)-tax(XMAX,CUR))/5000)*5000;
+const sx=x=>L+(Math.min(x,XMAX)/XMAX)*(W-L-R), sy=y=>T+(1-(y-ymin)/(ymax-ymin))*(H-T-B);
+function drawChart(){
+  let d="";for(let x=0;x<=XMAX;x+=500){const y=tax(x,LFI)-tax(x,CUR);d+=(x?"L":"M")+sx(x).toFixed(1)+" "+sy(Math.max(ymin,Math.min(ymax,y))).toFixed(1);}
+  let g='<line class="axis" x1="'+L+'" x2="'+(W-R)+'" y1="'+(H-B)+'" y2="'+(H-B)+'"/>';
+  [0,50000,100000,150000,200000].forEach(v=>{g+='<text class="lab" x="'+sx(v)+'" y="'+(H-B+18)+'" text-anchor="middle">'+(v/1000)+'k</text>';});
+  [0,5000,10000,15000,20000].filter(v=>v<=ymax).forEach(v=>{g+='<text class="lab" x="'+(L-8)+'" y="'+(sy(v)+4)+'" text-anchor="end">'+(v?"+"+Math.round(v/1000)+"k":"0")+'</text>';});
+  g+='<line class="zero" x1="'+L+'" x2="'+(W-R)+'" y1="'+sy(0)+'" y2="'+sy(0)+'"/>';
+  g+='<path class="line" d="'+d+'"/><circle id="dot" class="dot" r="6"/><text id="dotlab" class="dotlab"></text>';
+  g+='<text class="lab" x="'+(L+6)+'" y="'+(T+10)+'">Above 0: pays more under LFI</text>';
+  svg.innerHTML=g;
+}
+function update(){
+  const x=+inc.value, c=tax(x,CUR), l=tax(x,LFI), d=l-c;
+  out.textContent=fmt(x);
+  document.getElementById("rCur").textContent=fmt(c);
+  document.getElementById("rLfi").textContent=fmt(l);
+  const rd=document.getElementById("rDiff");rd.textContent=(d>=0?"+":"-")+fmt(Math.abs(d));rd.className=d>0?"up":"";
+  document.getElementById("mCur").textContent="Marginal rate "+pct(marg(x,CUR));
+  document.getElementById("mLfi").textContent="Marginal rate "+pct(marg(x,LFI));
+  document.getElementById("pDiff").textContent=c>0?((d>=0?"+":"")+Math.round(d/c*100)+"% vs today"):"";
+  const dot=document.getElementById("dot"),lab=document.getElementById("dotlab");
+  const cx=sx(x), cy=sy(Math.max(ymin,Math.min(ymax,d)));
+  dot.setAttribute("cx",cx);dot.setAttribute("cy",cy);dot.style.display=x>XMAX?"none":"";
+  lab.textContent=x>XMAX?"Off chart: "+(d>=0?"+":"-")+fmt(Math.abs(d)):(d>=0?"+":"-")+fmt(Math.abs(d));
+  const right=cx>W-140;lab.setAttribute("x",x>XMAX?W-R:(right?cx-10:cx+10));lab.setAttribute("y",x>XMAX?T+12:cy-10);lab.setAttribute("text-anchor",(right||x>XMAX)?"end":"start");
+}
+const PRE=[["€25k",25000],["€47k",47000],["€100k",100000],["€250k",250000],["€500k",500000]];
+const pr=document.getElementById("presets");
+PRE.forEach(([t,v])=>{const b=document.createElement("button");b.type="button";b.textContent=t;b.addEventListener("click",()=>{inc.value=v;update();});pr.appendChild(b);});
+drawChart();inc.addEventListener("input",update);update();
+
+/* energy bars */
+const RTE=[["N03","Half nuclear: 14 EPR plus small reactors",59,1],["N2","Renewables plus a high nuclear relaunch",61,1],["N1","Renewables plus a low nuclear relaunch",66,1],["M23","100% renewable, large parks",71,0],["M0","100% renewable by 2050, fast nuclear exit",77,0],["M1","100% renewable by 2060, spread out",80,0]];
+const bars=document.getElementById("bars"), BMAX=85;
+bars.innerHTML=RTE.map(r=>'<div class="brow"><div><b>'+r[0]+'</b><span>'+r[1]+'</span></div><div class="btrack"><div class="bfill'+(r[3]?" nuc":"")+'" data-w="'+(r[2]/BMAX*100)+'"></div><span class="bval" data-l="'+(r[2]/BMAX*100)+'">€'+r[2]+'bn</span></div></div>').join("");
+const grow=()=>bars.querySelectorAll(".bfill").forEach((b,i)=>{b.style.width=b.dataset.w+"%";const v=bars.querySelectorAll(".bval")[i];v.style.left=v.dataset.l+"%";});
+bars.querySelectorAll(".bval").forEach(v=>v.style.left="0%");
+if("IntersectionObserver" in window){const io=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){grow();io.disconnect();}},{threshold:.3});io.observe(bars);}else grow();
+
+/* takes */
+const TAKES=[
+ ["“LFI's programme isn't as radical as it's portrayed.”","Partly right on pieces, wrong on the package","The tax scale is mild below about €100,000 per share, the SMIC rise is now about 8%, and the evidence on one-off regularisations is favourable. But the whole costs several points of GDP, financed in the euro with no central bank of its own. In 1981 to 1983 the adjustment came through three devaluations; today it would come through bond yields, ratings and the EU deficit procedure."],
+ ["“Renewables, yes. Leaving nuclear, no.”","Supported by RTE's numbers","Scenarios with new reactors are €10bn to €18bn a year cheaper by 2060 and carry less execution risk. The same numbers also cut against the RN's wind and solar freeze: every scenario needs both."],
+ ["“Local policing would work if it had guardrails.”","Reframe it","LFI is not proposing locally run police. The 1998 to 2003 experiment was national doctrine, gave mixed results and was stopped early. The guardrails that matter are independent oversight, body cameras and complaint data. Locally controlled forces carry more risk of capture, not less."],
+ ["“Leaving NATO is risky.”","Justified","The RN's integrated-command exit repeats 1966 and costs influence. LFI's full withdrawal goes further than any founding member has, while Europe's other militaries are integrating."],
+ ["“A Sixth Republic will never happen.”","Very likely right","The Senate holds a veto under Article 89. The only route round it, an Article 11 referendum, would trigger a constitutional fight."],
+ ["“Protect Muslims from discrimination, but vet who comes in.”","No programme offers both","LFI is strongest on anti-discrimination but sets no ceilings or vetting rules. The RN's guardrails work through discrimination (national priority, a headscarf ban). The only working vetting system is the EU Pact's border screening, which is under-resourced."],
+ ["“More immigration needs new towns.”","Right, and nobody proposes it","France's 1960s and 1970s villes nouvelles (Cergy, Évry, Marne-la-Vallée) had transport and jobs and did far better than the earlier grands ensembles, which became today's poorest suburbs. LFI's 200,000 homes a year has no new-town or transport plan; the RN wants fewer arrivals and to scrap social-housing quotas."]
+];
+document.getElementById("takes").innerHTML=TAKES.map(t=>'<div class="take"><h3>'+t[0]+'</h3><span class="v">'+t[1]+'</span><p>'+t[2]+'</p></div>').join("");
+})();
+</script>
+</body>
+</html>
