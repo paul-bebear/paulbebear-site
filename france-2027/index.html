@@ -203,6 +203,17 @@ h3{font-size:1.28rem;font-weight:620;line-height:1.2}
 #taxchart{width:100%;height:auto;display:block;margin-top:16px;overflow:hidden}
 #taxchart text{font-family:var(--mono);font-size:11px;fill:var(--ink-3)}
 
+/* RTE bars */
+.rte{margin-top:20px;background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:16px 18px}
+.rte .cap{font:500 12px var(--mono);color:var(--ink-3);margin-bottom:10px}
+.rterow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) 36px;gap:12px;align-items:center;padding:6px 0;font-size:.92rem;color:var(--ink-2)}
+.rterow b{color:var(--ink);font-family:var(--mono);font-weight:600;margin-right:4px}
+.rterow .bar{height:12px;background:var(--grid);border-radius:999px;overflow:hidden}
+.rterow .bar i{display:block;height:100%;background:var(--ink-3);border-radius:999px}
+.rterow .bar i.nuc{background:var(--ink)}
+.rterow .v{text-align:right;color:var(--ink);font-weight:600}
+@media (max-width:640px){.rterow{grid-template-columns:1fr 36px}.rterow .bar{grid-column:1/-1;grid-row:2}}
+
 /* Tables */
 .tblwrap{overflow-x:auto;margin-top:14px;background:var(--surface);border:1px solid var(--rule);border-radius:var(--r)}
 .tbl{width:100%;border-collapse:collapse;font-size:.92rem}
@@ -276,7 +287,7 @@ footer p+p{margin-top:8px}
     <h1>The 2027 fork</h1>
   </div>
   <p class="lede">Jean-Luc Mélenchon's <b class="lfi">La France insoumise</b> and Marine Le Pen's <b class="rn">Rassemblement national</b> both promise to undo much of what <b class="now">Emmanuel Macron</b> built. They want opposite things in its place. This page puts their programmes side by side, measures each against where France actually stands in autumn 2026, and checks the numbers.</p>
-  <p class="stamp">Updated 18 October 2026. LFI publishes its 2027 programme on 6 November 2026; until then this page uses the January 2025 edition of <i>L'Avenir en commun</i>.</p>
+  <p class="stamp">Updated 19 October 2026. LFI publishes its 2027 programme on 6 November 2026; until then this page uses the January 2025 edition of <i>L'Avenir en commun</i>.</p>
   <div class="legend" aria-label="Colour key">
     <span><i class="dot now"></i>Macron baseline: the law today</span>
     <span><i class="dot lfi"></i>LFI / Mélenchon</span>
@@ -343,7 +354,7 @@ footer p+p{margin-top:8px}
       <li><span class="y">Jan 2024</span><span class="w"><b>Immigration law</b>: <span>easier expulsions, tighter conditions on family migration, a narrow path to papers for workers in shortage jobs. The Conseil constitutionnel struck out a large share of it as unrelated riders.</span></span><span class="pill on">In force</span></li>
       <li><span class="y">Mar 2024</span><span class="w"><b>Abortion written into the Constitution</b>, <span>the first country to do so.</span></span><span class="pill on">In force</span></li>
       <li><span class="y">Feb 2026</span><span class="w"><b>Energy plan (PPE)</b>: <span>six new EPR2 reactors, existing reactors run to 60 years or more, slower onshore wind.</span></span><span class="pill on">In force</span></li>
-      <li><span class="y">Feb 2026</span><span class="w"><b>2026 budget</b>: <span>kept the 20% minimum tax rate on incomes above €250k (single) or €500k (couple) introduced in 2025, and added a 20% tax on luxury assets parked in holding companies. The 2% "Zucman" minimum tax on fortunes above €100M was rejected by the Assembly (228 to 172, Oct 2025) and the Senate.</span></span><span class="pill on">In force</span></li>
+      <li><span class="y">Feb 2026</span><span class="w"><b>2026 budget</b>: <span>kept the 20% minimum tax rate on incomes above €250k (single) or €500k (couple) introduced in 2025, and added a 20% tax on luxury assets parked in holding companies. The 2% "Zucman" minimum tax on fortunes above €100M was rejected by the Assembly (228 to 172, Oct 2025) and the Senate, and again by the Assembly on 16 October 2026, together with a return of the ISF.</span></span><span class="pill on">In force</span></li>
       <li><span class="y">Jun 2026</span><span class="w"><b>EU Pact on Migration and Asylum</b> <span>applies from 12 June: identity, health and security screening at the EU's external borders, and a fast border procedure.</span></span><span class="pill on">In force</span></li>
       <li><span class="y">Aug 2026</span><span class="w"><b>Assisted dying law</b>: <span>final vote 15 July (291 to 241); upheld with reservations by the Conseil constitutionnel on 14 August.</span></span><span class="pill on">In force</span></li>
     </ol>
@@ -418,8 +429,8 @@ footer p+p{margin-top:8px}
     <div class="cmp-row" data-t="money work">
       <h3>Minimum wage <span class="tag">Money · Work</span></h3>
       <div class="cmp-cells">
-        <div class="cell now"><div class="lab">Today</div><b>€1,823 gross, about €1,443 net</b> a month since January 2026 (+1.18%). Rises each year by formula: inflation for the poorest fifth plus half of real wage growth.</div>
-        <div class="cell lfi"><div class="lab">LFI</div><b>€1,600 net at once</b>, about +11%. Index <b>all</b> wages to inflation, public and private. Cap pay inside any firm at 20 times the lowest wage.</div>
+        <div class="cell now"><div class="lab">Today</div><b>€1,867 gross, about €1,478 net</b> a month since 1 June 2026, after two automatic rises this year (+1.18% in January, +2.41% in June when inflation passed 2%). No discretionary boost.</div>
+        <div class="cell lfi"><div class="lab">LFI</div><b>€1,600 net at once</b>, about +8%. Index <b>all</b> wages to inflation, public and private. Cap pay inside any firm at 20 times the lowest wage.</div>
         <div class="cell rn"><div class="lab">RN</div><b>No large SMIC rise.</b> Le Pen's 2022 plan instead exempted employers from contributions on 10% raises up to three times the SMIC. Zero VAT on 100 essential products (€3.5bn).</div>
       </div>
     </div>
@@ -602,11 +613,11 @@ footer p+p{margin-top:8px}
     <p class="prose muted small" style="margin-top:6px">Yearly income tax for a single employee with no children, by monthly net salary. Taxable income is estimated at about 11.2 times monthly net pay (net pay plus the non-deductible CSG, minus the 10% allowance for work expenses). Same simplifications as the calculator above.</p>
     <div class="tblwrap"><table class="tbl">
       <thead><tr><th>Net pay / month</th><th class="r now">Today</th><th class="r rn hide-sm">Le Pen, 30 and over</th><th class="r rn">Le Pen, under 30</th><th class="r lfi">Mélenchon</th><th class="r hide-sm">Mélenchon vs today</th></tr></thead>
-      <tbody><tr><td>€1,443 <span class="muted">(SMIC)</span><small class="tx">€16,100 taxable</small></td><td class="r">€0</td><td class="r hide-sm">€0</td><td class="r">€0</td><td class="r">€0</td><td class="r dn hide-sm">—</td></tr><tr><td>€2,000<small class="tx">€22,400 taxable</small></td><td class="r">€829</td><td class="r hide-sm">€829</td><td class="r zero">€0</td><td class="r">€575</td><td class="r dn hide-sm">−€254</td></tr><tr><td>€2,500<small class="tx">€28,000 taxable</small></td><td class="r">€1,723</td><td class="r hide-sm">€1,723</td><td class="r zero">€0</td><td class="r">€1,795</td><td class="r up hide-sm">+€72</td></tr><tr><td>€3,000<small class="tx">€33,600 taxable</small></td><td class="r">€3,184</td><td class="r hide-sm">€3,184</td><td class="r zero">€0</td><td class="r">€3,031</td><td class="r dn hide-sm">−€153</td></tr><tr><td>€4,000<small class="tx">€44,800 taxable</small></td><td class="r">€6,544</td><td class="r hide-sm">€6,544</td><td class="r zero">€0</td><td class="r">€6,364</td><td class="r dn hide-sm">−€180</td></tr><tr><td>€5,000<small class="tx">€56,000 taxable</small></td><td class="r">€9,904</td><td class="r hide-sm">€9,904</td><td class="r zero">€0</td><td class="r">€10,841</td><td class="r up hide-sm">+€937</td></tr><tr><td>€7,500<small class="tx">€83,900 taxable</small></td><td class="r">€18,274</td><td class="r hide-sm">€18,274</td><td class="r">€18,274</td><td class="r">€23,067</td><td class="r up hide-sm">+€4,793</td></tr><tr><td>€10,000<small class="tx">€111,900 taxable</small></td><td class="r">€29,680</td><td class="r hide-sm">€29,680</td><td class="r">€29,680</td><td class="r">€36,047</td><td class="r up hide-sm">+€6,367</td></tr><tr><td>€20,000<small class="tx">€223,800 taxable</small></td><td class="r">€77,234</td><td class="r hide-sm">€77,234</td><td class="r">€77,234</td><td class="r">€95,886</td><td class="r up hide-sm">+€18,652</td></tr></tbody>
+      <tbody><tr><td>€1,478 <span class="muted">(SMIC)</span><small class="tx">€16,500 taxable</small></td><td class="r">€0</td><td class="r hide-sm">€0</td><td class="r">€0</td><td class="r">€0</td><td class="r dn hide-sm">—</td></tr><tr><td>€2,000<small class="tx">€22,400 taxable</small></td><td class="r">€829</td><td class="r hide-sm">€829</td><td class="r zero">€0</td><td class="r">€575</td><td class="r dn hide-sm">−€254</td></tr><tr><td>€2,500<small class="tx">€28,000 taxable</small></td><td class="r">€1,723</td><td class="r hide-sm">€1,723</td><td class="r zero">€0</td><td class="r">€1,795</td><td class="r up hide-sm">+€72</td></tr><tr><td>€3,000<small class="tx">€33,600 taxable</small></td><td class="r">€3,184</td><td class="r hide-sm">€3,184</td><td class="r zero">€0</td><td class="r">€3,031</td><td class="r dn hide-sm">−€153</td></tr><tr><td>€4,000<small class="tx">€44,800 taxable</small></td><td class="r">€6,544</td><td class="r hide-sm">€6,544</td><td class="r zero">€0</td><td class="r">€6,364</td><td class="r dn hide-sm">−€180</td></tr><tr><td>€5,000<small class="tx">€56,000 taxable</small></td><td class="r">€9,904</td><td class="r hide-sm">€9,904</td><td class="r zero">€0</td><td class="r">€10,841</td><td class="r up hide-sm">+€937</td></tr><tr><td>€7,500<small class="tx">€83,900 taxable</small></td><td class="r">€18,274</td><td class="r hide-sm">€18,274</td><td class="r">€18,274</td><td class="r">€23,067</td><td class="r up hide-sm">+€4,793</td></tr><tr><td>€10,000<small class="tx">€111,900 taxable</small></td><td class="r">€29,680</td><td class="r hide-sm">€29,680</td><td class="r">€29,680</td><td class="r">€36,047</td><td class="r up hide-sm">+€6,367</td></tr><tr><td>€20,000<small class="tx">€223,800 taxable</small></td><td class="r">€77,234</td><td class="r hide-sm">€77,234</td><td class="r">€77,234</td><td class="r">€95,886</td><td class="r up hide-sm">+€18,652</td></tr></tbody>
     </table></div>
     <div class="prose">
-      <p class="small muted" style="margin-top:10px">On narrow screens two columns are hidden: "Le Pen, 30 and over", which is identical to today, and the difference column. The under-30 column applies the RN exemption up to four times the SMIC, about €5,770 net a month. The RN hasn't said whether it phases out above that or stops at a cliff, so higher rows show today's tax.</p>
-      <p><b>Reading it.</b> Under Le Pen, an over-30 pays exactly what they pay today; the change is for under-30s, who would pay nothing up to about €5,770 net a month. Under Mélenchon, most people earning up to about €4,000 net pay a little less (€150–250 a year), someone on €2,500 pays about €70 more, and from about €4,200 net the bill rises quickly: about €940 more at €5,000 and €4,800 more at €7,500.</p>
+      <p class="small muted" style="margin-top:10px">On narrow screens two columns are hidden: "Le Pen, 30 and over", which is identical to today, and the difference column. The under-30 column applies the RN exemption up to four times the SMIC, about €5,910 net a month. The RN hasn't said whether it phases out above that or stops at a cliff, so higher rows show today's tax.</p>
+      <p><b>Reading it.</b> Under Le Pen, an over-30 pays exactly what they pay today; the change is for under-30s, who would pay nothing up to about €5,910 net a month. Under Mélenchon, most people earning up to about €4,000 net pay a little less (€150–250 a year), someone on €2,500 pays about €70 more, and from about €4,200 net the bill rises quickly: about €940 more at €5,000 and €4,800 more at €7,500.</p>
     </div>
   </div>
 
@@ -618,7 +629,7 @@ footer p+p{margin-top:8px}
       <li><b>Borrowing costs are the binding risk.</b> The deficit is 5.4% and the 10-year rate is near 4.8%. Each 0.1-point rise in that rate costs about €0.3bn in the first year and €3.2bn after nine years, as the debt rolls over. A programme whose revenue arrives later than its spending is betting that lenders believe the revenue will come.</li>
       <li><b>Spending leaks abroad.</b> France imports a large share of what households buy, so part of any boost becomes a trade deficit rather than French jobs. That is what happened in 1981–83, when Mitterrand raised the SMIC 10%, introduced retirement at 60 and nationalised banks: three devaluations later came the 1983 U-turn to austerity. Inside the euro there is no devaluation; the pressure would show up in bond spreads instead.</li>
       <li><b>The ECB backstop has conditions.</b> The ECB's tool for stopping a spread spiral (the TPI) requires a country to respect EU fiscal rules. LFI plans to disobey those rules.</li>
-      <li><b>The SMIC is already high.</b> France's minimum wage is among the highest in the OECD relative to the median wage, around 60%. Studies of past French increases found real job losses for low-skilled workers (Kramarz and Philippon, 2001). Montaigne costed the €1,600 SMIC at €3.5bn a year to the state, because employer contributions near the SMIC are subsidised.</li>
+      <li><b>The SMIC is already high.</b> It is 62.5% of the median wage, the highest ratio in Europe, and is propped up by about €75bn a year of employer-contribution relief (<a href="https://www.strategie-plan.gouv.fr/files/files/Publications/2025/2025-12-12%20-%20Rapport%20SMIC/SMIC-RAPPORT-2025-11decembre13h30-complet-2.pdf" rel="noopener">Groupe d'experts SMIC, 2025</a>). Estimates of the job cost of a rise of this size vary tenfold: OFCE found about 29,000 jobs lost, but only if the state pays roughly €20bn more in relief; iFRAP, ignoring demand effects, found 240,000. Older French evidence found real losses for low-skilled workers (Kramarz and Philippon, 2001).</li>
     </ul>
     <p><b>Verdict:</b> the direction is defensible; the scale and timing are the problem. Spending on the 2024 scale only works if the wealth taxes yield close to what is booked, and the evidence below suggests they would yield less.</p>
   </div>
@@ -634,7 +645,7 @@ footer p+p{margin-top:8px}
       <li><b>France's own record.</b> The official evaluation of the 2018 reform counted about 950 departures against 370 returns a year among wealth-tax payers in 2011–16. In 2020, under the property-only tax, it counted 220 departures against 380 returns. It found little measurable effect on investment from abolishing the ISF.</li>
       <li><b>Norway</b> saw a wave of wealthy emigrants after raising its wealth tax in 2022. How much it cost is still disputed.</li>
     </ul>
-    <p>Gabriel Zucman puts his 2% tax at about €20bn a year from some 1,800 households; opponents argue avoidance and departures would cut that sharply. The evidence suggests a wealth tax raises real money but less than its static estimate, and that design (no holding-company loopholes, an exit tax) matters more than the rate.</p>
+    <p>The same gap shows up in costings. LFI's 2024 programme counted about €15bn from a restored ISF; <b>Montaigne put it at €3.5bn a year</b>. Gabriel Zucman puts his 2% tax at about €20bn a year from some 1,800 households; opponents argue avoidance and departures would cut that sharply. The evidence suggests a wealth tax raises real money but less than its static estimate, and that design (no holding-company loopholes, an exit tax) matters more than the rate.</p>
   </div>
 
   <div class="test">
@@ -712,6 +723,18 @@ footer p+p{margin-top:8px}
   <p class="intro">France gets about two-thirds of its electricity from nuclear. Today's plan builds six EPR2 reactors and keeps the old ones running. Each opposition drops one half of the low-carbon mix.</p>
   <div class="sub prose">
     <p>The grid operator RTE's 2021 study <i>Futurs énergétiques 2050</i> modelled six paths to carbon neutrality. A 100% renewable path (M0) was technically possible but needed the fastest build-out of solar and wind in Europe, plus large storage, and was the most expensive: on Montaigne's reading of RTE's figures, about €18bn a year more than the cheapest, roughly half-nuclear path (N03). That is LFI's problem.</p>
+    </div>
+  <div class="rte" role="img" aria-label="RTE's six scenarios, full electricity-system cost per year around 2060: N03 59 billion euros, N2 61, N1 66, M23 71, M0 77, M1 80, against about 45 today.">
+    <p class="cap">RTE's six paths to carbon neutrality: full system cost per year around 2060, €bn (about €45bn today)</p>
+    <div class="rterow"><span class="nm"><b>N03</b> half nuclear: 14 EPRs plus small reactors</span><span class="bar"><i style="width:73.75%" class="nuc"></i></span><span class="v num">59</span></div>
+    <div class="rterow"><span class="nm"><b>N2</b> renewables plus a large nuclear relaunch</span><span class="bar"><i style="width:76.25%" class="nuc"></i></span><span class="v num">61</span></div>
+    <div class="rterow"><span class="nm"><b>N1</b> renewables plus a small nuclear relaunch</span><span class="bar"><i style="width:82.5%" class="nuc"></i></span><span class="v num">66</span></div>
+    <div class="rterow"><span class="nm"><b>M23</b> 100% renewable, large parks</span><span class="bar"><i style="width:88.75%"></i></span><span class="v num">71</span></div>
+    <div class="rterow"><span class="nm"><b>M0</b> 100% renewable by 2050, fast nuclear exit <span class="lfi">· closest to LFI</span></span><span class="bar"><i style="width:96.25%"></i></span><span class="v num">77</span></div>
+    <div class="rterow"><span class="nm"><b>M1</b> 100% renewable by 2060, spread out</span><span class="bar"><i style="width:100%"></i></span><span class="v num">80</span></div>
+    <p class="small muted" style="margin-top:10px">Darker bars include new reactors. Today's plan sits closest to N2 and N03. The RN matches none: every scenario, even N03, needs large wind and solar growth because new reactors can't arrive before the late 2030s. Figures as summarised by <a href="https://www.sfen.org/rgn/decryptage-benefices-mix-nucleaire-renouvelables-2050-mis-evidence-scenarios-rte/" rel="noopener">SFEN</a> from <a href="https://rte-futursenergetiques2050.com/" rel="noopener">RTE</a>.</p>
+  </div>
+  <div class="sub prose">
     <p>The RN's problem is the reverse. Its moratorium stops new wind and solar now, while no new EPR is expected before about 2038. Carbone 4 says the strategy "doesn't hold" for that reason: for a decade, demand from electric cars, heat pumps and industry would grow with no new supply. Both oppositions also promise lower bills: LFI through regulated prices and nationalisation, the RN through a VAT cut and a "national price".</p>
   </div>
   <div class="test">
@@ -762,6 +785,7 @@ footer p+p{margin-top:8px}
     </div>
     <div class="card prose">
       <h3>What the precedents say</h3>
+      <p><b>The legal route is narrow.</b> A constitutional change normally goes through article 89, where the Senate holds a veto. Going round it with an article 11 referendum would itself start a constitutional fight.</p>
       <p><b>Constituent assemblies are slow and often fail.</b> Chile rejected two drafts by referendum, in 2022 and 2023. Iceland's crowdsourced constitution of 2011 was never adopted. Two years of institutional limbo would overlap with the budget and bond-market pressures above.</p>
       <p><b>Recall works where thresholds are high.</b> California recalled a governor in 2003; Taiwan's 2025 mass recall of legislators failed at every vote. A low threshold produces permanent campaigning, while a high one makes recall rare. LFI hasn't published its threshold. The RN wants more referendums too, so recall is the one institutional idea the two share.</p>
     </div>
@@ -811,6 +835,7 @@ footer p+p{margin-top:8px}
     <li><span class="d">6 Nov 2026</span><span>LFI publishes the 2027 edition of its programme. Check the immigration chapter for numbers and the costing for the 2024 gap.</span></li>
     <li><span class="d">~26 Nov 2026</span><span>Deadline for Parliament on the 2027 budget. Another 49.3 or a censure motion would test the RN and the left.</span></li>
     <li><span class="d">Autumn 2026</span><span>The RN's pension reform and "capitalisation pillar", promised "in the coming weeks".</span></li>
+    <li><span class="d">23 Oct 2026</span><span>Moody's reviews France's rating (Aa3, negative outlook). S&amp;P follows on 27 November (A+).</span></li>
     <li><span class="d">By April 2027</span><span>The Cour de cassation ruling on Le Pen. If it goes against her, Bardella becomes the candidate.</span></li>
     <li><span class="d">Rolling</span><span>The 10-year bond spread. It is the market's running verdict on French public finances, and on whichever programme leads the polls.</span></li>
   </ul>
@@ -843,6 +868,11 @@ footer p+p{margin-top:8px}
     <li><a href="https://www.toutsurmesfinances.com/retraite/suspension-reforme-des-retraites.html" rel="noopener">Pension reform suspension</a></li>
     <li><a href="https://www.mayerbrown.com/en/insights/publications/2026/02/principales-mesures-issues-de-la-loi-de-finances-pour-2026" rel="noopener">Mayer Brown, 2026 finance law</a>; <a href="https://placement.meilleurtaux.com/placement-financier/actualites/2026-avril/flat-tax-a-31-4-ce-qui-change-depuis-janvier-2026.html" rel="noopener">flat tax at 31.4%</a></li>
     <li><a href="https://www.franceinfo.fr/economie/budget/budget-2026-les-deputes-rejettent-l-instauration-de-la-taxe-zucman-sur-les-hauts-patrimoines_7587392.html" rel="noopener">franceinfo, Zucman tax rejected</a>; <a href="https://www.publicsenat.fr/actualites/parlementaire/budget-2026-le-senat-rejette-a-nouveau-la-taxe-zucman" rel="noopener">Public Sénat, Senate vote</a></li>
+    <li><a href="https://www.info.gouv.fr/actualite/le-smic-revalorise-le-1er-juin-2026" rel="noopener">Government, SMIC rise of 1 June 2026</a>; <a href="https://www.strategie-plan.gouv.fr/files/files/Publications/2025/2025-12-12%20-%20Rapport%20SMIC/SMIC-RAPPORT-2025-11decembre13h30-complet-2.pdf" rel="noopener">Groupe d'experts SMIC, Dec 2025</a></li>
+    <li><a href="https://www.ofce-legislatives2024.fr/analyses/pouvoir_achat.html" rel="noopener">OFCE on a higher SMIC</a>; <a href="https://www.ifrap.org/emploi-et-politiques-sociales/laugmentation-du-smic-1-600-euros-detruirait-240-000-emplois" rel="noopener">iFRAP's 240,000 estimate</a>; <a href="https://www.institutmontaigne.org/legislatives-2024/nouveau-front-populaire/synthese/" rel="noopener">Montaigne, NFP measure by measure</a></li>
+    <li><a href="https://www.france24.com/fr/info-en-continu/20261016-budget-l-assembl%C3%A9e-rejette-la-taxe-zucman-sur-les-ultrariches" rel="noopener">France 24, Zucman tax rejected again (16 Oct 2026)</a></li>
+    <li><a href="https://www.aft.gouv.fr/en/frances-credit-ratings" rel="noopener">Agence France Trésor, credit ratings</a>; <a href="https://selectra.info/finance/actualites/marche/moody-note-france-23-octobre-credit-immobilier" rel="noopener">rating calendar</a></li>
+    <li><a href="https://www.strategie-plan.gouv.fr/files/files/Publications/Rapport/fs-2023-rapport-isf-quatrieme_rapport_complet_17octobre_avis_0.pdf" rel="noopener">France Stratégie, 2023 evaluation of the wealth-tax reform</a></li>
     <li><a href="https://www.ipp.eu/wp-content/uploads/2023/09/Note_IPP_92-OLD.pdf" rel="noopener">IPP note 92, "Which taxes do billionaires pay?" (2023)</a></li>
     <li><a href="https://www.nber.org/system/files/working_papers/w32153/w32153.pdf" rel="noopener">Jakobsen et al., wealth taxation and migration (NBER w32153)</a></li>
     <li><a href="https://people.unil.ch/mariusbrulhart/files/2024/07/FranceStratpres1706.pdf" rel="noopener">Brülhart, Swiss wealth-tax evidence</a>; <a href="https://halshs.archives-ouvertes.fr/halshs-04423923v1/file/WorldInequalityLab_WP2023_30_Behavioral-responses-to-wealth-taxation-in-Norway_Final.pdf" rel="noopener">Norway, behavioural responses</a></li>
@@ -861,6 +891,7 @@ footer p+p{margin-top:8px}
 
 <footer class="wrap">
   <p>Programmes are quoted from the parties' own texts where possible; positions marked "2022" come from Le Pen's last presidential programme and may change. Costings come from think tanks with known leanings, named each time. Nothing here is a voting recommendation.</p>
+  <p>Related: <a href="/bottom-wage/">The Bottom Wage</a>, what a minimum wage buys in eight US cities, and <a href="/run-the-grid/">Run the grid</a>, how a power system stays balanced.</p>
   <p>Paul Bébéar · <a href="/archive/">Archive</a> · <a href="/feed.xml">RSS</a></p>
 </footer>
 
