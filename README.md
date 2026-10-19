@@ -36,7 +36,7 @@ Each piece has one source of truth. The site copy is the published version.
 | Not-so-cosmic cycles | built from scripts in a Claude session (template, Gallup/NBER/Damodaran data, logo geometry); the page embeds all data. Glossary terms live in the GLOSS object in the script | /not-so-cosmic-cycles/ |
 | Your light-birthday stars | `light-birthday/index.html` itself. Star data is one embedded line, rebuilt by `light-birthday/build/` (see its README) | /light-birthday/ |
 | Run the grid | `run-the-grid/index.html` itself. REE data is one embedded line, rebuilt by `run-the-grid/build/build.py`; facts trace to `run-the-grid/RESEARCH.md` | /run-the-grid/ |
-| The 2027 fork | `france-2027/index.html` itself. Dated "Updated 18 October 2026"; refresh after LFI's 2027 programme (6 Nov 2026), the RN pension plan and the Cassation ruling on Le Pen | /france-2027/ |
+| The 2027 fork | `france-2027/index.html` itself. Dated "Updated 19 October 2026"; refresh after LFI's 2027 programme (6 Nov 2026), the RN pension plan and the Cassation ruling on Le Pen | /france-2027/ |
 | Your face in 10 layers | `face-layers/index.html` itself, plus `svd-worker.js` (a port of JAMA's public-domain SVD). No data build: everything is computed from the image in the browser | /face-layers/ |
 
 When a piece changes: replace its `index.html` here, refresh the thumbnail if the top of the page changed, commit, push. Vercel redeploys in about a minute. URLs never change.
