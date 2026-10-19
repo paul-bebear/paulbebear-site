@@ -200,8 +200,24 @@ h3{font-size:1.28rem;font-weight:620;line-height:1.2}
 .res .k{font:500 11.5px var(--mono);text-transform:uppercase;letter-spacing:.05em}
 .res .v{font:600 1.35rem var(--mono);margin-top:4px}
 .res .r{font-size:.84rem;color:var(--ink-3)}
-#taxchart{width:100%;height:auto;display:block;margin-top:16px}
+#taxchart{width:100%;height:auto;display:block;margin-top:16px;overflow:hidden}
 #taxchart text{font-family:var(--mono);font-size:11px;fill:var(--ink-3)}
+
+/* Tables */
+.tblwrap{overflow-x:auto;margin-top:14px;background:var(--surface);border:1px solid var(--rule);border-radius:var(--r)}
+.tbl{width:100%;border-collapse:collapse;font-size:.92rem}
+.tbl caption{caption-side:top;text-align:left;padding:12px 14px 4px;font:600 12px var(--mono);letter-spacing:.05em;text-transform:uppercase}
+.tbl th{font:500 11.5px var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);text-align:left;padding:8px 14px;border-bottom:1px solid var(--rule);white-space:nowrap}
+.tbl td{padding:7px 14px;border-bottom:1px solid var(--grid);color:var(--ink-2);white-space:nowrap}
+.tbl tr:last-child td{border-bottom:none}
+.tbl .r{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.tbl td.r{color:var(--ink)}
+.tbl td.up{color:var(--lfi)} .tbl td.dn{color:var(--ink-2)}
+.tbl .zero{color:var(--rn);font-weight:600}
+.tbl tr.hl td{background:var(--grid)}
+.tbl th{white-space:normal;vertical-align:bottom}
+.tbl small.tx{display:block;font:500 11px var(--mono);color:var(--ink-3)}
+.tbl th.now{color:var(--now)} .tbl th.lfi{color:var(--lfi)} .tbl th.rn{color:var(--rn)}
 
 /* Watch + sources */
 .watch{list-style:none;padding:0;margin-top:20px}
@@ -223,6 +239,10 @@ footer p+p{margin-top:8px}
 }
 @media (max-width:640px){
   body{font-size:16px}
+  .tbl .hide-sm{display:none}
+  .tbl th,.tbl td{padding:7px 6px}
+  .tbl{font-size:.84rem}
+  .tbl small.tx{font-size:10px}
   .who,.grid2{grid-template-columns:1fr}
   .tline li{grid-template-columns:64px minmax(0,1fr)}
   .tline li .pill{grid-column:2;justify-self:start}
@@ -408,7 +428,7 @@ footer p+p{margin-top:8px}
       <h3>Income tax <span class="tag">Money</span></h3>
       <div class="cmp-cells">
         <div class="cell now"><div class="lab">Today</div><b>Five brackets:</b> 0, 11, 30, 41, 45%. A 3–4% surcharge above €250k, and since 2025 a 20% minimum rate on the highest incomes.</div>
-        <div class="cell lfi"><div class="lab">LFI</div><b>Fourteen brackets, 0 to 70%.</b> A progressive CSG. Replace the family and marital quotients with a per-child tax credit. <a href="#calc">See what it does to a given income.</a></div>
+        <div class="cell lfi"><div class="lab">LFI</div><b>Fourteen brackets, 0 to 70%.</b> A progressive CSG. Replace the family and marital quotients with a per-child tax credit. <a href="#brackets">See the brackets and what each income pays.</a></div>
         <div class="cell rn"><div class="lab">RN</div><b>No income tax for workers under 30</b> earning up to four times the SMIC (€2.0bn). A full extra tax share from the second child. Claims €30bn of net income tax cuts over the term.</div>
       </div>
     </div>
@@ -554,7 +574,39 @@ footer p+p{margin-top:8px}
       <svg id="taxchart" viewBox="0 0 720 220" role="img" aria-label="Line chart of the yearly tax difference, LFI schedule minus today's, across taxable incomes from zero to 300,000 euros"></svg>
     </div>
     <div class="prose">
-      <p><b>What it shows.</b> For a single person, the schedule cuts tax below about €46,750 of taxable income, roughly €4,300 net a month, which is close to LFI's claim of "under €4,000". Two exceptions: a small rise (up to about €140 a year) between €27,000 and €31,250, where its 20–25% brackets start earlier than today's 30%, and steep rises above. At €100k the bill goes up about €5,500; at €500k, about €75,000. LFI's deputies cite <b>€5.2bn</b> of extra revenue (LexImpact simulator).</p>
+      <p><b>What it shows.</b> For a single person, the schedule cuts tax below about €46,750 of taxable income, roughly €4,200 net a month, which is close to LFI's claim of "under €4,000". Two exceptions: a small rise (up to about €140 a year) between €27,000 and €31,250, where its 20–25% brackets start earlier than today's 30%, and steep rises above. At €100k the bill goes up about €5,500; at €500k, about €75,000. LFI's deputies cite <b>€5.2bn</b> of extra revenue (LexImpact simulator).</p>
+    </div>
+  </div>
+
+
+  <div class="sub" id="brackets">
+    <h3>The brackets, three ways</h3>
+    <p class="prose muted small" style="margin-top:6px">Income tax rates per tax share (one share for a single person, two for a couple), applied to taxable income in euros a year. Each rate applies only to the slice of income inside its bracket.</p>
+    <div class="grid2" style="margin-top:6px">
+      <div>
+        <div class="tblwrap"><table class="tbl">
+          <caption><span class="now">Today</span> · and <span class="rn">Le Pen</span></caption>
+          <thead><tr><th>Taxable income</th><th class="r">Rate</th></tr></thead>
+          <tbody><tr><td>€0 – 11,600</td><td class="r">0%</td></tr><tr><td>11,600 – 29,579</td><td class="r">11%</td></tr><tr><td>29,579 – 84,577</td><td class="r">30%</td></tr><tr><td>84,577 – 181,917</td><td class="r">41%</td></tr><tr><td>above 181,917</td><td class="r">45%</td></tr></tbody>
+        </table></div>
+        <p class="note small" style="margin-top:12px"><b class="rn">Le Pen keeps today's five brackets.</b> The RN has not published a new schedule. Its changes are targeted: no income tax for workers under 30 earning up to four times the SMIC, a full extra tax share from the second child, and €30bn of net income tax cuts claimed over the term. Today's schedule also carries a 3–4% surcharge above €250k and a 20% minimum rate on the highest incomes.</p>
+      </div>
+      <div class="tblwrap" style="margin-top:14px"><table class="tbl">
+        <caption class="lfi">Mélenchon (LFI)</caption>
+        <thead><tr><th>Taxable income</th><th class="r">Rate</th></tr></thead>
+        <tbody><tr><td>€0 – 10,434</td><td class="r">0%</td></tr><tr><td>10,434 – 15,639</td><td class="r">5%</td></tr><tr><td>15,639 – 20,856</td><td class="r">10%</td></tr><tr><td>20,856 – 28,152</td><td class="r">15%</td></tr><tr><td>28,152 – 32,290</td><td class="r">20%</td></tr><tr><td>32,290 – 35,415</td><td class="r">25%</td></tr><tr><td>35,415 – 38,836</td><td class="r">27.5%</td></tr><tr><td>38,836 – 44,849</td><td class="r">32.5%</td></tr><tr><td>44,849 – 62,579</td><td class="r">40%</td></tr><tr><td>62,579 – 104,291</td><td class="r">45%</td></tr><tr><td>104,291 – 146,015</td><td class="r">50%</td></tr><tr><td>146,015 – 261,173</td><td class="r">55%</td></tr><tr><td>261,173 – 400,000</td><td class="r">65%</td></tr><tr><td>above 400,000</td><td class="r">70%</td></tr></tbody>
+      </table></div>
+    </div>
+
+    <h3 style="margin-top:30px">What a single person pays</h3>
+    <p class="prose muted small" style="margin-top:6px">Yearly income tax for a single employee with no children, by monthly net salary. Taxable income is estimated at about 11.2 times monthly net pay (net pay plus the non-deductible CSG, minus the 10% allowance for work expenses). Same simplifications as the calculator above.</p>
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>Net pay / month</th><th class="r now">Today</th><th class="r rn hide-sm">Le Pen, 30 and over</th><th class="r rn">Le Pen, under 30</th><th class="r lfi">Mélenchon</th><th class="r hide-sm">Mélenchon vs today</th></tr></thead>
+      <tbody><tr><td>€1,443 <span class="muted">(SMIC)</span><small class="tx">€16,100 taxable</small></td><td class="r">€0</td><td class="r hide-sm">€0</td><td class="r">€0</td><td class="r">€0</td><td class="r dn hide-sm">—</td></tr><tr><td>€2,000<small class="tx">€22,400 taxable</small></td><td class="r">€829</td><td class="r hide-sm">€829</td><td class="r zero">€0</td><td class="r">€575</td><td class="r dn hide-sm">−€254</td></tr><tr><td>€2,500<small class="tx">€28,000 taxable</small></td><td class="r">€1,723</td><td class="r hide-sm">€1,723</td><td class="r zero">€0</td><td class="r">€1,795</td><td class="r up hide-sm">+€72</td></tr><tr><td>€3,000<small class="tx">€33,600 taxable</small></td><td class="r">€3,184</td><td class="r hide-sm">€3,184</td><td class="r zero">€0</td><td class="r">€3,031</td><td class="r dn hide-sm">−€153</td></tr><tr><td>€4,000<small class="tx">€44,800 taxable</small></td><td class="r">€6,544</td><td class="r hide-sm">€6,544</td><td class="r zero">€0</td><td class="r">€6,364</td><td class="r dn hide-sm">−€180</td></tr><tr><td>€5,000<small class="tx">€56,000 taxable</small></td><td class="r">€9,904</td><td class="r hide-sm">€9,904</td><td class="r zero">€0</td><td class="r">€10,841</td><td class="r up hide-sm">+€937</td></tr><tr><td>€7,500<small class="tx">€83,900 taxable</small></td><td class="r">€18,274</td><td class="r hide-sm">€18,274</td><td class="r">€18,274</td><td class="r">€23,067</td><td class="r up hide-sm">+€4,793</td></tr><tr><td>€10,000<small class="tx">€111,900 taxable</small></td><td class="r">€29,680</td><td class="r hide-sm">€29,680</td><td class="r">€29,680</td><td class="r">€36,047</td><td class="r up hide-sm">+€6,367</td></tr><tr><td>€20,000<small class="tx">€223,800 taxable</small></td><td class="r">€77,234</td><td class="r hide-sm">€77,234</td><td class="r">€77,234</td><td class="r">€95,886</td><td class="r up hide-sm">+€18,652</td></tr></tbody>
+    </table></div>
+    <div class="prose">
+      <p class="small muted" style="margin-top:10px">On narrow screens two columns are hidden: "Le Pen, 30 and over", which is identical to today, and the difference column. The under-30 column applies the RN exemption up to four times the SMIC, about €5,770 net a month. The RN hasn't said whether it phases out above that or stops at a cliff, so higher rows show today's tax.</p>
+      <p><b>Reading it.</b> Under Le Pen, an over-30 pays exactly what they pay today; the change is for under-30s, who would pay nothing up to about €5,770 net a month. Under Mélenchon, most people earning up to about €4,000 net pay a little less (€150–250 a year), someone on €2,500 pays about €70 more, and from about €4,200 net the bill rises quickly: about €940 more at €5,000 and €4,800 more at €7,500.</p>
     </div>
   </div>
 
@@ -862,7 +914,7 @@ footer p+p{margin-top:8px}
     inc.max=parts===2?500000:300000;draw();upd()})});
   inc.addEventListener('input',upd);
 
-  var svg=document.getElementById('taxchart'),W=720,H=220,pl=48,pr=12,pt=14,pb=28;
+  var svg=document.getElementById('taxchart'),W=720,H=220,pl=48,pr=22,pt=22,pb=28;
   var NS='http://www.w3.org/2000/svg';
   function el(n,a,t){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(t!=null)e.textContent=t;svg.appendChild(e);return e}
   var marker,mline,X,Y;
@@ -871,7 +923,7 @@ footer p+p{margin-top:8px}
     W=Math.max(300,Math.round(svg.getBoundingClientRect().width)||720);H=W<520?230:220;svg.setAttribute('viewBox','0 0 '+W+' '+H);
     var maxI=+inc.max,pts=[],mn=0,mx=0;
     for(var I=0;I<=maxI;I+=maxI/360){var d=tax(I,parts,LFI)-tax(I,parts,NOW);pts.push([I,d]);if(d<mn)mn=d;if(d>mx)mx=d}
-    mx=Math.max(mx,1000);mn=Math.min(mn,-0.14*mx);
+    mx=Math.max(mx,1000)*1.1;mn=Math.min(mn,-0.14*mx);
     X=function(v){return pl+(v/maxI)*(W-pl-pr)};Y=function(v){return pt+(mx-v)/(mx-mn)*(H-pt-pb)};
     var step=mx>40000?20000:mx>10000?10000:2000;
     for(var g=Math.ceil(mn/step)*step;g<=mx;g+=step){el('line',{x1:pl,x2:W-pr,y1:Y(g),y2:Y(g),stroke:'var(--grid)'});el('text',{x:pl-6,y:Y(g)+4,'text-anchor':'end'},(g>0?'+':g<0?'−':'')+Math.abs(g/1000)+'k')}
@@ -881,7 +933,7 @@ footer p+p{margin-top:8px}
     var dpos='',dneg='';
     var path=pts.map(function(p,i){return (i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)}).join(' ');
     el('path',{d:path,fill:'none',stroke:'var(--lfi)','stroke-width':2.2,'stroke-linejoin':'round'});
-    el('text',{x:pl+8,y:pt+10},'↑ LFI pays more');
+    el('text',{x:pl+8,y:pt-6},'↑ LFI pays more');
     el('text',{x:pl+8,y:Y(0)+16},'↓ LFI pays less');
     mline=el('line',{x1:0,x2:0,y1:pt,y2:H-pb,stroke:'var(--ink-3)','stroke-dasharray':'3 3'});
     marker=el('circle',{r:5,fill:'var(--lfi)',stroke:'var(--surface)','stroke-width':2});
@@ -894,7 +946,7 @@ footer p+p{margin-top:8px}
     document.getElementById('rdiff').textContent=sgn(d);
     document.getElementById('rnowr').textContent=I?('average rate '+(a/I*100).toFixed(1)+'%'):'';
     document.getElementById('rlfir').textContent=I?('average rate '+(b/I*100).toFixed(1)+'%'):'';
-    document.getElementById('rdiffr').textContent=d===0?'no change':(d>0?'a year more under LFI, ':'a year less under LFI, ')+sgn(d/12)+' a month';
+    document.getElementById('rdiffr').textContent=d===0?'no change':(d>0?'more a year under LFI':'less a year under LFI')+' ('+sgn(d/12).replace(/^[+−]/,'')+' a month)';
     if(marker){marker.setAttribute('cx',X(I));marker.setAttribute('cy',Y(d));mline.setAttribute('x1',X(I));mline.setAttribute('x2',X(I))}
   }
   draw();upd();
