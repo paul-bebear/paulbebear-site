@@ -13,7 +13,7 @@ not-so-cosmic-cycles/index.html  Not-so-cosmic cycles (when beliefs and habits l
 light-birthday/index.html  Your light-birthday stars (stars whose light left them when you were born; data build in light-birthday/build/)
 run-the-grid/index.html  Run the grid (balance a real Spanish grid day, replay the 28 April 2025 Iberian blackout; research brief in RESEARCH.md, REE data build in build/)
 france-2027/index.html  The 2027 fork (LFI vs RN against the Macron baseline; programme texts, costings and the 14-bracket tax calculator are embedded in the page)
-face-layers/index.html  Your face in 10 layers (SVD of a photo, in the browser; the SVD runs in face-layers/svd-worker.js, sample paintings in face-layers/samples/)
+face-layers/index.html  Your face in 10 layers (SVD of a photo, in the browser; the SVD runs in face-layers/svd-worker.js, sample paintings in face-layers/samples/; #step-N opens the filming step mode, beat sheet in face-layers/VIDEO.md)
 assets/                 thumbnails (1200x750 webp); cv.webp and indexable.webp are screenshots of the live sites
 vercel.json             redirects: /cv to cv.paulbebear.com, /archive to /#work
 ```

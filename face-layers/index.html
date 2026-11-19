@@ -301,6 +301,168 @@ footer .coffee:hover{border-color:var(--ink-3)}
   .brk{grid-template-columns:repeat(2,68px)}
   .formula .sym{font-size:1.4rem}
 }
+
+/* ---------- Step mode and recording view, for filming ----------
+   Off unless the address ends in #step-N. The stage borrows the page's own visuals (moves the nodes in) and puts them
+   back on exit, so the page itself is unchanged. Sizes are in vmin through the root font size, so a 1920x1080 and a
+   1080x1920 recording get the same type size, big enough to read in a frame about 400px wide. */
+#stage{display:none}
+html.present{--z:1;font-size:max(15px,calc(2.4vmin * var(--z)))}
+html.present.filming{--z:1.22}
+html.present body{overflow:hidden;font-size:1rem}
+html.present #pop{z-index:70}
+html.present .toast{z-index:75}
+html.present #stage{position:fixed;inset:0;z-index:60;display:grid;background:var(--bg);color:var(--ink);outline:none;
+  --gap:max(12px,2.4vmin);padding:max(12px,2.6vmin) max(16px,3.6vmin);gap:var(--gap);
+  grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto auto;grid-template-areas:"head" "vis" "txt" "bar"}
+.st-head{grid-area:head;display:flex;align-items:center;gap:.7em;font:500 .56rem var(--mono);color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;min-height:1.6em}
+.st-head .st-aha{background:var(--warm-soft);color:var(--warm);padding:.2em .7em;border-radius:999px;font-weight:600}
+.st-vis{grid-area:vis;container-type:size;min-height:0;min-width:0;display:flex;align-items:center;justify-content:center;gap:var(--gap)}
+.st-txt{grid-area:txt;text-align:center}
+.st-cap{font-size:1.85rem;line-height:1.12;font-weight:650;letter-spacing:-.03em;text-wrap:balance;max-width:30ch;margin-inline:auto}
+.st-sub{margin:.5em auto 0;font-size:.56rem;line-height:1.4;color:var(--ink-3);max-width:70ch}
+.st-sub:empty{display:none}
+.st-bar{grid-area:bar;display:flex;align-items:center;justify-content:center;gap:.5em;flex-wrap:wrap;font-size:.6rem}
+.st-bar .grow{flex:1}
+.st-b{font:500 1em var(--sans);height:2.4em;min-width:2.4em;padding:0 1em;border-radius:999px;border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.4em;white-space:nowrap}
+.st-b:hover{color:var(--ink);border-color:var(--ink-3)}
+.st-b.go{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.st-b[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.st-b:disabled{opacity:.4;cursor:default}
+.st-count{font:500 1em var(--mono);color:var(--ink-2);min-width:4.5em;text-align:center}
+.st-keys{font:500 .9em var(--mono);color:var(--ink-3)}
+html.filming .st-head,html.filming .st-bar{display:none}
+@media (orientation:portrait){
+  html.present #stage{grid-template-rows:auto auto minmax(0,1fr) auto;grid-template-areas:"head" "txt" "vis" "bar"}
+  html.present.filming #stage{padding-top:6vh;padding-bottom:10vh}   /* keep clear of the app chrome that covers a short */
+  .st-keys{display:none}
+}
+@media (max-width:700px),(max-height:560px){   /* a phone following a #step link: let tall visuals scroll rather than spill */
+  .st-vis{overflow:auto;align-items:safe center;justify-content:safe center}
+  #stage .mxgrid,#stage .stackrow{max-height:none}
+}
+@media (prefers-reduced-motion:no-preference){
+  .st-vis.in,.st-txt.in{animation:stIn .45s var(--ease) both}
+  @keyframes stIn{from{opacity:0;transform:translateY(10px)}}
+}
+
+/* Borrowed visuals: images take their height from --fh, set per layout from the stage's own size (cq units) */
+#stage .frame,#stage .mini{flex:none;aspect-ratio:var(--ar);height:var(--fh);width:auto;max-width:100%}
+#stage .frame canvas,#stage .mini canvas{width:100%;height:100%}
+#stage .frame .tag,#stage .mini .tag{font-size:.62rem;left:.5em;top:.5em;bottom:auto;padding:.2em .7em}
+#stage .busy{font-size:.7rem}
+.st-vis[data-l="one"]{--fh:min(100cqh,calc(100cqw / var(--ar)))}
+.st-vis[data-l="one"]>.frame .tag,.st-vis[data-l="one"]>.mini .tag{font-size:.9rem}
+.st-vis[data-l="two"]{--fh:min(100cqh,calc((100cqw - var(--gap)) / 2 / var(--ar)))}
+.st-vis[data-l="two"] #fRank .tag{font-size:1.25rem}
+.st-vis[data-l="side"]{--fh:min(100cqh,calc(46cqw / var(--ar)))}
+.st-vis[data-l="side"]>:last-child{flex:0 1 46cqw;max-height:100cqh;overflow:auto}
+@media (orientation:portrait){
+  .st-vis[data-l="two"],.st-vis[data-l="side"],.st-vis[data-l="noise"],.st-vis[data-l="cardchart"]{flex-direction:column}
+  .st-vis[data-l="two"] #fOrig{--fh:min(calc(34cqh - var(--gap)),calc(100cqw / var(--ar)))}
+  .st-vis[data-l="two"] #fRank{--fh:min(66cqh,calc(100cqw / var(--ar)))}
+  .st-vis[data-l="side"]{--fh:min(50cqh,calc(100cqw / var(--ar)))}
+  .st-vis[data-l="side"]>:last-child{flex:0 1 auto;width:100cqw;max-height:calc(50cqh - var(--gap))}
+}
+/* The 2x2 playgrounds */
+#stage .mxgrid{margin:0;width:100cqw;max-height:100cqh;grid-template-columns:min(100cqh,54cqw) minmax(0,1fr);align-items:center;gap:var(--gap)}
+#stage .plane{max-width:none}
+#stage .plane .hint{font-size:.56rem;left:.7em;top:.5em}
+#stage .mxside{gap:.6em}
+#stage .brk{grid-template-columns:repeat(2,3.4em);gap:.3em;padding:.3em .45em}
+#stage .brk input{height:2em;font-size:1.05rem}
+#stage .mat .what{max-width:24ch}
+#stage .box{padding:.6em .8em}
+#stage #mx1 .chips{gap:.3em}
+#stage #mx1 .chip{font-size:.62rem;padding:.35em .8em}
+#stage #mx2 .cap{display:none}
+#stage .steps{gap:.3em}
+#stage .steps li{grid-template-columns:1.4em minmax(0,1fr);gap:.5em;padding:.35em .5em}
+#stage .steps li::before{width:1.2em;height:1.2em}
+#stage .playrow{grid-template-columns:auto minmax(0,1fr);gap:.6em}
+#stage .play{width:2.2em;height:2.2em}
+#stage .play svg{width:.9em;height:.9em}
+.st-vis[data-key="move"] #mx1 .box{display:none}
+@media (orientation:portrait){
+  #stage .mxgrid{grid-template-columns:minmax(0,1fr);justify-items:center;align-content:center}
+  #stage .plane{width:min(100cqw,58cqh)}
+  #stage .mxside{width:100%}
+}
+/* The layers */
+#stage .stackrow{margin:0;width:100cqw;max-height:100cqh;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:var(--gap)}
+#stage .stackview{display:block;padding:.4em;--fh:min(calc(100cqh - 5.5rem),calc(30cqw / var(--ar)))}
+#stage .stackview .eq{font-size:.62rem;max-width:calc(var(--fh) * var(--ar));min-height:2.7em}
+#stage .stackrow>div:last-child{display:grid;justify-items:center}
+#stage .tiles{gap:.4em;width:min(100%,calc((100cqh - 4.4rem) / 2 * var(--ar) * 4))}
+#stage .tile{padding:.2em}
+#stage .tile .g{grid-template-columns:.4rem minmax(0,1fr);grid-template-rows:.4rem auto;gap:.1rem}
+#stage .tile .g .vv{height:.4rem}
+#stage .tile .g .uu{width:.4rem}
+#stage .tile .cap2{font-size:.5rem}
+#stage .tile .plus{display:none}
+#stage #stackRow .legend{font-size:.5rem;max-width:40em}
+@media (orientation:portrait){
+  #stage .stackrow{grid-template-columns:minmax(0,1fr);justify-items:center}
+  #stage .stackview{--fh:min(36cqh,calc(80cqw / var(--ar)))}
+  #stage .tiles{width:min(100cqw,calc((60cqh - 7rem) / 2 * var(--ar) * 4))}
+}
+/* The curve */
+#stage .chart{margin:0;position:relative;align-self:stretch;flex:1 1 0;min-height:0;min-width:0;padding:0}
+#stage .chart canvas{position:absolute;left:.5em;top:.5em;width:calc(100% - 1em);height:calc(100% - 1em)}
+.st-vis[data-l="chart"]{flex-direction:column;align-items:stretch}
+#stage #chartLeg{margin:0;justify-content:center;font-size:.6rem}
+#stage #chartLeg .key{width:1em;height:.2em;vertical-align:.25em}
+/* Noise */
+#stage .noisepair{margin:0;max-width:none;display:flex;gap:var(--gap)}
+.st-vis[data-l="noise"] .noisepair .frame{--fh:min(100cqh,calc(25cqw / var(--ar)))}
+#stage .stats{margin:0;grid-template-columns:minmax(0,1fr);width:min(34cqw,16em);gap:.5em}
+#stage .stats .stat:first-child{grid-column:auto}
+#stage .stat{padding:.6em .8em}
+#stage .stat .k{font-size:.6rem}
+#stage .stat .v{font-size:1.4rem}
+#stage .stat .s{display:none}
+@media (orientation:portrait){
+  .st-vis[data-l="noise"] .noisepair .frame{--fh:min(calc(100cqh - 8rem - var(--gap)),calc((100cqw - var(--gap)) / 2 / var(--ar)))}
+  #stage .stats{grid-template-columns:repeat(3,minmax(0,1fr));width:100cqw}
+}
+/* Cards */
+#stage .card{width:min(100cqw,38rem);max-height:100cqh;overflow:auto;padding:1em 1.3em}
+#stage .card .tagline{font-size:.62rem}
+#stage .card h3{font-size:1.45rem;margin-top:.15em}
+#stage .card p{font-size:.95rem;line-height:1.45}
+#stage .card .src{font-size:.56rem;margin-top:.8em}
+.st-vis[data-l="side"] .card{width:auto}
+.st-vis[data-l="cardchart"] .card{flex:0 1 42cqw;width:auto}
+@media (orientation:portrait){
+  .st-vis[data-l="cardchart"] .card{flex:none;width:100cqw;max-height:56cqh}
+  .st-vis[data-l="cardchart"] .chart{min-height:30cqh}
+}
+/* Rebuild meters */
+#stage .ctrl{padding:.8em 1em}
+#stage .ctrl .rec{display:none}
+#stage .kbig{font-size:1.9rem}
+#stage .kbig small{font-size:.7rem}
+#stage .seg button{font-size:.6rem}
+#stage .slide{grid-template-columns:1.8em minmax(0,1fr) 1.8em;gap:.4em}
+#stage .step{width:1.8em;height:1.8em;font-size:.8rem}
+#stage .ticks{font-size:.5rem;height:1.2em}
+#stage .meter .k{font-size:.7rem}
+#stage .meter .k b{font-size:.9rem}
+#stage .meter .s{font-size:.6rem}
+#stage .bar{height:.4em}
+/* The closing panel */
+#stage .pick{width:min(100cqw,40rem,calc((100cqh - 6rem) * 2 * var(--ar)));max-height:100cqh;overflow:auto;padding:.8em;gap:.7em}
+#stage .pick .mini{height:auto;width:100%}
+#stage .pick .lab{font-size:.9rem}
+#stage .pick .btn{height:2.2em;font-size:.7rem;padding:0 .9em}
+#stage .privacy{font-size:.6rem}
+#stage .privacy svg{width:1em;height:1em}
+#stage .chip{font-size:.6rem;padding:.35em .8em}
+#stage .samples .k,#stage .credit,#stage .status{font-size:.5rem}
+/* Recording: only the visual and its caption. Controls a visitor needs, the presenter doesn't. */
+html.filming #stage .plane .hint:not(#svHint),html.filming #stage #mx1 .chips,html.filming #stage .seg,html.filming #stage .stackview .row,
+html.filming #stage #stackRow .legend,html.filming #stage .slide .step{display:none}
+html.filming #stage .slide{grid-template-columns:minmax(0,1fr)}
 </style>
 <!-- seo, previews, analytics -->
 <link rel="canonical" href="https://paulbebear.com/face-layers/">
@@ -369,10 +531,10 @@ footer .coffee:hover{border-color:var(--ink-3)}
   <p class="intro">On the left, the picture as the computer sees it: <span id="dimsTxt">a grid of numbers</span>. On the right, the same picture rebuilt from only the first <b>k</b> layers. Drag the slider and watch it sharpen. Each layer costs one column of numbers, one row and one weight, so a few layers take far fewer numbers than the whole grid.</p>
   <div class="studio">
     <div class="duo">
-      <div class="frame"><canvas id="orig" width="205" height="256" role="img" aria-label="Original image, downscaled"></canvas><span class="tag">original</span></div>
-      <div class="frame"><canvas id="rank" width="205" height="256" role="img" aria-label="Image rebuilt from the first k layers"></canvas><span class="tag k" id="rankTag">k = 1</span><div class="busy" id="busy">Splitting into layers&hellip;</div></div>
+      <div class="frame" id="fOrig"><canvas id="orig" width="205" height="256" role="img" aria-label="Original image, downscaled"></canvas><span class="tag">original</span></div>
+      <div class="frame" id="fRank"><canvas id="rank" width="205" height="256" role="img" aria-label="Image rebuilt from the first k layers"></canvas><span class="tag k" id="rankTag">k = 1</span><div class="busy" id="busy">Splitting into layers&hellip;</div></div>
     </div>
-    <div class="ctrl">
+    <div class="ctrl" id="ctrl">
       <div class="krow">
         <div class="kbig num"><span id="kNum">1</span><small id="kOf">layer of 205</small></div>
         <div class="seg" role="group" aria-label="Colour or greyscale">
@@ -417,7 +579,7 @@ footer .coffee:hover{border-color:var(--ink-3)}
 <section class="panel wrap" id="layers">
   <h2>What one layer looks like</h2>
   <p class="intro">Every layer is the simplest possible picture: one column of numbers (the teal and amber strip down the left) times one row of numbers (the strip along the top). So every row of a layer is the same pattern, just brighter or dimmer. One such pattern can't draw a face. Add them up, biggest first, and it appears. These are the first eight <button class="t" data-k="layer">layers</button> of the greyscale version.</p>
-  <div class="stackrow">
+  <div class="stackrow" id="stackRow">
     <div class="stackview">
       <div class="frame"><canvas id="stack" width="205" height="256" role="img" aria-label="Sum of the first layers"></canvas><span class="tag k" id="stackTag">layer 1</span></div>
       <div>
@@ -443,20 +605,20 @@ footer .coffee:hover{border-color:var(--ink-3)}
 <section class="panel wrap" id="curve">
   <h2>Why a few layers carry most of a face</h2>
   <p class="intro">This chart is the importance of each layer: its singular value &sigma;, relative to the first. The scale is logarithmic: each gridline is ten times smaller than the one above. A face falls off a cliff. A few big layers, then a long tail of tiny ones you can drop without noticing. <b>Random noise</b> is different: after its first layer, which is just its average grey, every layer matters about as much as the next. There's no shortcut, so noise can't be compressed.</p>
-  <div class="chart">
+  <div class="chart" id="chartBox">
     <canvas id="chart" role="img" aria-label="Singular values of your image and of random noise, on a log scale, with the current k marked"></canvas>
   </div>
-  <div class="legend">
+  <div class="legend" id="chartLeg">
     <span><i class="key" style="background:var(--accent)"></i><span id="legFace">Your image</span></span>
     <span><i class="key" style="background:var(--warm)"></i>Random noise, same size</span>
     <span><i class="key" style="background:var(--ink-3);width:2px;height:12px;vertical-align:-1px"></i>k, from the slider (tap the chart to move it)</span>
   </div>
-  <div class="stats">
+  <div class="stats" id="curveStats">
     <div class="stat"><div class="k">Layers kept</div><div class="v num" id="cK">&ndash;</div><div class="s" id="cKs"></div></div>
     <div class="stat"><div class="k">Your image: detail kept beyond layer 1</div><div class="v num" id="cFace">&ndash;</div><div class="s">Share of the energy in layers 2 and up that the first k layers keep.</div></div>
     <div class="stat"><div class="k">Noise: detail kept beyond layer 1</div><div class="v num w" id="cNoise">&ndash;</div><div class="s">Same measure for noise. It grows in a straight-ish line: every layer is worth about the same.</div></div>
   </div>
-  <div class="noisepair">
+  <div class="noisepair" id="noisePair">
     <div class="frame"><canvas id="noiseOrig" width="205" height="256" role="img" aria-label="Random noise"></canvas><span class="tag">noise</span></div>
     <div class="frame"><canvas id="noiseRank" width="205" height="256" role="img" aria-label="Random noise rebuilt from k layers"></canvas><span class="tag k" id="noiseTag">k = 1</span></div>
   </div>
@@ -467,7 +629,7 @@ footer .coffee:hover{border-color:var(--ink-3)}
 <section class="panel wrap" id="moves">
   <h2>A matrix is a move</h2>
   <p class="intro">So far a matrix has been a picture. It is also an instruction: a way to move every point of a flat plane. A 2&times;2 matrix sends the arrow along the bottom edge (<span style="color:var(--accent);font-weight:600">teal</span>) to its first column, and the arrow up the side (<span style="color:var(--warm);font-weight:600">amber</span>) to its second. Everything else, your picture included, comes along for the ride. Drag the arrow tips, drag the numbers sideways, or type them.</p>
-  <div class="mxgrid">
+  <div class="mxgrid" id="mx1">
     <div class="plane"><canvas id="plane" role="img" aria-label="A grid and the photo, moved by the 2 by 2 matrix"></canvas><span class="hint">drag the arrow tips</span></div>
     <div class="mxside">
       <div class="mat">
@@ -498,7 +660,7 @@ footer .coffee:hover{border-color:var(--ink-3)}
   <div class="block">
     <h3>Every move is rotate, stretch, rotate</h3>
     <p class="intro" style="margin-top:8px">Here is the surprising part. Whatever numbers you put in, the move can be done in three simple steps: turn the picture, stretch it along the two straight axes, turn it again. That's the SVD of this little matrix. The circle shows it best: every matrix turns a circle into an ellipse, and the stretches are the ellipse's two half-widths, the <button class="t" data-k="sv">singular values</button>.</p>
-    <div class="mxgrid">
+    <div class="mxgrid" id="mx2">
       <div class="plane"><canvas id="svplane" role="img" aria-label="The same move split into rotate, stretch, rotate"></canvas><span class="hint" id="svHint">step 3 of 3</span></div>
       <div class="mxside">
         <ol class="steps" id="svSteps">
@@ -521,37 +683,37 @@ footer .coffee:hover{border-color:var(--ink-3)}
   <h2>Where this is used</h2>
   <p class="intro">The SVD is one of the workhorses of data science. Wherever data sits in a table, the first few layers often carry the signal and the rest carry noise. Some honest examples, and one common myth.</p>
   <div class="cards">
-    <div class="card">
+    <div class="card" id="cardPca">
       <div class="tagline">Statistics</div>
       <h3>Principal component analysis (PCA)</h3>
       <p>Put a dataset in a table, one row per person and one column per measurement, and subtract each column's average. The SVD of that table gives its <button class="t" data-k="pca">principal components</button>: the directions where the data varies most, ranked. It's how researchers squeeze 20,000 gene readings or 100 survey answers into a 2D map you can actually look at.</p>
       <p class="src">Jolliffe and Cadima (2016), <a href="https://doi.org/10.1098/rsta.2015.0202" rel="noopener">Phil. Trans. R. Soc. A</a>.</p>
     </div>
-    <div class="card">
+    <div class="card" id="cardEigen">
       <div class="tagline">Face recognition, 1987 to 1991</div>
       <h3>Eigenfaces</h3>
       <p>This page splits <i>one</i> picture into layers. Eigenfaces did it across <i>many</i>: stack hundreds of face photos as rows of a table and the SVD finds the shared "face ingredients". Sirovich and Kirby showed in 1987 that a few dozen of them describe a face well; Turk and Pentland used them for recognition in 1991. <b>Today's face recognition doesn't work this way</b>: it uses deep neural networks. Eigenfaces is the classic stepping stone.</p>
       <p class="src">Sirovich and Kirby (1987), <a href="https://doi.org/10.1364/JOSAA.4.000519" rel="noopener">JOSA A</a>; Turk and Pentland (1991), <a href="https://doi.org/10.1162/jocn.1991.3.1.71" rel="noopener">J. Cognitive Neuroscience</a>.</p>
     </div>
-    <div class="card">
+    <div class="card" id="cardNetflix">
       <div class="tagline">Recommendations</div>
       <h3>The Netflix Prize</h3>
       <p>In 2006 Netflix offered $1 million to anyone who could beat its film recommender by 10%. Picture a table of users and films with each star rating filled in. The big idea that spread through the contest: explain that table with a few hidden layers, like "how much of a thriller is it" and "how much does this person like thrillers". Strictly, it's an SVD-like <i>factorisation</i>, because most of the table is empty and a true SVD needs every cell. A team won in 2009 by blending hundreds of models. Netflix said it put the two strongest early models, a factorisation and another method, into production, but not the full winning blend.</p>
       <p class="src">Koren, Bell and Volinsky (2009), <a href="https://doi.org/10.1109/MC.2009.263" rel="noopener">IEEE Computer</a>; Funk (2006), <a href="https://sifter.org/~simon/journal/20061211.html" rel="noopener">"Try this at home"</a>; Netflix (2012), <a href="https://netflixtechblog.com/netflix-recommendations-beyond-the-5-stars-part-1-55838468f429" rel="noopener">tech blog</a>.</p>
     </div>
-    <div class="card">
+    <div class="card" id="cardDenoise">
       <div class="tagline">Signal processing</div>
       <h3>Removing noise</h3>
       <p>If the signal lives in a few big layers and noise is spread evenly across all of them (the flat amber line above), then throwing away the small layers throws away mostly noise. Gavish and Donoho worked out exactly where to cut: for an n&times;n table with noise of known size &sigma;, keep the singular values above (4/&radic;3)&middot;&radic;n&middot;&sigma; and drop the rest. Used in sensors, medical imaging and data cleaning. For everyday photos, dedicated denoisers do better.</p>
       <p class="src">Gavish and Donoho (2014), <a href="https://doi.org/10.1109/TIT.2014.2323359" rel="noopener">IEEE Trans. Information Theory</a>.</p>
     </div>
-    <div class="card myth">
+    <div class="card myth" id="cardJpeg">
       <div class="tagline">Myth</div>
       <h3>"This is how JPEG works"</h3>
       <p>It isn't. JPEG cuts a photo into 8&times;8 blocks and uses the <button class="t" data-k="dct">discrete cosine transform</button>. That uses the same fixed set of wave patterns for every photo, so the patterns never need to be stored. The SVD finds the best patterns for <i>your</i> photo, but then you must store them: that's the k&times;(m+n+1) on the meter above, and it's why the SVD loses at compression.</p>
       <p class="src">Wallace (1992), <a href="https://doi.org/10.1109/30.125072" rel="noopener">"The JPEG still picture compression standard"</a>.</p>
     </div>
-    <div class="card">
+    <div class="card" id="cardEY">
       <div class="tagline">The guarantee</div>
       <h3>Why the first k layers are the best k</h3>
       <p>The Eckart&ndash;Young theorem (1936) says that no picture of <button class="t" data-k="rank">rank</button> k is closer to the original than the first k SVD layers, measured by the sum of squared pixel errors. So the slider above isn't just one way to compress: by that measure it's the best way with k layers.</p>
@@ -697,6 +859,22 @@ footer .coffee:hover{border-color:var(--ink-3)}
   </div>
 </footer>
 
+<div id="stage" role="region" aria-label="Step-by-step view" tabindex="-1">
+  <div class="st-head"><span class="num" id="stN"></span><span id="stT"></span><span class="st-aha" id="stAha" hidden>Aha: the short starts here</span></div>
+  <div class="st-vis" id="stVis"></div>
+  <div class="st-txt" id="stTxt"><p class="st-cap" id="stCap" aria-live="polite"></p><p class="st-sub" id="stSub"></p></div>
+  <div class="st-bar">
+    <button class="st-b" type="button" id="stExit">Back to the page</button>
+    <span class="grow"></span>
+    <button class="st-b" type="button" id="stPrev" aria-label="Previous step">&larr;</button>
+    <span class="st-count" id="stCount"></span>
+    <button class="st-b go" type="button" id="stNext" aria-label="Next step">&rarr;</button>
+    <button class="st-b" type="button" id="stReplay">Replay</button>
+    <span class="grow"></span>
+    <span class="st-keys">&larr; &rarr; step &middot; R record &middot; Esc leave</span>
+    <button class="st-b" type="button" id="stRec" aria-pressed="false">Recording view</button>
+  </div>
+</div>
 <div id="pop" role="tooltip"></div>
 <div class="toast" id="toast"></div>
 <noscript><p class="wrap" style="padding-block:20px">This page needs JavaScript: all the maths runs in your browser.</p></noscript>
@@ -715,6 +893,8 @@ function pct(x){
   return (p >= 10 ? p.toFixed(1) : p.toFixed(2)).replace(/\.?0+$/, '') + '%';
 }
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+/* Scale for marks drawn on canvas: 1 on the page, bigger on the filming stage (its type is sized in vmin) */
+const uiS = () => document.documentElement.classList.contains('present') ? Math.max(1, parseFloat(getComputedStyle(document.documentElement).fontSize) / 13) : 1;
 
 /* ---------- Theme colours (read once, refreshed when the system theme changes) ---------- */
 const C = {};
@@ -927,6 +1107,7 @@ async function useImage(img, label, sampleKey){
   setStatus('Splitting into layers…');
   S.t0 = performance.now();
   decompose(img, S.noiseImg);
+  if (P.on) renderStepText();
 }
 
 function onWorker(e){
@@ -957,6 +1138,7 @@ function onReady(){
   buildTiles(); setStack(1);
   startHero();
   drawChart(); updateCurveStats();
+  if (P.on) runStep();
 }
 
 /* ---------- Main slider: logarithmic, so the first 20 layers get most of the travel ---------- */
@@ -1155,8 +1337,8 @@ function renderNoise(){
 const chart = $('#chart');
 const CH = { padL: 66, padR: 14, padT: 14, padB: 30 };
 function chartGeom(){
-  const w = chart.clientWidth, h = chart.clientHeight;
-  return { w, h, x0: CH.padL, x1: w - CH.padR, y0: CH.padT, y1: h - CH.padB };
+  const w = chart.clientWidth, h = chart.clientHeight, s = uiS();
+  return { w, h, s, x0: CH.padL * s, x1: w - CH.padR * s, y0: CH.padT * s, y1: h - CH.padB * s };
 }
 function drawChart(){
   if (!S.ready) return;
@@ -1171,15 +1353,16 @@ function drawChart(){
   const dec = Math.max(1, Math.min(5, Math.ceil(-Math.log10(lo))));
   const X = i => g.x0 + (r <= 1 ? 0 : (i - 1) / (r - 1)) * (g.x1 - g.x0);
   const Y = v => g.y0 + (-Math.log10(Math.max(v, Math.pow(10, -dec)))) / dec * (g.y1 - g.y0);
-  c.font = '500 11px "Geist Mono", ui-monospace, monospace'; c.textBaseline = 'middle';
+  const s = g.s;
+  c.font = `500 ${11 * s}px "Geist Mono", ui-monospace, monospace`; c.textBaseline = 'middle';
   for (let e = 0; e <= dec; e++){
     const y = Y(Math.pow(10, -e));
-    c.strokeStyle = C.grid; c.lineWidth = 1; c.beginPath(); c.moveTo(g.x0, y); c.lineTo(g.x1, y); c.stroke();
-    c.fillStyle = C['ink-3']; c.textAlign = 'right'; c.fillText(e === 0 ? '1' : '1/' + fmt(Math.pow(10, e)), g.x0 - 8, y);
+    c.strokeStyle = C.grid; c.lineWidth = s; c.beginPath(); c.moveTo(g.x0, y); c.lineTo(g.x1, y); c.stroke();
+    c.fillStyle = C['ink-3']; c.textAlign = 'right'; c.fillText(e === 0 ? '1' : '1/' + fmt(Math.pow(10, e)), g.x0 - 8 * s, y);
   }
   c.textAlign = 'center'; c.textBaseline = 'top';
   const xt = [1, 10, 50, 100, 150, 200, 250].filter(v => v <= r && (v === 1 || r - v > r * 0.06)); if (xt[xt.length - 1] !== r) xt.push(r);
-  for (const v of xt) c.fillText(String(v), X(v), g.y1 + 8);
+  for (const v of xt) c.fillText(String(v), X(v), g.y1 + 8 * s);
   // k marker and shaded "kept" region
   const xk = X(S.k);
   c.fillStyle = C['accent-soft']; c.globalAlpha = 0.55; c.fillRect(g.x0, g.y0, Math.max(1, xk - g.x0), g.y1 - g.y0); c.globalAlpha = 1;
@@ -1189,14 +1372,14 @@ function drawChart(){
     for (let i = 0; i < D.r; i++){ const x = X(i + 1), y = Y(D.s[i] / D.s[0]); i ? c.lineTo(x, y) : c.moveTo(x, y); }
     c.stroke();
   };
-  line(noise, C.warm, 2);
-  line(face, C.accent, 2.5);
-  c.strokeStyle = C.ink; c.lineWidth = 1.5; c.setLineDash([4, 3]); c.beginPath(); c.moveTo(xk, g.y0); c.lineTo(xk, g.y1); c.stroke(); c.setLineDash([]);
-  c.fillStyle = C.ink; c.font = '600 12px "Geist Mono", ui-monospace, monospace'; c.textBaseline = 'top';
+  line(noise, C.warm, 2 * s);
+  line(face, C.accent, 2.5 * s);
+  c.strokeStyle = C.ink; c.lineWidth = 1.5 * s; c.setLineDash([4 * s, 3 * s]); c.beginPath(); c.moveTo(xk, g.y0); c.lineTo(xk, g.y1); c.stroke(); c.setLineDash([]);
+  c.fillStyle = C.ink; c.font = `600 ${12 * s}px "Geist Mono", ui-monospace, monospace`; c.textBaseline = 'top';
   const lab = `k = ${S.k}`, tw = c.measureText(lab).width;
-  c.textAlign = 'left'; c.fillText(lab, Math.min(xk + 6, g.x1 - tw), g.y0 + 4);
+  c.textAlign = 'left'; c.fillText(lab, Math.min(xk + 6 * s, g.x1 - tw), g.y0 + 4 * s);
   // Dots on both curves at k
-  for (const [D, col] of [[noise, C.warm], [face, C.accent]]) if (D && S.k <= D.r){ c.fillStyle = col; c.beginPath(); c.arc(xk, Y(D.s[S.k - 1] / D.s[0]), 4, 0, 7); c.fill(); }
+  for (const [D, col] of [[noise, C.warm], [face, C.accent]]) if (D && S.k <= D.r){ c.fillStyle = col; c.beginPath(); c.arc(xk, Y(D.s[S.k - 1] / D.s[0]), 4 * s, 0, 7); c.fill(); }
 }
 function updateCurveStats(){
   if (!S.ready) return;
@@ -1240,21 +1423,21 @@ function fitCanvas(cnv){
   if (!w) return null;
   if (cnv.width !== Math.round(w * dpr)){ cnv.width = cnv.height = Math.round(w * dpr); }
   const c = cnv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0);
-  return { c, w, u: w / 4.6, cx: w / 2, cy: w / 2 };
+  return { c, w, u: w / 4.6, cx: w / 2, cy: w / 2, s: uiS() };
 }
-function arrow(c, x0, y0, x1, y1, col, wdt){
-  const ang = Math.atan2(y1 - y0, x1 - x0), len = Math.hypot(x1 - x0, y1 - y0), hl = Math.min(12, len * 0.4);
+function arrow(c, x0, y0, x1, y1, col, wdt, s = 1){
+  const ang = Math.atan2(y1 - y0, x1 - x0), len = Math.hypot(x1 - x0, y1 - y0), hl = Math.min(12 * s, len * 0.4);
   c.strokeStyle = col; c.fillStyle = col; c.lineWidth = wdt; c.lineCap = 'round';
   c.beginPath(); c.moveTo(x0, y0); c.lineTo(x1 - Math.cos(ang) * hl * 0.6, y1 - Math.sin(ang) * hl * 0.6); c.stroke();
   c.beginPath(); c.moveTo(x1, y1); c.lineTo(x1 - Math.cos(ang - 0.42) * hl, y1 - Math.sin(ang - 0.42) * hl); c.lineTo(x1 - Math.cos(ang + 0.42) * hl, y1 - Math.sin(ang + 0.42) * hl); c.closePath(); c.fill();
 }
 /* Draw the plane moved by matrix T = [a b; c d]. Maths y points up; the canvas y points down. */
 function drawMoved(G, T, opts = {}){
-  const { c, w, u, cx, cy } = G, { a, b, c: cc, d } = T;
+  const { c, w, u, cx, cy, s } = G, { a, b, c: cc, d } = T;
   c.clearRect(0, 0, w, w);
   const P = (x, y) => [cx + u * (a * x + b * y), cy - u * (cc * x + d * y)];
   // Fixed background grid
-  c.strokeStyle = C.grid; c.lineWidth = 1;
+  c.strokeStyle = C.grid; c.lineWidth = s;
   for (let i = -3; i <= 3; i++){ c.beginPath(); c.moveTo(cx + i * u, 0); c.lineTo(cx + i * u, w); c.moveTo(0, cy + i * u); c.lineTo(w, cy + i * u); c.stroke(); }
   // The photo in the unit square, moved
   const src = cv.orig;
@@ -1267,7 +1450,7 @@ function drawMoved(G, T, opts = {}){
     c.restore();
   }
   // Moved grid
-  c.strokeStyle = C['accent-mid']; c.lineWidth = 1; c.globalAlpha = 0.9;
+  c.strokeStyle = C['accent-mid']; c.lineWidth = s; c.globalAlpha = 0.9;
   for (let i = -4; i <= 4; i++){
     let p = P(i, -4), q = P(i, 4); c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); c.stroke();
     p = P(-4, i); q = P(4, i); c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); c.stroke();
@@ -1275,18 +1458,18 @@ function drawMoved(G, T, opts = {}){
   c.globalAlpha = 1;
   // Unit circle and its image (an ellipse)
   if (opts.circle){
-    c.strokeStyle = C['ink-3']; c.setLineDash([3, 4]); c.lineWidth = 1.2;
+    c.strokeStyle = C['ink-3']; c.setLineDash([3 * s, 4 * s]); c.lineWidth = 1.2 * s;
     c.beginPath(); c.arc(cx, cy, u, 0, 7); c.stroke(); c.setLineDash([]);
-    c.strokeStyle = C.ink; c.lineWidth = 2; c.beginPath();
+    c.strokeStyle = C.ink; c.lineWidth = 2 * s; c.beginPath();
     for (let s = 0; s <= 64; s++){ const t = s / 64 * Math.PI * 2, p = P(Math.cos(t), Math.sin(t)); s ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]); }
     c.stroke();
   }
   // Basis arrows
   const e1 = P(1, 0), e2 = P(0, 1);
-  arrow(c, cx, cy, e1[0], e1[1], C.accent, 3);
-  arrow(c, cx, cy, e2[0], e2[1], C.warm, 3);
+  arrow(c, cx, cy, e1[0], e1[1], C.accent, 3 * s, s);
+  arrow(c, cx, cy, e2[0], e2[1], C.warm, 3 * s, s);
   if (opts.handles){
-    for (const [p, col] of [[e1, C.accent], [e2, C.warm]]){ c.fillStyle = C.surface; c.strokeStyle = col; c.lineWidth = 2.5; c.beginPath(); c.arc(p[0], p[1], 9, 0, 7); c.fill(); c.stroke(); }
+    for (const [p, col] of [[e1, C.accent], [e2, C.warm]]){ c.fillStyle = C.surface; c.strokeStyle = col; c.lineWidth = 2.5 * s; c.beginPath(); c.arc(p[0], p[1], 9 * s, 0, 7); c.fill(); c.stroke(); }
   }
   return { e1, e2 };
 }
@@ -1301,7 +1484,7 @@ plane.addEventListener('pointerdown', e => {
   const r = plane.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
   const p1 = [planeG.cx + planeG.u * M.a, planeG.cy - planeG.u * M.c], p2 = [planeG.cx + planeG.u * M.b, planeG.cy - planeG.u * M.d];
   const d1 = Math.hypot(x - p1[0], y - p1[1]), d2 = Math.hypot(x - p2[0], y - p2[1]);
-  const hit = Math.min(d1, d2) < 30 ? (d1 <= d2 ? 1 : 2) : 0;
+  const hit = Math.min(d1, d2) < 30 * planeG.s ? (d1 <= d2 ? 1 : 2) : 0;
   if (!hit) return;
   dragTip = hit; plane.setPointerCapture(e.pointerId); e.preventDefault();
 });
@@ -1458,10 +1641,168 @@ let rsT = 0;
 addEventListener('resize', () => { clearTimeout(rsT); rsT = setTimeout(() => { drawChart(); drawPlane(); drawSV(); }, 80); });
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { readTheme(); drawChart(); drawPlane(); drawSV(); if (S.ready){ buildTiles(); setStack(S.stackJ || 1); } });
 
+/* ---------- Step mode and recording view, for filming (beat sheet in VIDEO.md) ----------
+   Off unless the address ends in #step-N. Each step borrows one or two of the page's own visuals onto a full-screen
+   stage, sets them up (k, the matrix, which layers are stacked) and puts them back when you move on. */
+const P = { on: false, rec: false, i: 0, timers: [], homes: new Map(), raf: 0 };
+const ID2 = { a: 1, b: 0, c: 0, d: 1 }, SHEAR = { a: 1, b: 0.8, c: 0, d: 1 }, ANY = { a: 1.3, b: 0.9, c: -0.2, d: 0.8 };
+const later = (fn, ms) => P.timers.push(setTimeout(fn, ms));
+const creditTxt = () => S.sample ? SAMPLES[S.sample].credit : 'Your own photo. It stays in this browser tab.';
+function setM(T){ cancelAnimationFrame(mxAnim); Object.assign(M, T); showM(); }
+let kAnim = 0;
+/* Move k smoothly on the same log scale as the slider, so the early layers get most of the time */
+function animateK(to, dur, from = S.k, hold = 0){
+  cancelAnimationFrame(kAnim); kAnim = 0;
+  to = clamp(to, 1, S.r); from = clamp(from, 1, S.r);
+  if (REDUCED || !dur){ setK(to); return; }
+  setK(from);
+  const t0 = performance.now() + hold, l0 = Math.log(from), l1 = Math.log(to);
+  const step = now => {
+    const t = clamp((now - t0) / dur, 0, 1);
+    setK(Math.exp(l0 + (l1 - l0) * ease(t)));
+    kAnim = t < 1 ? requestAnimationFrame(step) : 0;
+  };
+  kAnim = requestAnimationFrame(step);
+}
+const STEPS = [
+  { key: 'hook', home: '.hero', title: 'Your face in 10 layers', show: ['#miniBox'], l: 'one',
+    cap: 'A painting, rebuilt from 10 layers of numbers.', sub: creditTxt, go(){ startHero(); } },
+  { key: 'matrix', home: '#rebuild', title: 'A photo is a matrix', show: ['#fOrig'], l: 'one',
+    cap: 'To a computer, a photo is a grid of numbers: a matrix.',
+    sub: () => S.img ? `${S.img.m} rows by ${S.img.n} columns, one number per pixel for each colour: ${fmt(S.img.m * S.img.n * 3)} numbers.` : '' },
+  { key: 'move', home: '#moves', title: 'A matrix is a move', show: ['#mx1'], l: 'mx',
+    cap: 'A matrix is also a move: it sends every point somewhere new.',
+    go(){ setM(ID2); later(() => animateTo(SHEAR), 800); } },
+  { key: 'area', home: '#moves', title: 'What it does to area', show: ['#mx1'], l: 'mx',
+    cap: 'One number, the determinant, says what the move does to area.', go(){ animateTo(ANY); } },
+  { key: 'rsr', home: '#moves', title: 'Rotate, stretch, rotate', show: ['#mx2'], l: 'mx',
+    cap: 'Any move is three simple steps: turn, stretch, turn.',
+    sub: 'In symbols, M = U&Sigma;V<sup>T</sup>. The rotate-stretch-rotate picture follows Strang, <i>Introduction to Linear Algebra</i>, chapter 7.',
+    go(){ setM(ANY); svT = 0; $('#svT').value = 0; drawSV(); later(() => { if (!svPlaying) $('#svPlay').click(); }, 800); } },
+  { key: 'layer1', home: '#layers', title: 'One layer', show: ['#stackRow'], l: 'stack',
+    cap: 'A photo splits the same way, into layers. Layer 1 is a blur.', go(){ setStack(1); } },
+  { key: 'stack', home: '#layers', title: 'Stacking the layers', show: ['#stackRow'], l: 'stack',
+    cap: 'Each layer corrects the ones before it. Add them up, biggest first.',
+    go(){ setStack(1); later(() => $('#stackPlay').click(), 700); } },
+  { key: 'aha', aha: true, home: '#rebuild', title: 'The face appears', show: ['#fOrig', '#fRank'], l: 'two',
+    cap: 'Keep adding layers, and the face appears.',
+    go(){ if (S.mode !== 'colour') setMode('colour'); animateK(Math.min(50, S.r), 7000, 1, 1200); } },
+  { key: 'count', home: '#rebuild', title: 'Counting the numbers', show: ['#fRank', '#ctrl'], l: 'side',
+    cap: () => S.ready ? `${Math.min(20, S.r)} layers: ${pct(storeFrac(Math.min(20, S.r)))} of the numbers.` : 'Counting the numbers.',
+    sub: 'Each layer costs one column, one row and one weight: k &times; (m + n + 1) numbers.', go(){ animateK(20, 900); } },
+  { key: 'curve', home: '#curve', title: 'Why so few', show: ['#chartBox', '#chartLeg'], l: 'chart',
+    cap: 'A face falls off a cliff: a few big layers, then a long tail.',
+    sub: 'The weight &sigma; of each layer, relative to the first, on a log scale: each gridline is ten times smaller.', go(){ animateK(20, 600); } },
+  { key: 'noise', home: '#curve', title: 'Noise has no shortcut', show: ['#noisePair', '#curveStats'], l: 'noise',
+    cap: 'Random noise never appears. It just gets slowly less wrong.', go(){ animateK(Math.min(50, S.r), 6000, 1, 800); } },
+  { key: 'best', home: '#uses', title: 'The best k layers', show: ['#fRank', '#cardEY'], l: 'side',
+    cap: 'No picture made of k layers gets closer than this one.', go(){ animateK(10, 700); } },
+  { key: 'pca', home: '#uses', title: 'PCA', show: ['#cardPca'], l: 'one',
+    cap: 'Swap the photo for a table of data, and you have PCA.' },
+  { key: 'eigen', home: '#uses', title: 'Eigenfaces', show: ['#cardEigen'], l: 'one',
+    cap: 'Put many faces in one table, and you get eigenfaces.' },
+  { key: 'netflix', home: '#uses', title: 'The Netflix Prize', show: ['#cardNetflix'], l: 'one',
+    cap: 'A table of film ratings works too: the Netflix Prize.' },
+  { key: 'denoise', home: '#uses', title: 'Removing noise', show: ['#cardDenoise', '#chartBox'], l: 'cardchart',
+    cap: 'Drop the small layers, and you drop mostly noise.', go(){ animateK(20, 600); } },
+  { key: 'jpeg', home: '#uses', title: 'The JPEG myth', show: ['#cardJpeg'], l: 'one',
+    cap: 'And no: this is not how JPEG works.' },
+  { key: 'outro', home: '.hero', title: 'Try your own face', show: ['#pick'], l: 'one',
+    cap: 'Try it on your own face. Your photo never leaves your device.', sub: 'paulbebear.com/face-layers', go(){ startHero(); } }
+];
+const stage = $('#stage'), stVis = $('#stVis');
+const val = x => typeof x === 'function' ? x() : (x || '');
+function mountShow(list){
+  for (const [el, ph] of P.homes) ph.replaceWith(el);
+  P.homes.clear();
+  for (const sel of list){ const el = $(sel), ph = document.createComment('on the filming stage'); el.before(ph); P.homes.set(el, ph); stVis.append(el); }
+}
+function stopAnims(){
+  P.timers.forEach(clearTimeout); P.timers = []; cancelAnimationFrame(P.raf); P.raf = 0;
+  cancelAnimationFrame(kAnim); kAnim = 0; cancelAnimationFrame(mxAnim); stopStack();
+  if (svPlaying) stopSV();
+}
+function redrawAll(){ drawChart(); drawPlane(); drawSV(); }
+function renderStepText(){
+  const st = STEPS[P.i];
+  stage.style.setProperty('--ar', S.img ? S.img.n / S.img.m : 0.8);
+  $('#stCap').innerHTML = val(st.cap);
+  $('#stSub').innerHTML = val(st.sub);
+}
+function runStep(){ renderStepText(); const st = STEPS[P.i]; if (S.ready && st.go) st.go(); }
+function showStep(i, first){
+  i = clamp(i, 0, STEPS.length - 1);
+  const st = STEPS[i]; P.i = i;
+  stopAnims();
+  mountShow(st.show);
+  stVis.dataset.l = st.l; stVis.dataset.key = st.key;
+  $('#stN').textContent = `${String(i + 1).padStart(2, '0')} / ${STEPS.length}`;
+  $('#stT').textContent = st.title;
+  $('#stAha').hidden = !st.aha;
+  $('#stCount').textContent = `${i + 1} / ${STEPS.length}`;
+  $('#stPrev').disabled = i === 0; $('#stNext').disabled = i === STEPS.length - 1;
+  history.replaceState(null, '', location.pathname + location.search + '#step-' + (i + 1));
+  renderStepText();
+  for (const el of [stVis, $('#stTxt')]){ el.classList.remove('in'); if (!first){ void el.offsetWidth; el.classList.add('in'); } }
+  cancelAnimationFrame(P.raf);
+  P.raf = requestAnimationFrame(() => { P.raf = 0; if (P.on && P.i === i){ redrawAll(); runStep(); } });
+}
+function enterSteps(i){
+  const first = !P.on;
+  if (first){
+    P.on = true; hidePop();
+    document.documentElement.classList.add('present');
+    for (const el of document.body.children) if (!['stage', 'pop', 'toast'].includes(el.id) && el.tagName !== 'SCRIPT') el.inert = true;
+    stage.focus({ preventScroll: true });
+  }
+  showStep(i, first);
+}
+function exitSteps(){
+  if (!P.on) return;
+  stopAnims(); mountShow([]);
+  setRec(false); P.on = false;
+  document.documentElement.classList.remove('present');
+  for (const el of document.body.children) el.inert = false;
+  history.replaceState(null, '', location.pathname + location.search);
+  const home = $(STEPS[P.i].home);
+  requestAnimationFrame(() => { redrawAll(); if (home) home.scrollIntoView({ block: 'start' }); });
+}
+function setRec(on){
+  P.rec = on;
+  document.documentElement.classList.toggle('filming', on && P.on);
+  $('#stRec').setAttribute('aria-pressed', String(on));
+  if (P.on) requestAnimationFrame(redrawAll);
+}
+function replay(){ stopAnims(); runStep(); }
+$('#stPrev').onclick = () => showStep(P.i - 1);
+$('#stNext').onclick = () => showStep(P.i + 1);
+$('#stExit').onclick = exitSteps;
+$('#stReplay').onclick = replay;
+$('#stRec').onclick = () => setRec(!P.rec);
+// Grabbing the slider or the chart takes k back from an animation
+for (const el of [slider, chart, $('#kDown'), $('#kUp')]) el.addEventListener('pointerdown', () => { cancelAnimationFrame(kAnim); kAnim = 0; });
+// Keys only act while the stage is open (it is opt-in, so they never get in a visitor's way)
+addEventListener('keydown', e => {
+  if (!P.on || e.metaKey || e.ctrlKey || e.altKey) return;
+  const t = e.target, k = e.key;
+  if (t.matches && t.matches('input[type="text"], textarea')){ if (k === 'Escape') t.blur(); return; }
+  const onBtn = t.closest && t.closest('button, label, a');
+  let d = { ArrowRight: 1, ArrowDown: 1, PageDown: 1, ArrowLeft: -1, ArrowUp: -1, PageUp: -1 }[k];
+  if (k === ' ' && !onBtn) d = e.shiftKey ? -1 : 1;
+  if (d){ e.preventDefault(); e.stopPropagation(); showStep(P.i + d); }
+  else if (k === 'Home' || k === 'End'){ e.preventDefault(); e.stopPropagation(); showStep(k === 'Home' ? 0 : STEPS.length - 1); }
+  else if (k === 'r' || k === 'R'){ e.preventDefault(); setRec(!P.rec); }
+  else if (k === 'Enter' && !onBtn){ e.preventDefault(); replay(); }
+  else if (k === 'Escape'){ e.preventDefault(); P.rec ? setRec(false) : exitSteps(); }
+}, true);
+const stepFromHash = () => { const m = /^#step-(\d+)$/i.exec(location.hash); return m ? clamp(+m[1] - 1, 0, STEPS.length - 1) : null; };
+addEventListener('hashchange', () => { const i = stepFromHash(); if (i != null){ if (!P.on || i !== P.i) enterSteps(i); } else if (P.on) exitSteps(); });
+
 /* ---------- Start ---------- */
 startWorker();
 showM();
 loadSample('pearl');
+{ const i = stepFromHash(); if (i != null){ enterSteps(i); if (/[?&]rec\b/.test(location.search)) setRec(true); } }
 </script>
 </body>
 </html>
