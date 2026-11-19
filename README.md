@@ -14,6 +14,7 @@ light-birthday/index.html  Your light-birthday stars (stars whose light left the
 run-the-grid/index.html  Run the grid (balance a real Spanish grid day, replay the 28 April 2025 Iberian blackout; research brief in RESEARCH.md, REE data build in build/)
 france-2027/index.html  The 2027 fork (LFI vs RN against the Macron baseline; programme texts, costings and the 14-bracket tax calculator are embedded in the page)
 face-layers/index.html  Your face in 10 layers (SVD of a photo, in the browser; the SVD runs in face-layers/svd-worker.js, sample paintings in face-layers/samples/; #step-N opens the filming step mode, beat sheet in face-layers/VIDEO.md)
+videos/index.html       Off and on the grid (the video timeline and skill tree; standalone, not in the Work folders; to mark a video as out, add it to POSTED at the top of the script; R or ?rec opens the recording view)
 assets/                 thumbnails (1200x750 webp); cv.webp and indexable.webp are screenshots of the live sites
 vercel.json             redirects: /cv to cv.paulbebear.com, /archive to /#work
 ```
@@ -36,6 +37,7 @@ Each piece has one source of truth. The site copy is the published version.
 | Your light-birthday stars | `light-birthday/index.html` itself. Star data is one embedded line, rebuilt by `light-birthday/build/` (see its README) | /light-birthday/ |
 | Run the grid | `run-the-grid/index.html` itself. REE data is one embedded line, rebuilt by `run-the-grid/build/build.py`; facts trace to `run-the-grid/RESEARCH.md` | /run-the-grid/ |
 | The 2027 fork | `france-2027/index.html` itself. Dated "Updated 19 October 2026"; refresh after LFI's 2027 programme (6 Nov 2026), the RN pension plan and the Cassation ruling on Le Pen | /france-2027/ |
+| Off and on the grid | `videos/index.html` itself. POSTED, UP_NEXT and PAGE at the top of the script drive the timeline and the tree; skills are in RAW. The private planning copy is the Claude artifact 3ZzjcxwRYRmUN9LyrWe8At | /videos/ |
 | Your face in 10 layers | `face-layers/index.html` itself, plus `svd-worker.js` (a port of JAMA's public-domain SVD). No data build: everything is computed from the image in the browser | /face-layers/ |
 
 When a piece changes: replace its `index.html` here, refresh the thumbnail if the top of the page changed, commit, push. Vercel redeploys in about a minute. URLs never change.
