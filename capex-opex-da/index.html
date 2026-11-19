@@ -148,14 +148,114 @@ footer{margin-top:60px;color:var(--ink-3);font-size:.85rem;border-top:1px solid 
   dl.gloss dd{margin-bottom:6px}
   .block{padding:16px}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ---------- Presenting layer: step mode and recording view ----------
+   Off by default. Open the page at #step-1 to step through it. Arrow keys or the bar move between steps,
+   R toggles the recording view, T flips the theme, Esc leaves. Nothing below applies until html gets .stepping. */
+#stepbar,#step-cap{display:none}
+.stepping #stepbar{display:flex;position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:10;align-items:center;gap:6px;width:max-content;max-width:calc(100% - 32px);background:var(--surface);border:1px solid var(--rule);border-radius:999px;padding:6px;box-shadow:0 8px 30px rgba(20,27,34,.16);font-size:.9rem}
+#stepbar button{font:inherit;flex:none;border:1px solid var(--rule);background:var(--bg);color:var(--ink);border-radius:999px;min-width:40px;height:40px;padding:0 12px;cursor:pointer}
+#stepbar button:hover{border-color:var(--accent)}
+#stepbar .sb-n{font-family:var(--f-mono);color:var(--ink-3);flex:none;padding-left:4px}
+#stepbar .sb-cap{min-width:0;flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px;max-width:46ch}
+.stepping .wrap{padding-bottom:140px}
+.stepping [data-target]{transition:opacity .3s}
+.stepping:not(.rec) [data-target]:not(.is-current){opacity:.32}
+.stepping:not(.rec) .is-current{outline:2px solid var(--accent);outline-offset:8px;border-radius:var(--r)}
+[data-target]{scroll-margin:24px 0 96px}
+
+/* The 900k project, revealed year by year (the aha step) */
+.bars-g{transform-box:fill-box;transform-origin:50% 100%}
+.yr-pend .bars-g{opacity:0}
+.yr-in .bars-g{animation:grow .8s cubic-bezier(.16,1,.3,1) both}
+@keyframes grow{from{transform:scaleY(0)}}
+.tally{display:grid;gap:10px}
+.tally .tr{display:grid;grid-template-columns:7.5em 1fr 4.2em;align-items:center;gap:12px}
+.tally .tr > span:last-child{text-align:right}
+.tally .track{height:14px;background:var(--rule-2);border-radius:999px;overflow:hidden}
+.tally .fill{height:100%;width:0;border-radius:999px;transition:width .8s cubic-bezier(.16,1,.3,1)}
+.tally .end{font-weight:600;opacity:0;transform:translateY(6px);transition:opacity .6s,transform .6s}
+.tally .end.on{opacity:1;transform:none}
+
+/* Recording view: only the current visual and its caption, sized off the viewport so it reads in a small frame.
+   1rem is about 47px at 1920x1080 and 43px at 1080x1920. */
+html.rec{font-size:min(4vw,4.4vh)}
+.rec body{font-size:1rem;line-height:1.4}
+.rec #stepbar,.rec .tip,.rec .part-head{display:none!important}
+.rec .wrap{max-width:none;min-height:100vh;min-height:100dvh;margin:0;display:flex;flex-direction:column;justify-content:center;gap:1rem;padding:6vh 6vw}
+.rec .wrap > :not(.has-current):not(.is-current):not(#step-cap),.rec .part > :not(.is-current){display:none!important}
+.rec .part{margin:0;display:grid;gap:1rem}
+.rec #step-cap{display:block;font-family:var(--f-display);font-size:1.45rem;font-weight:650;line-height:1.12;letter-spacing:-.02em;text-wrap:balance;max-width:28em}
+.rec #step-cap:empty{display:none}
+.rec .is-current{display:grid;gap:.9rem;background:transparent;border:0;padding:0;outline:0;min-width:0}
+.rec .is-current > h3,.rec [data-part="nbv-head"]{display:none}
+.rec header.top{border:0;padding:0;gap:.6rem}
+.rec h1{font-size:2.7rem}
+.rec .lede{font-size:1.05rem;max-width:26em;margin:0}
+.rec .prose{max-width:none;gap:.8rem}
+.rec .prose ul{gap:.3rem}
+.rec .callout{border-left-width:.18rem;padding-left:.7rem;color:var(--ink)}
+.rec .label{font-size:.55rem}
+.rec .swatch{width:.6em;height:.6em;border-radius:.15em;margin-right:.3em}
+.rec .flow{justify-self:center;width:100%;max-width:34em}
+.rec .node{max-width:20em;padding:.4em .7em;border-width:2px}
+.rec .node span{font-size:.72em;line-height:1.3;display:block}
+.rec .vline{height:.9em;width:3px}
+.rec .split{padding-top:.9em;gap:.8em}
+.rec .split::before{height:3px}
+.rec .branch::before{top:-.9em;height:.9em;width:3px}
+.rec .tag{font-size:.6em;margin-bottom:.3em}
+.rec .matrix{grid-template-columns:auto 1fr 1fr;font-size:.72rem;line-height:1.3}
+.rec .matrix > div{padding:.45em .6em}
+.rec .matrix .cell{font-size:1em}
+.rec .formula{font-size:.9rem;white-space:normal;padding:.5em .7em}
+.rec .ledger{font-size:.66rem}
+.rec .ledger .lh{font-size:.9em;padding:.4em .7em}
+.rec .ledger .ll{padding:.3em .7em;gap:.5em}
+.rec .two{gap:.8rem}
+.rec .cards{gap:.7rem}
+.rec .card{padding:.6rem .8rem;gap:.2rem}
+.rec .card h3{font-size:.95rem}
+.rec .card p{font-size:.68rem;line-height:1.35}
+.rec .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem 1.2rem}
+.rec .stat{border-top-width:3px;padding-top:.35rem}
+.rec .stat .v{font-size:1.15rem}
+.rec .stat .k{font-size:.62rem;line-height:1.3}
+.rec .legend{font-size:.6rem;gap:.2rem 1rem}
+.rec .controls{gap:.5rem 1.2rem}
+.rec .ctrl{min-width:0;gap:.2rem}
+.rec .ctrl label{font-size:.66rem}
+.rec .chart-box svg{max-height:50vh}
+.rec .tally{gap:.45rem;font-size:.7rem}
+.rec .tally .track{height:.55rem}
+.rec .tally .end{font-size:1.1em}
+.rec footer{margin:0;border:0;padding:0;font-size:.7rem;color:var(--ink-2)}
+.rec p.note.mono{font-size:.66rem!important;color:var(--ink-2)}
+/* Wide frame: put the chart beside its numbers so both stay large */
+@media (min-aspect-ratio:4/3){
+  .rec .is-current.side{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);column-gap:2.2rem;row-gap:0;align-items:center;align-content:center}
+  .rec .is-current.side > *{grid-column:2;margin-block:.45rem}
+  .rec .is-current.side > [data-part="bars"],.rec .is-current.side > [data-part="nbv"]{grid-column:1;grid-row:1 / span 6}
+  .rec .is-current.side .stats{grid-template-columns:1fr}
+  .rec .is-current.side .chart-box svg{max-height:64vh}
+  .rec .is-current.side .legend{flex-direction:column}
+  .rec .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rec #flow-block .flow{font-size:.8rem;max-width:40em}
+}
+/* Tall frame: stack everything */
+@media (max-aspect-ratio:1/1){
+  .rec .two,.rec .cards{grid-template-columns:1fr}
+  .rec .chart-box svg{max-height:38vh}
+  .rec .matrix{font-size:.66rem}
+}
 </style>
 
 <div class="wrap">
   <header class="top">
-    <h1>Capex, Opex and D&amp;A</h1>
-    <p class="lede">One euro spent, two ways to book it. What changes is when the cost hits profit, and for a regulated grid operator, whether that euro earns a return.</p>
-    <nav class="jump" aria-label="Sections">
+    <h1 data-part="h1">Capex, Opex and D&amp;A</h1>
+    <p class="lede" data-part="lede">One euro spent, two ways to book it. What changes is when the cost hits profit, and for a regulated grid operator, whether that euro earns a return.</p>
+    <nav class="jump" aria-label="Sections" data-part="jump">
       <a href="#picture">Part 1: the picture</a>
       <a href="#depth">Part 2: in depth</a>
       <a href="#check">Check yourself</a>
@@ -169,13 +269,13 @@ footer{margin-top:60px;color:var(--ink-3);font-size:.85rem;border-top:1px solid 
       <h2>The picture</h2>
     </div>
 
-    <div class="block">
+    <div class="block" id="flow-block">
       <h3>The one question accounting asks</h3>
       <div class="flow" role="img" aria-label="Decision flow: a euro is spent. If it still produces value after this year it is capex, booked as an asset and spread over its useful life through depreciation or amortisation. If not, it is opex and hits this year's profit in full.">
         <div class="node"><strong>A euro is spent</strong><span>salary, cable, software licence, SaaS fee</span></div>
         <div class="vline"></div>
         <div class="node q"><strong>Does it buy something that keeps producing value after this year?</strong><span>and does the company control it?</span></div>
-        <div class="split">
+        <div class="split" data-part="answers">
           <div class="branch">
             <span class="tag">No</span>
             <div class="node opex"><strong><span class="swatch" style="background:var(--s-opex)"></span>Opex</strong><span>Full cost in this year's P&amp;L. Gone.</span></div>
@@ -192,7 +292,7 @@ footer{margin-top:60px;color:var(--ink-3);font-size:.85rem;border-top:1px solid 
 
     <div class="block" id="timing-root" aria-live="polite"></div>
 
-    <div class="block">
+    <div class="block" id="matrix-block">
       <h3>Where each route shows up</h3>
       <div class="matrix" role="table" aria-label="How opex and capex appear in the three financial statements">
         <div role="columnheader">Statement</div>
@@ -220,22 +320,22 @@ footer{margin-top:60px;color:var(--ink-3);font-size:.85rem;border-top:1px solid 
       <h2>In depth</h2>
     </div>
 
-    <section class="deep">
+    <section class="deep" id="s-test">
       <h3>1. The test: is it an asset?</h3>
       <div class="prose">
-        <p>Spending becomes capex only if it creates an <b>asset</b>: a resource the company <b>controls</b>, that is expected to bring <b>future economic benefits</b>, and whose cost can be <b>measured reliably</b>. For intangibles like software, IAS 38 adds that it must be <b>identifiable</b> (separable, or arising from a contract or legal right).</p>
-        <p>Control is the word people skip. It means the power to get the benefits and to stop others getting them, usually through a legal right. You do not need to own the IP: a licence you control is an asset. A subscription you lose the day you stop paying is a service, so it is opex.</p>
-        <p class="callout">Importance, size or "strategic" labels do not make something capex. Only the asset test does.</p>
+        <p data-part="test">Spending becomes capex only if it creates an <b>asset</b>: a resource the company <b>controls</b>, that is expected to bring <b>future economic benefits</b>, and whose cost can be <b>measured reliably</b>. For intangibles like software, IAS 38 adds that it must be <b>identifiable</b> (separable, or arising from a contract or legal right).</p>
+        <p data-part="control">Control is the word people skip. It means the power to get the benefits and to stop others getting them, usually through a legal right. You do not need to own the IP: a licence you control is an asset. A subscription you lose the day you stop paying is a service, so it is opex.</p>
+        <p class="callout" data-part="callout">Importance, size or "strategic" labels do not make something capex. Only the asset test does.</p>
       </div>
     </section>
 
-    <section class="deep">
+    <section class="deep" id="s-dna">
       <h3>2. Depreciation and amortisation</h3>
       <div class="prose">
-        <p>Same mechanism, two names. <b>Depreciation</b> spreads the cost of physical assets (cables, transformers, servers). <b>Amortisation</b> does the same for intangibles (software, licences, patents). Together: <b>D&amp;A</b>.</p>
-        <p>Straight-line is the default:</p>
-        <div class="formula">Annual D&amp;A = (Cost − Residual value) ÷ Useful life</div>
-        <ul>
+        <p data-part="names">Same mechanism, two names. <b>Depreciation</b> spreads the cost of physical assets (cables, transformers, servers). <b>Amortisation</b> does the same for intangibles (software, licences, patents). Together: <b>D&amp;A</b>.</p>
+        <p data-part="sl">Straight-line is the default:</p>
+        <div class="formula" data-part="formula">Annual D&amp;A = (Cost − Residual value) ÷ Useful life</div>
+        <ul data-part="list">
           <li><b>Useful life</b> is an estimate of how long the asset produces value, reviewed each year. A shorter life means faster cost recognition.</li>
           <li><b>Residual value</b> is what it is worth at the end. For software it is usually zero.</li>
           <li><b>Other methods</b> exist (declining balance, units of production) when benefits are front-loaded or usage-driven.</li>
@@ -244,7 +344,7 @@ footer{margin-top:60px;color:var(--ink-3);font-size:.85rem;border-top:1px solid 
       </div>
     </section>
 
-    <section class="deep">
+    <section class="deep" id="s-books">
       <h3>3. The bookkeeping, for the €900k project</h3>
       <div class="two">
         <div class="ledger" aria-label="Journal entries if expensed">
@@ -263,42 +363,42 @@ footer{margin-top:60px;color:var(--ink-3);font-size:.85rem;border-top:1px solid 
       <p class="prose" style="color:var(--ink-2)">Figures in €k, 3-year life. Years 2 and 3 repeat only the amortisation lines. Cash leaves on the same day in both cases.</p>
     </section>
 
-    <section class="deep">
+    <section class="deep" id="s-ebitda">
       <h3>4. Why managers like capitalising: EBITDA</h3>
       <div class="prose">
-        <p>The P&amp;L runs top to bottom: revenue, minus operating costs, gives <b>EBITDA</b>; minus D&amp;A gives <b>EBIT</b>; minus interest and tax gives <b>net profit</b>.</p>
-        <p>Opex sits above EBITDA. D&amp;A sits below it. So capitalising moves cost out of EBITDA entirely, and investors, lenders and bonus schemes often watch EBITDA. It also moves the cash out of operating cash flow into investing cash flow, so "operating cash flow" looks better too.</p>
-        <p class="callout">Total profit over the asset's life is identical either way. Only the timing and the line it sits on change.</p>
+        <p data-part="ladder">The P&amp;L runs top to bottom: revenue, minus operating costs, gives <b>EBITDA</b>; minus D&amp;A gives <b>EBIT</b>; minus interest and tax gives <b>net profit</b>.</p>
+        <p data-part="above">Opex sits above EBITDA. D&amp;A sits below it. So capitalising moves cost out of EBITDA entirely, and investors, lenders and bonus schemes often watch EBITDA. It also moves the cash out of operating cash flow into investing cash flow, so "operating cash flow" looks better too.</p>
+        <p class="callout" data-part="callout">Total profit over the asset's life is identical either way. Only the timing and the line it sits on change.</p>
       </div>
     </section>
 
-    <section class="deep">
+    <section class="deep" id="s-reg">
       <h3>5. Regulated grid operators: where the money is</h3>
       <div class="prose">
-        <p>A regulated distribution operator cannot set its own prices. The regulator sets <b>allowed revenue</b>, roughly:</p>
-        <div class="formula"><span class="o">Opex allowance</span> + <span class="c">Depreciation</span> + <span class="r">RAB × WACC</span></div>
-        <ul>
+        <p data-part="intro">A regulated distribution operator cannot set its own prices. The regulator sets <b>allowed revenue</b>, roughly:</p>
+        <div class="formula" data-part="formula"><span class="o">Opex allowance</span> + <span class="c">Depreciation</span> + <span class="r">RAB × WACC</span></div>
+        <ul data-part="list">
           <li><b>RAB</b> (regulated asset base): the regulator's version of the balance sheet. Capitalised spend enters it.</li>
           <li><b>Depreciation</b> pays the investment back over its regulatory life: the <i>return of</i> capital.</li>
           <li><b>RAB × WACC</b> pays for the money tied up: the <i>return on</i> capital. Spain sets 6.58% for 2026 to 2031.</li>
           <li><b>Opex</b> is recovered at best, often late or cut by efficiency targets. It earns no return. In Germany it is fixed from a base year, so new opex in another year waits for the next reset.</li>
         </ul>
-        <p>That asymmetry is the <b>capex bias</b>: capitalised spend makes money, expensed spend does not. Regulators fight it with <b>TOTEX</b> (treat all spending alike) or, in Italy, a <b>fixed share</b> of all spending capitalised regardless of its label.</p>
-        <p class="callout">The WACC is not pure margin. It compensates lenders and shareholders. The operator's real gain is the gap between the allowed rate and what its capital actually costs.</p>
+        <p data-part="bias">That asymmetry is the <b>capex bias</b>: capitalised spend makes money, expensed spend does not. Regulators fight it with <b>TOTEX</b> (treat all spending alike) or, in Italy, a <b>fixed share</b> of all spending capitalised regardless of its label.</p>
+        <p class="callout" data-part="callout">The WACC is not pure margin. It compensates lenders and shareholders. The operator's real gain is the gap between the allowed rate and what its capital actually costs.</p>
       </div>
     </section>
 
-    <section class="deep">
+    <section class="deep" id="s-trip">
       <h3>6. Things that catch people out</h3>
       <div class="cards">
-        <div class="card"><h3>Upkeep is never capex</h3><p>Maintaining an asset you already have is opex. Only spending that adds new capability can be added to the asset, and IAS 38 says that happens "only rarely".</p></div>
-        <div class="card"><h3>No relabelling later</h3><p>Once a cost has been expensed it can never be capitalised retroactively (IAS 38 para. 71).</p></div>
-        <div class="card"><h3>Prepayment is not capex</h3><p>Paying in advance for a service creates a short-term asset that unwinds as the service arrives. It never enters D&amp;A.</p></div>
-        <div class="card"><h3>Internal labour can be capitalised</h3><p>Staff time spent building an asset can go on the balance sheet, which is one reason companies build in-house instead of buying SaaS.</p></div>
-        <div class="card"><h3>Impairment</h3><p>If an asset loses its value early, the remaining book value is written off in one hit. The risk of capitalising.</p></div>
-        <div class="card"><h3>Three rulebooks</h3><p>Statutory accounts, tax and the regulator can each use different lives. In Germany the regulator fixes software at 3 to 5 years.</p></div>
-        <div class="card"><h3>Commitments stay off the balance sheet</h3><p>A signed but unperformed contract is not a liability, unless it turns loss-making (onerous). Then a provision is booked.</p></div>
-        <div class="card"><h3>EBITDA is not a standard</h3><p>IFRS does not define EBITDA. Each company computes its own, so compare definitions before comparing numbers.</p></div>
+        <div class="card" data-part="ca"><h3>Upkeep is never capex</h3><p>Maintaining an asset you already have is opex. Only spending that adds new capability can be added to the asset, and IAS 38 says that happens "only rarely".</p></div>
+        <div class="card" data-part="ca"><h3>No relabelling later</h3><p>Once a cost has been expensed it can never be capitalised retroactively (IAS 38 para. 71).</p></div>
+        <div class="card" data-part="ca"><h3>Prepayment is not capex</h3><p>Paying in advance for a service creates a short-term asset that unwinds as the service arrives. It never enters D&amp;A.</p></div>
+        <div class="card" data-part="ca"><h3>Internal labour can be capitalised</h3><p>Staff time spent building an asset can go on the balance sheet, which is one reason companies build in-house instead of buying SaaS.</p></div>
+        <div class="card" data-part="cb"><h3>Impairment</h3><p>If an asset loses its value early, the remaining book value is written off in one hit. The risk of capitalising.</p></div>
+        <div class="card" data-part="cb"><h3>Three rulebooks</h3><p>Statutory accounts, tax and the regulator can each use different lives. In Germany the regulator fixes software at 3 to 5 years.</p></div>
+        <div class="card" data-part="cb"><h3>Commitments stay off the balance sheet</h3><p>A signed but unperformed contract is not a liability, unless it turns loss-making (onerous). Then a provision is booked.</p></div>
+        <div class="card" data-part="cb"><h3>EBITDA is not a standard</h3><p>IFRS does not define EBITDA. Each company computes its own, so compare definitions before comparing numbers.</p></div>
       </div>
     </section>
 
@@ -343,8 +443,15 @@ footer{margin-top:60px;color:var(--ink-3);font-size:.85rem;border-top:1px solid 
 <script src="https://unpkg.com/htm@3.1.1/dist/htm.umd.js"></script>
 <script>
 (function(){
-  const { useState, useMemo } = React;
+  const { useState, useEffect } = React;
   const html = htm.bind(React.createElement);
+
+  // Stage: what step mode asks the live charts to show. Untouched (all null/false) for a normal visit.
+  const stage = { snap: { on: false, rec: false, timing: null, reg: null, aha: 0 }, subs: new Set() };
+  const setStage = patch => { stage.snap = { ...stage.snap, ...patch }; stage.subs.forEach(f => f()); };
+  const subscribe = f => { stage.subs.add(f); return () => stage.subs.delete(f); };
+  const useStage = () => React.useSyncExternalStore(subscribe, () => stage.snap);
+  const reduceMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const fmt = v => {
     const a = Math.abs(v), s = v < 0 ? "-" : "";
@@ -376,8 +483,10 @@ footer{margin-top:60px;color:var(--ink-3);font-size:.85rem;border-top:1px solid 
   }
 
   // Generic grouped/stacked bar chart drawn to one scale
-  function BarChart({ years, series, maxV, ariaLabel, tipFor }){
-    const W = 640, H = 250, m = {t:14, r:10, b:30, l:54};
+  function BarChart({ years, series, maxV, ariaLabel, tipFor, compact, shown }){
+    // compact: the recording view draws on a narrower canvas so labels come out larger
+    const W = compact ? 420 : 640, H = compact ? 260 : 250, m = {t:14, r:10, b:compact ? 34 : 30, l:compact ? 62 : 54};
+    const fs = compact ? 14 : 11, fx = compact ? 14 : 11.5;
     const iw = W - m.l - m.r, ih = H - m.t - m.b;
     const [tip, setTip] = useState(null);
     const ticks = [0, .25, .5, .75, 1].map(f => f * maxV);
@@ -397,15 +506,16 @@ footer{margin-top:60px;color:var(--ink-3);font-size:.85rem;border-top:1px solid 
       setTip({ left, top: 4, ...tipFor(i) });
     };
 
-    return html`<div class="chart-box" onMouseLeave=${() => setTip(null)}>
+    return html`<div class="chart-box" data-part="bars" onMouseLeave=${() => setTip(null)}>
       <svg viewBox=${`0 0 ${W} ${H}`} role="img" aria-label=${ariaLabel}>
         ${ticks.map(t => html`<g>
           <line x1=${m.l} x2=${W-m.r} y1=${y(t)} y2=${y(t)} stroke="var(--rule-2)" stroke-width="1" />
-          <text x=${m.l-8} y=${y(t)+4} text-anchor="end" font-size="11" fill="var(--ink-3)" font-family="var(--f-mono)">${fmt(t)}</text>
+          <text x=${m.l-8} y=${y(t)+4} text-anchor="end" font-size=${fs} fill="var(--ink-3)" font-family="var(--f-mono)">${fmt(t)}</text>
         </g>`)}
         ${years.map((yr, i) => {
           const x0 = m.l + band*i + (band - gw)/2;
-          return html`<g>
+          const state = shown == null ? "" : (i < shown ? "yr-in" : "yr-pend");
+          return html`<g class=${state}><g class="bars-g">
             ${groups[i].map((stack, j) => {
               let acc = 0;
               const x = x0 + j*(bw+gap);
@@ -420,7 +530,7 @@ footer{margin-top:60px;color:var(--ink-3);font-size:.85rem;border-top:1px solid 
                   : html`<rect x=${x} y=${yTop} width=${bw} height=${hh} fill=${s.c} />`;
               });
             })}
-            <text x=${m.l + band*i + band/2} y=${H-10} text-anchor="middle" font-size="11.5" fill="var(--ink-2)" font-family="var(--f-mono)">${yr}</text>
+            </g><text x=${m.l + band*i + band/2} y=${H-10} text-anchor="middle" font-size=${fx} fill="var(--ink-2)" font-family="var(--f-mono)">${yr}</text>
             <rect x=${m.l + band*i} y=${m.t} width=${band} height=${ih} fill="transparent"
               onMouseMove=${e => onMove(i, e)} onMouseEnter=${e => onMove(i, e)} onFocus=${e => onMove(i, e)} tabindex="0" aria-label=${"Year " + yr} />
           </g>`;
@@ -431,8 +541,9 @@ footer{margin-top:60px;color:var(--ink-3);font-size:.85rem;border-top:1px solid 
     </div>`;
   }
 
-  function LineChart({ points, maxV, ariaLabel }){
-    const W = 640, H = 170, m = {t:14, r:16, b:28, l:54};
+  function LineChart({ points, maxV, ariaLabel, compact }){
+    const W = compact ? 420 : 640, H = compact ? 210 : 170, m = {t:compact ? 22 : 14, r:compact ? 22 : 16, b:compact ? 32 : 28, l:compact ? 62 : 54};
+    const fs = compact ? 14 : 11, fx = compact ? 14 : 11.5;
     const iw = W - m.l - m.r, ih = H - m.t - m.b;
     const n = points.length - 1;
     const x = i => m.l + (i / n) * iw;
@@ -440,16 +551,16 @@ footer{margin-top:60px;color:var(--ink-3);font-size:.85rem;border-top:1px solid 
     const ticks = [0, .5, 1].map(f => f*maxV);
     const capexPath = points.map((p,i) => `${i?"L":"M"}${x(i)},${y(p.capex)}`).join(" ");
     const opexPath = points.map((p,i) => `${i?"L":"M"}${x(i)},${y(0)}`).join(" ");
-    return html`<div class="chart-box"><svg viewBox=${`0 0 ${W} ${H}`} role="img" aria-label=${ariaLabel}>
+    return html`<div class="chart-box" data-part="nbv"><svg viewBox=${`0 0 ${W} ${H}`} role="img" aria-label=${ariaLabel}>
       ${ticks.map(t => html`<g>
         <line x1=${m.l} x2=${W-m.r} y1=${y(t)} y2=${y(t)} stroke="var(--rule-2)" />
-        <text x=${m.l-8} y=${y(t)+4} text-anchor="end" font-size="11" fill="var(--ink-3)" font-family="var(--f-mono)">${fmt(t)}</text>
+        <text x=${m.l-8} y=${y(t)+4} text-anchor="end" font-size=${fs} fill="var(--ink-3)" font-family="var(--f-mono)">${fmt(t)}</text>
       </g>`)}
-      ${points.map((p,i) => html`<text x=${x(i)} y=${H-8} text-anchor="middle" font-size="11.5" fill="var(--ink-2)" font-family="var(--f-mono)">${i === 0 ? "Start" : "End Y" + i}</text>`)}
+      ${points.map((p,i) => html`<text x=${x(i)} y=${H-8} text-anchor="middle" font-size=${fx} fill="var(--ink-2)" font-family="var(--f-mono)">${i === 0 ? "Start" : "End Y" + i}</text>`)}
       <path d=${opexPath} fill="none" stroke="var(--s-opex)" stroke-width="2" stroke-dasharray="5 4" />
       <path d=${capexPath} fill="none" stroke="var(--s-capex)" stroke-width="2" />
       ${points.map((p,i) => html`<circle cx=${x(i)} cy=${y(p.capex)} r="4.5" fill="var(--s-capex)" stroke="var(--surface)" stroke-width="2"><title>${(i===0?"Start":"End of year "+i) + ": " + fmt(p.capex)}</title></circle>`)}
-      <text x=${x(0)+8} y=${y(points[0].capex)-8} font-size="11.5" fill="var(--ink)" font-family="var(--f-mono)">${fmt(points[0].capex)}</text>
+      <text x=${x(0)+8} y=${y(points[0].capex)-8} font-size=${fx} fill="var(--ink)" font-family="var(--f-mono)">${fmt(points[0].capex)}</text>
     </svg></div>`;
   }
 
@@ -457,8 +568,25 @@ footer{margin-top:60px;color:var(--ink-3);font-size:.85rem;border-top:1px solid 
     const [amount, setAmount] = useState(900000);
     const [life, setLife] = useState(3);
     const [showTable, setShowTable] = useState(false);
+    const st = useStage();
+    // Step mode sets the sliders to what the step needs; the reader can still move them after.
+    useEffect(() => { if (st.timing) { setAmount(st.timing.amount); setLife(st.timing.life); } }, [st.timing]);
+    // The aha step: reveal the years one at a time (null = all shown, the normal page).
+    const [shown, setShown] = useState(null);
+    useEffect(() => {
+      if (!st.aha) { setShown(null); return; }
+      const n = st.timing ? st.timing.life : life;
+      if (reduceMotion()) { setShown(99); return; }
+      setShown(0);
+      const ids = [];
+      for (let k = 1; k <= n; k++) ids.push(setTimeout(() => setShown(k), 700 + (k-1) * 1300));
+      ids.push(setTimeout(() => setShown(99), 700 + n * 1300 + 300));
+      return () => ids.forEach(clearTimeout);
+    }, [st.aha]);
     const years = Array.from({length: life}, (_, i) => "Y" + (i+1));
     const dep = amount / life;
+    const seen = shown == null ? life : Math.min(shown, life);
+    const cumO = seen >= 1 ? amount : 0, cumC = dep * seen;
     const groups = years.map((_, i) => [
       [{ v: i === 0 ? amount : 0, c: "var(--s-opex)", k: "Expensed" }],
       [{ v: dep, c: "var(--s-capex)", k: "Capitalised" }]
@@ -466,34 +594,40 @@ footer{margin-top:60px;color:var(--ink-3);font-size:.85rem;border-top:1px solid 
     const points = Array.from({length: life+1}, (_, i) => ({ capex: amount - dep*i }));
     return html`
       <h3>Same euros, different timing</h3>
-      <p class="note">A software integration project paid in cash on day one. Move the sliders: the total cost never changes, only the year it lands in.</p>
-      <div class="controls">
+      <p class="note" data-part="note">A software integration project paid in cash on day one. Move the sliders: the total cost never changes, only the year it lands in.</p>
+      <div class="controls" data-part="controls">
         <${Slider} id="t-amt" label="Project cost" value=${amount} min=${100000} max=${2000000} step=${50000} onChange=${setAmount} display=${fmt} />
         <${Slider} id="t-life" label="Useful life" value=${life} min=${1} max=${8} step=${1} onChange=${setLife} display=${v => v + (v===1?" year":" years")} />
       </div>
-      <div class="legend" aria-hidden="true">
+      <div class="legend" aria-hidden="true" data-part="legend">
         <span><span class="swatch" style=${{background:"var(--s-opex)"}}></span>Expensed (opex)</span>
         <span><span class="swatch" style=${{background:"var(--s-capex)"}}></span>Capitalised (capex): yearly amortisation</span>
       </div>
-      <${BarChart} years=${years} series=${{groups}} maxV=${amount}
+      <${BarChart} years=${years} series=${{groups}} maxV=${amount} compact=${st.rec} shown=${shown}
         ariaLabel=${`Cost hitting profit each year. Expensed: ${fmt(amount)} in year 1. Capitalised: ${fmt(dep)} per year for ${life} years.`}
         tipFor=${i => ({ title: "Year " + (i+1) + ": cost in the P&L", rows: [
           { k: "Expensed", v: fmt(i===0?amount:0), c: "var(--s-opex)" },
           { k: "Capitalised", v: fmt(dep), c: "var(--s-capex)" } ] })} />
-      <div class="stats">
+      ${shown != null && html`<div class="tally" data-part="tally" aria-live="polite">
+        <span class="label">Cost in profit so far${seen ? ", to the end of Y" + seen : ""}</span>
+        <div class="tr"><span>Expensed</span><div class="track"><div class="fill" style=${{width: (cumO/amount*100) + "%", background:"var(--s-opex)"}}></div></div><span class="mono">${fmt(cumO)}</span></div>
+        <div class="tr"><span>Capitalised</span><div class="track"><div class="fill" style=${{width: (cumC/amount*100) + "%", background:"var(--s-capex)"}}></div></div><span class="mono">${fmt(cumC)}</span></div>
+        <p class=${"end" + (shown > life ? " on" : "")}>The total cost never changes, only the year it lands in.</p>
+      </div>`}
+      <div class="stats" data-part="stats">
         <div class="stat"><span class="v">${fmt(-amount)} / €0k</span><span class="k">Year-1 EBITDA impact, expensed vs capitalised</span></div>
         <div class="stat"><span class="v">${fmt(-amount)} / ${fmt(-dep)}</span><span class="k">Year-1 net profit impact (before tax)</span></div>
         <div class="stat"><span class="v">${fmt(-amount)}</span><span class="k">Year-1 cash out, both routes</span></div>
         <div class="stat"><span class="v">${fmt(amount)}</span><span class="k">Total cost over the life, both routes</span></div>
       </div>
-      <h3 style=${{fontSize:"1rem", marginTop:4}}>What sits on the balance sheet</h3>
-      <div class="legend" aria-hidden="true">
+      <h3 style=${{fontSize:"1rem", marginTop:4}} data-part="nbv-head">What sits on the balance sheet</h3>
+      <div class="legend" aria-hidden="true" data-part="nbv-legend">
         <span><span class="swatch" style=${{background:"var(--s-capex)"}}></span>Net book value, capitalised</span>
         <span><span class="swatch" style=${{background:"var(--s-opex)"}}></span>Expensed: no asset at all</span>
       </div>
-      <${LineChart} points=${points} maxV=${amount} ariaLabel=${`Net book value falls from ${fmt(amount)} to zero over ${life} years; the expensed route never creates an asset.`} />
-      <button class="toggle" onClick=${() => setShowTable(!showTable)} aria-expanded=${showTable}>${showTable ? "Hide numbers" : "Show numbers"}</button>
-      ${showTable && html`<div class="tbl-wrap"><table>
+      <${LineChart} points=${points} maxV=${amount} compact=${st.rec} ariaLabel=${`Net book value falls from ${fmt(amount)} to zero over ${life} years; the expensed route never creates an asset.`} />
+      <button class="toggle" data-part="toggle" onClick=${() => setShowTable(!showTable)} aria-expanded=${showTable}>${showTable ? "Hide numbers" : "Show numbers"}</button>
+      ${showTable && html`<div class="tbl-wrap" data-part="table"><table>
         <thead><tr><th>Year</th><th>Expensed: P&L cost</th><th>Capitalised: amortisation</th><th>Book value at year end</th></tr></thead>
         <tbody>${years.map((yr, i) => html`<tr><td>${yr}</td><td>${fmt(i===0?amount:0)}</td><td>${fmt(dep)}</td><td>${fmt(amount - dep*(i+1))}</td></tr>`)}</tbody>
       </table></div>`}
@@ -505,6 +639,8 @@ footer{margin-top:60px;color:var(--ink-3);font-size:.85rem;border-top:1px solid 
     const [life, setLife] = useState(3);
     const [wacc, setWacc] = useState(6.58);
     const [showTable, setShowTable] = useState(false);
+    const st = useStage();
+    useEffect(() => { if (st.reg) { setAmount(st.reg.amount); setLife(st.reg.life); setWacc(st.reg.wacc); } }, [st.reg]);
     const dep = amount / life;
     const rows = Array.from({length: life}, (_, i) => {
       const open = amount - dep*i;
@@ -518,32 +654,32 @@ footer{margin-top:60px;color:var(--ink-3);font-size:.85rem;border-top:1px solid 
     ]);
     return html`
       <h3>Why a grid operator prefers capex</h3>
-      <p class="note">Allowed revenue for a regulated operator, for the same spend booked two ways. Capex comes back as depreciation plus a return on the shrinking balance. Opex comes back once at best, with nothing on top.</p>
-      <div class="formula"><span class="o">Opex allowance</span> + <span class="c">Depreciation</span> + <span class="r">RAB × WACC</span> = allowed revenue</div>
-      <div class="controls">
+      <p class="note" data-part="note">Allowed revenue for a regulated operator, for the same spend booked two ways. Capex comes back as depreciation plus a return on the shrinking balance. Opex comes back once at best, with nothing on top.</p>
+      <div class="formula" data-part="formula"><span class="o">Opex allowance</span> + <span class="c">Depreciation</span> + <span class="r">RAB × WACC</span> = allowed revenue</div>
+      <div class="controls" data-part="controls">
         <${Slider} id="r-amt" label="Spend" value=${amount} min=${100000} max=${2000000} step=${50000} onChange=${setAmount} display=${fmt} />
         <${Slider} id="r-life" label="Regulatory life" value=${life} min=${1} max=${10} step=${1} onChange=${setLife} display=${v => v + (v===1?" year":" years")} />
         <${Slider} id="r-wacc" label="Allowed return (WACC)" value=${wacc} min=${2} max=${10} step=${0.01} onChange=${setWacc} display=${v => v.toFixed(2) + "%"} />
       </div>
-      <div class="legend" aria-hidden="true">
+      <div class="legend" aria-hidden="true" data-part="legend">
         <span><span class="swatch" style=${{background:"var(--s-opex)"}}></span>Opex: recovered at best</span>
         <span><span class="swatch" style=${{background:"var(--s-capex)"}}></span>Capex: depreciation (return of capital)</span>
         <span><span class="swatch" style=${{background:"var(--s-return)"}}></span>Capex: RAB × WACC (return on capital)</span>
       </div>
-      <${BarChart} years=${rows.map(r => r.yr)} series=${{groups}} maxV=${maxV}
+      <${BarChart} years=${rows.map(r => r.yr)} series=${{groups}} maxV=${maxV} compact=${st.rec}
         ariaLabel=${`Revenue recovered per year. Opex: ${fmt(amount)} at best in year 1. Capex: ${fmt(dep)} depreciation per year plus a return totalling ${fmt(totalRet)}.`}
         tipFor=${i => ({ title: "Year " + (i+1) + ": revenue allowed", rows: [
           { k: "Opex recovered", v: fmt(i===0?amount:0), c: "var(--s-opex)" },
           { k: "Depreciation", v: fmt(rows[i].dep), c: "var(--s-capex)" },
           { k: "Return on RAB", v: fmt(rows[i].ret), c: "var(--s-return)" } ] })} />
-      <div class="stats">
+      <div class="stats" data-part="stats">
         <div class="stat"><span class="v">${fmt(amount)}</span><span class="k">Opex route: recovered at most</span></div>
         <div class="stat"><span class="v">${fmt(amount + totalRet)}</span><span class="k">Capex route: depreciation plus return</span></div>
         <div class="stat"><span class="v">${fmt(totalRet)} (${(totalRet/amount*100).toFixed(1)}%)</span><span class="k">The difference: return earned over the life</span></div>
       </div>
-      <p class="note mono" style=${{fontSize:".86rem"}}>Shortcut: total return ≈ WACC × spend × (life + 1) ÷ 2 = ${fmt(wacc/100*amount*(life+1)/2)}</p>
-      <button class="toggle" onClick=${() => setShowTable(!showTable)} aria-expanded=${showTable}>${showTable ? "Hide numbers" : "Show numbers"}</button>
-      ${showTable && html`<div class="tbl-wrap"><table>
+      <p class="note mono" style=${{fontSize:".86rem"}} data-part="shortcut">Shortcut: total return ≈ WACC × spend × (life + 1) ÷ 2 = ${fmt(wacc/100*amount*(life+1)/2)}</p>
+      <button class="toggle" data-part="toggle" onClick=${() => setShowTable(!showTable)} aria-expanded=${showTable}>${showTable ? "Hide numbers" : "Show numbers"}</button>
+      ${showTable && html`<div class="tbl-wrap" data-part="table"><table>
         <thead><tr><th>Year</th><th>Opening RAB</th><th>Depreciation</th><th>Return</th><th>Capex total</th></tr></thead>
         <tbody>${rows.map(r => html`<tr><td>${r.yr}</td><td>${fmt(r.open)}</td><td>${fmt(r.dep)}</td><td>${fmt(r.ret)}</td><td>${fmt(r.dep + r.ret)}</td></tr>`)}</tbody>
       </table></div>`}
@@ -552,6 +688,164 @@ footer{margin-top:60px;color:var(--ink-3);font-size:.85rem;border-top:1px solid 
 
   ReactDOM.createRoot(document.getElementById("timing-root")).render(html`<${Timing} />`);
   ReactDOM.createRoot(document.getElementById("reg-root")).render(html`<${Regulated} />`);
+
+  /* ---------- Step mode ----------
+     The video's order, one idea per step. t: what to bring to the front. show: which [data-part]s of it the
+     recording view keeps (everything when absent). timing / reg: slider values for the live charts.
+     side: in a wide frame, chart on the left and its numbers on the right. Beat sheet: VIDEO.md. */
+  const P900 = { amount: 900000, life: 3 };
+  const STEPS = [
+    { t: ["header.top"], show: ["h1", "lede"], cap: "" },
+    { t: ["#flow-block"], show: [], cap: "Accounting asks one question about every euro." },
+    { t: ["#flow-block"], show: ["answers"], cap: "No: opex. Yes: capex, then D&A." },
+    { t: ["#s-test"], show: ["test", "callout"], cap: "Only the asset test makes something capex." },
+    { t: ["#timing-root"], show: ["legend", "bars", "tally"], timing: P900, aha: true, side: true, cap: "Same euros, different timing." },
+    { t: ["#s-dna"], show: ["names", "formula"], cap: "D&A spreads the cost over the useful life." },
+    { t: ["#timing-root"], show: ["controls", "legend", "bars"], timing: { amount: 900000, life: 6 }, side: true, cap: "Useful life is an estimate. Change it and the yearly slice changes." },
+    { t: ["#timing-root"], show: ["nbv-legend", "nbv"], timing: P900, side: true, cap: "What sits on the balance sheet." },
+    { t: ["#s-books"], cap: "The bookkeeping, for the €900k project." },
+    { t: ["#matrix-block"], cap: "Where each route shows up." },
+    { t: ["#s-ebitda"], show: ["ladder", "above"], cap: "Why managers like capitalising: EBITDA." },
+    { t: ["#timing-root"], show: ["stats"], timing: P900, cap: "Year one of the €900k project, booked both ways." },
+    { t: ["#s-reg"], show: ["intro", "formula"], cap: "How a regulated grid operator gets paid." },
+    { t: ["#reg-root"], show: ["legend", "bars", "stats"], reg: { amount: 900000, life: 3, wacc: 6.58 }, side: true, cap: "Why a grid operator prefers capex." },
+    { t: ["#reg-root"], show: ["controls", "stats", "shortcut"], reg: { amount: 900000, life: 10, wacc: 6.58 }, cap: "The longer the regulatory life, the bigger the return." },
+    { t: ["#s-reg"], show: ["bias", "callout"], cap: "That asymmetry is the capex bias." },
+    { t: ["#s-trip"], show: ["ca"], cap: "Things that catch people out (1 of 2)." },
+    { t: ["#s-trip"], show: ["cb"], cap: "Things that catch people out (2 of 2)." },
+    { t: ["#s-ebitda", "footer"], show: ["callout"], cap: "The one thing to remember." }
+  ];
+  const AHA = STEPS.findIndex(s => s.aha);
+  const root = document.documentElement;
+  const wrap = document.querySelector(".wrap");
+  const els = s => s.t.map(q => document.querySelector(q)).filter(Boolean);
+  STEPS.forEach(s => els(s).forEach(el => el.setAttribute("data-target", "")));
+
+  // Recording view hides the parts a step does not list. One rule per part name, so it survives React re-renders.
+  const partCss = document.createElement("style");
+  document.head.appendChild(partCss);
+  const known = new Set();
+  const syncPartCss = () => {
+    const names = new Set(STEPS.flatMap(s => s.show || []));
+    document.querySelectorAll("[data-part]").forEach(el => names.add(el.dataset.part));
+    ["note", "toggle", "table", "nbv-head"].forEach(n => names.add(n));
+    if ([...names].every(n => known.has(n))) return;
+    names.forEach(n => known.add(n));
+    partCss.textContent = [...known].map(n => `.rec .is-current[data-show]:not([data-show~="${n}"]) [data-part="${n}"]{display:none!important}`).join("\n");
+  };
+
+  const cap = document.createElement("p");
+  cap.id = "step-cap";
+  wrap.prepend(cap);
+  const sbar = document.createElement("div");
+  sbar.id = "stepbar";
+  sbar.setAttribute("role", "toolbar");
+  sbar.setAttribute("aria-label", "Step through the page");
+  sbar.innerHTML = `<button type="button" data-a="prev" aria-label="Previous step">←</button>
+    <span class="sb-n"></span><span class="sb-cap" aria-live="polite"></span>
+    <button type="button" data-a="next" aria-label="Next step">→</button>
+    <button type="button" data-a="rec" title="Recording view (R)">Rec</button>
+    <button type="button" data-a="exit" aria-label="Leave step mode (Esc)">✕</button>`;
+  document.body.appendChild(sbar);
+
+  let cur = -1, rec = false, ahaRuns = 0;
+  const scrollOpts = () => ({ behavior: reduceMotion() ? "auto" : "smooth" });
+
+  function go(i, opts = {}){
+    i = Math.max(0, Math.min(STEPS.length - 1, i));
+    const s = STEPS[i];
+    cur = i;
+    root.classList.add("stepping");
+    root.classList.toggle("rec", rec);
+    document.querySelectorAll(".is-current,.has-current,.side").forEach(el => {
+      el.classList.remove("is-current", "has-current", "side");
+      el.removeAttribute("data-show");
+    });
+    const targets = els(s);
+    targets.forEach(el => {
+      el.classList.add("is-current");
+      el.classList.toggle("side", !!s.side);
+      if (s.show) el.setAttribute("data-show", s.show.join(" "));
+      for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) p.classList.add("has-current");
+    });
+    cap.textContent = s.cap;
+    sbar.querySelector(".sb-n").textContent = `${i + 1}/${STEPS.length}`;
+    sbar.querySelector(".sb-cap").textContent = s.cap || document.querySelector("h1").textContent;
+    const patch = { on: true, rec, aha: s.aha ? ++ahaRuns : 0 };
+    if (s.timing) patch.timing = { ...s.timing };
+    if (s.reg) patch.reg = { ...s.reg };
+    setStage(patch);
+    if (location.hash !== "#step-" + (i + 1)) history.replaceState(null, "", "#step-" + (i + 1));
+    syncPartCss();
+    requestAnimationFrame(() => {
+      syncPartCss(); // again, once React has drawn any new parts
+      if (rec) { window.scrollTo(0, 0); return; }
+      if (opts.noScroll) return;
+      const first = targets[0];
+      if (!first) return;
+      const part = s.show && s.show.length ? first.querySelector(s.show.map(n => `[data-part="${n}"]`).join(",")) : null;
+      const el = part && first.getBoundingClientRect().height > innerHeight * 0.8 ? part : first;
+      el.scrollIntoView({ block: el.getBoundingClientRect().height < innerHeight * 0.8 ? "center" : "start", ...scrollOpts() });
+    });
+  }
+
+  function setRec(on){
+    rec = on;
+    if (cur < 0) return;
+    go(cur, { noScroll: !on });
+    if (!on) requestAnimationFrame(() => { if (cur >= 0) els(STEPS[cur])[0]?.scrollIntoView({ block: "center" }); });
+  }
+
+  function exit(){
+    cur = -1; rec = false;
+    root.classList.remove("stepping", "rec");
+    document.querySelectorAll(".is-current,.has-current,.side").forEach(el => {
+      el.classList.remove("is-current", "has-current", "side");
+      el.removeAttribute("data-show");
+    });
+    setStage({ on: false, rec: false, aha: 0 });
+    history.replaceState(null, "", location.pathname + location.search);
+  }
+
+  function flipTheme(){
+    const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    root.dataset.theme = dark ? "light" : "dark";
+  }
+
+  sbar.addEventListener("click", e => {
+    const a = e.target.closest("button")?.dataset.a;
+    if (a === "prev") go(cur - 1);
+    else if (a === "next") go(cur + 1);
+    else if (a === "rec") setRec(true);
+    else if (a === "exit") exit();
+  });
+
+  document.addEventListener("keydown", e => {
+    if (cur < 0 || e.metaKey || e.ctrlKey || e.altKey) return;
+    const onSlider = e.target.matches && e.target.matches("input[type=range]");
+    const k = e.key;
+    if ((k === "ArrowRight" || k === "ArrowLeft") && onSlider && !rec) return; // let the slider have its arrows
+    if (k === "ArrowRight" || k === "PageDown") go(cur + 1);
+    else if (k === "ArrowLeft" || k === "PageUp") go(cur - 1);
+    else if (k === "Home") go(0);
+    else if (k === "End") go(STEPS.length - 1);
+    else if (k === "r" || k === "R") setRec(!rec);
+    else if (k === "t" || k === "T") flipTheme();
+    else if (k === "a" || k === "A") go(AHA);
+    else if (k === "Escape") rec ? setRec(false) : exit();
+    else return;
+    e.preventDefault();
+  });
+  // In the recording view, let go of a slider after dragging it so the arrows step again.
+  document.addEventListener("pointerup", e => { if (rec && e.target.matches && e.target.matches("input[type=range]")) e.target.blur(); });
+
+  const fromHash = () => {
+    const m = /^#step-(\d+)$/.exec(location.hash);
+    if (m) go(Number(m[1]) - 1);
+    else if (cur >= 0) exit();
+  };
+  window.addEventListener("hashchange", fromHash);
+  if (/^#step-\d+$/.test(location.hash)) fromHash();
 })();
 </script>
 
