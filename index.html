@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Paul Bébéar</title>
-<meta name="description" content="Interactive explainers and analyses on markets, money and history, by Paul Bébéar. Data science and international markets, Madrid.">
+<meta name="description" content="Interactive explainers, discovery tools and apps by Paul Bébéar, sorted into folders. Data science and international markets, Madrid.">
 <meta property="og:title" content="Paul Bébéar">
-<meta property="og:description" content="Interactive explainers and analyses on markets, money and history.">
+<meta property="og:description" content="Interactive explainers, discovery tools and apps on markets, money and history.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://paulbebear.com">
 <meta property="og:image" content="https://paulbebear.com/assets/og/half-line.jpg">
@@ -17,14 +17,16 @@
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230e6b5c'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='700' font-size='15' fill='white' text-anchor='middle'%3EPB%3C/text%3E%3C/svg%3E">
 <style>
-/* Design read: personal portfolio hub, clean analytical register. Native CSS, Geist + Geist Mono.
-   Dials: variance 6, motion 4, density 3. One accent (deep teal), cool neutrals, auto light/dark.
-   Radius system: media and panels 12px, interactive buttons full pill. */
+/* Design read: personal portfolio hub for recruiters and curious readers, clean analytical register.
+   Native CSS + GSAP ScrollTrigger (one pinned horizontal pan), Geist + Geist Mono.
+   Dials: variance 7, motion 6, density 4. One accent (deep teal), cool neutrals, auto light/dark.
+   Radius system: media and panels 12px, folders 16px, interactive buttons full pill. */
 :root{
   --bg:#f6f7f8; --surface:#ffffff; --ink:#15181c; --ink-2:#4b525b; --ink-3:#6c737c;
   --rule:#e1e4e8; --accent:#0e6b5c; --accent-ink:#ffffff; --accent-soft:#e2f0ed;
   --shadow:0 1px 2px rgba(21,24,28,.05),0 12px 32px -12px rgba(21,24,28,.14);
-  --r:12px;
+  --r:12px; --nav:64px;
+  --gut:clamp(16px,4vw,40px);
   --sans:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace;
   --ease:cubic-bezier(.16,1,.3,1);
@@ -43,80 +45,137 @@
   --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 32px -12px rgba(0,0,0,.6);
   color-scheme:dark;
 }
+:root{--folder:color-mix(in srgb,var(--accent-soft) 55%,var(--surface))}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:var(--nav)}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+main{overflow-x:clip}
 a{color:inherit}
 img{display:block;max-width:100%;height:auto}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
-.wrap{max-width:1180px;margin:0 auto;padding-inline:clamp(16px,4vw,40px)}
-h1,h2,h3{margin:0;letter-spacing:-.025em;text-wrap:balance}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:var(--gut)}
+h1,h2,h3,h4{margin:0;letter-spacing:-.025em;text-wrap:balance}
 p{margin:0}
 
 /* Nav */
-.nav{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid transparent}
-.nav .wrap{height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.nav{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.nav .wrap{height:var(--nav);display:flex;align-items:center;justify-content:space-between;gap:16px}
 .brand{font-weight:600;text-decoration:none;letter-spacing:-.01em}
 .nav ul{display:flex;gap:clamp(14px,2.5vw,28px);list-style:none;margin:0;padding:0;font-size:.95rem}
 .nav ul a{text-decoration:none;color:var(--ink-2);transition:color .2s var(--ease)}
 .nav ul a:hover{color:var(--ink)}
 
-/* Hero: asymmetric split */
-.hero{display:grid;grid-template-columns:minmax(0,11fr) minmax(0,10fr);gap:clamp(28px,5vw,64px);align-items:center;padding-block:clamp(40px,7vw,88px) clamp(56px,8vw,104px)}
-.hero h1{font-size:clamp(2.3rem,4.4vw,3.4rem);line-height:1.05;font-weight:650}
-.hero p{margin-top:20px;color:var(--ink-2);font-size:1.12rem;max-width:42ch}
+/* Hero: about me, asymmetric split with a fanned stack of work */
+.hero{display:grid;grid-template-columns:minmax(0,13fr) minmax(0,9fr);gap:clamp(32px,5vw,64px);align-items:center;min-height:calc(100dvh - var(--nav));padding-block:clamp(32px,6vw,72px)}
+.hero h1{font-size:clamp(2.2rem,3.9vw,3.25rem);line-height:1.06;font-weight:650;max-width:17ch}
+.hero p{margin-top:20px;color:var(--ink-2);font-size:1.12rem;max-width:44ch}
 .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
-.btn{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;text-decoration:none;font-weight:500;font-size:.98rem;padding:12px 20px;border-radius:999px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);transition:transform .25s var(--ease),border-color .2s var(--ease),background .2s var(--ease)}
+.btn{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;text-decoration:none;font-weight:500;font-size:.98rem;padding:12px 20px;border-radius:999px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);transition:transform .25s var(--ease),border-color .2s var(--ease)}
 .btn:hover{border-color:var(--ink-3)}
 .btn:active{transform:translateY(1px) scale(.98)}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .btn.primary:hover{filter:brightness(1.08)}
-.hero-media{display:block;text-decoration:none;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--rule);background:#0b1220}
-.hero-media img{aspect-ratio:16/10;object-fit:cover;width:100%;transition:transform .8s var(--ease)}
-.hero-media:hover img{transform:scale(1.025)}
-.hero-cap{display:flex;justify-content:space-between;gap:12px;margin-top:12px;font-size:.92rem;color:var(--ink-2)}
-.hero-cap a{text-decoration:none;color:var(--ink);font-weight:500}
-.hero-cap a:hover{color:var(--accent)}
 
-/* Work: wide feature + two */
-section{padding-block:clamp(56px,8vw,104px);border-top:1px solid var(--rule)}
-.section-title{font-size:clamp(1.7rem,3vw,2.3rem);font-weight:650;line-height:1.1}
-.work-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(20px,3vw,32px);margin-top:40px}
-.piece{text-decoration:none;display:grid;gap:16px;align-content:start}
-.piece.wide{grid-column:1 / -1;grid-template-columns:minmax(0,7fr) minmax(0,4fr);align-items:center;gap:clamp(20px,4vw,48px)}
-.thumb{border-radius:var(--r);overflow:hidden;border:1px solid var(--rule);background:var(--surface);box-shadow:var(--shadow)}
-.thumb img{aspect-ratio:16/10;object-fit:cover;object-position:top;width:100%;transition:transform .8s var(--ease)}
-.piece:hover .thumb img{transform:scale(1.03)}
-.piece h3{font-size:1.3rem;font-weight:600;display:flex;align-items:center;gap:8px}
-.piece h3 i{font-size:1rem;color:var(--ink-3);transition:transform .3s var(--ease),color .2s}
-.piece:hover h3 i{transform:translate(2px,-2px);color:var(--accent)}
-.piece.wide h3{font-size:clamp(1.5rem,2.4vw,1.9rem)}
-.piece p{color:var(--ink-2);margin-top:8px;max-width:52ch}
-.meta{font-family:var(--mono);font-size:.8rem;color:var(--ink-3);margin-top:12px}
+.fan{position:relative;aspect-ratio:16/12;max-width:560px;width:100%;justify-self:end}
+.fan a{position:absolute;width:78%;border-radius:var(--r);overflow:hidden;border:1px solid var(--rule);box-shadow:var(--shadow);background:var(--surface);transition:transform .7s var(--ease)}
+.fan img{aspect-ratio:16/10;object-fit:cover;object-position:top;width:100%}
+.fan a:nth-child(1){left:22%;top:0;transform:rotate(5deg)}
+.fan a:nth-child(2){left:11%;top:14%;transform:rotate(-2deg)}
+.fan a:nth-child(3){left:0;top:30%;transform:rotate(-7deg)}
+.fan:hover a:nth-child(1){transform:rotate(8deg) translate(14px,-10px)}
+.fan:hover a:nth-child(3){transform:rotate(-10deg) translate(-12px,10px)}
+.fan a:hover{z-index:2}
 
-.more{display:inline-flex;align-items:center;gap:8px;margin-top:40px;text-decoration:none;color:var(--accent);font-weight:500}
-.more:hover{text-decoration:underline;text-underline-offset:4px}
-.more i{transition:transform .3s var(--ease)}
-.more:hover i{transform:translateX(3px)}
-
-/* Now: label column + rows */
-.now{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:clamp(24px,5vw,64px)}
-.now-list{display:grid;gap:0}
-.now-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 24px;padding-block:24px;border-bottom:1px solid var(--rule)}
-.now-item:first-child{padding-top:4px}
-.now-item:last-child{border-bottom:0}
-.now-item h3{font-size:1.15rem;font-weight:600}
-.now-item p{grid-column:1;color:var(--ink-2);max-width:56ch}
-.now-item .link{grid-row:1;grid-column:2;align-self:start;font-size:.92rem;text-decoration:none;color:var(--accent);display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
-.now-item .link:hover{text-decoration:underline;text-underline-offset:3px}
-.now-item .status{grid-row:1;grid-column:2;font-family:var(--mono);font-size:.8rem;color:var(--ink-3);white-space:nowrap}
-
-/* About: vertical stack, wide measure */
-.about > *{max-width:760px}
-.about .lead{font-size:clamp(1.25rem,2.2vw,1.6rem);line-height:1.4;font-weight:500;letter-spacing:-.015em;margin-top:24px}
-.about .body{color:var(--ink-2);margin-top:20px;max-width:62ch}
-.interests{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px;padding:0;list-style:none}
+/* Bio: wide lead sentence, body and interests beside it */
+.bio{border-top:1px solid var(--rule);padding-block:clamp(56px,8vw,104px)}
+.bio-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(24px,5vw,72px);align-items:end}
+.bio .lead{font-size:clamp(1.35rem,2.5vw,1.9rem);line-height:1.35;font-weight:500;letter-spacing:-.02em}
+.bio .body{color:var(--ink-2)}
+.interests{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 0;padding:0;list-style:none}
 .interests li{font-size:.9rem;padding:6px 14px;border-radius:999px;background:var(--accent-soft);color:var(--ink)}
+
+/* Work: folders. Default is a vertical stack; JS turns it into a pinned horizontal pan on large screens. */
+.work{border-top:1px solid var(--rule)}
+.work-pin{padding-block:clamp(48px,7vw,88px)}
+.work-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:16px 32px;margin-bottom:clamp(28px,4vw,40px)}
+.section-title{font-size:clamp(1.7rem,3vw,2.3rem);font-weight:650;line-height:1.1}
+.folder-index{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0;padding:0}
+.folder-index a{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-size:.9rem;padding:7px 14px;border-radius:999px;color:var(--ink-2);border:1px solid var(--rule);background:var(--surface);transition:background .25s var(--ease),color .25s var(--ease),border-color .25s var(--ease)}
+.folder-index a:hover{color:var(--ink);border-color:var(--ink-3)}
+.folder-index a[aria-current="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+
+.folders{position:relative;display:grid;gap:clamp(40px,6vw,64px);max-width:1180px;margin:0 auto;padding-inline:var(--gut)}
+.folder{display:flex;flex-direction:column;min-width:0}
+.tab{align-self:flex-start;display:inline-flex;align-items:center;gap:10px;padding:10px 18px 9px;background:var(--folder);border:1px solid var(--rule);border-bottom:0;border-radius:14px 14px 0 0;position:relative;top:1px;z-index:1}
+.tab i{font-size:1.15rem;color:var(--accent)}
+.tab h3{font-size:1.05rem;font-weight:600;letter-spacing:-.01em}
+.tab .count{font-family:var(--mono);font-size:.78rem;color:var(--ink-3)}
+.sheet{flex:1;min-height:0;display:flex;flex-direction:column;gap:20px;background:var(--folder);border:1px solid var(--rule);border-radius:0 16px 16px 16px;padding:clamp(16px,2.4vw,28px);box-shadow:var(--shadow)}
+.blurb{color:var(--ink-2);max-width:62ch;font-size:.98rem}
+.blurb a{color:var(--accent);text-underline-offset:3px}
+
+.files{flex:1;min-height:0;display:grid;gap:clamp(14px,2vw,24px)}
+.files.feature{grid-template-columns:minmax(0,6fr) minmax(0,5fr)}
+.files.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.rows{display:grid;gap:12px;align-content:start;min-height:0}
+
+.file{text-decoration:none;display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;border-radius:var(--r)}
+.thumb{border-radius:var(--r);overflow:hidden;border:1px solid var(--rule);background:var(--surface)}
+.thumb img{aspect-ratio:16/10;object-fit:cover;object-position:top;width:100%;transition:transform .8s var(--ease)}
+.file:hover .thumb img{transform:scale(1.03)}
+.thumb.tile{aspect-ratio:16/10;display:grid;place-items:center;background-color:var(--surface);background-image:radial-gradient(color-mix(in srgb,var(--accent) 22%,transparent) 1px,transparent 1.5px);background-size:14px 14px}
+.thumb.tile i{font-size:clamp(2.4rem,4vw,3.4rem);color:var(--accent);transition:transform .6s var(--ease)}
+.file:hover .thumb.tile i{transform:scale(1.08) rotate(-4deg)}
+.file h4{font-size:1.08rem;font-weight:600;display:flex;align-items:center;gap:6px;line-height:1.25}
+.file h4 i{font-size:.9rem;color:var(--ink-3);transition:transform .3s var(--ease),color .2s}
+a.file:hover h4 i{transform:translate(2px,-2px);color:var(--accent)}
+.file p{color:var(--ink-2);font-size:.94rem;line-height:1.5;margin-top:4px}
+.file .meta{font-family:var(--mono);font-size:.76rem;color:var(--ink-3);margin-top:8px}
+.file.big h4{font-size:clamp(1.25rem,1.9vw,1.5rem)}
+.file.big p{font-size:1rem}
+
+.file.row{display:grid;grid-template-columns:clamp(96px,11vw,140px) minmax(0,1fr);gap:16px;align-items:center;padding:8px;margin:-8px;transition:background .25s var(--ease)}
+a.file.row:hover{background:color-mix(in srgb,var(--surface) 60%,transparent)}
+.file.row .thumb img,.file.row .thumb.tile{aspect-ratio:16/10}
+.file.row p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* Pinned horizontal pan (class set by JS when the screen is big enough and motion is allowed) */
+.pan-on .work-pin{height:calc(100dvh - var(--nav));display:flex;flex-direction:column;padding-block:clamp(20px,3.2vh,36px);overflow:hidden}
+.pan-on .work-head{width:100%;margin-bottom:clamp(14px,2.4vh,28px)}
+.pan-on .folders{display:flex;flex:1;min-height:0;width:max-content;max-width:none;margin:0;gap:clamp(28px,3vw,48px);padding-inline:max(var(--gut),calc((100vw - 1180px) / 2 + var(--gut)));will-change:transform}
+.pan-on .folder{width:min(1060px,calc(100vw - 2 * var(--gut) - 64px));height:100%;flex-shrink:0}
+.pan-on .sheet{gap:clamp(12px,2vh,20px)}
+.pan-on .files{grid-template-rows:minmax(0,1fr)}
+.pan-on .file.big,.pan-on .files.cols-2 .file{min-height:0}
+.pan-on .file.big .thumb,.pan-on .files[class*="cols-"] .thumb{flex:1;min-height:0}
+.pan-on .file.big .thumb img,.pan-on .files[class*="cols-"] .thumb img{aspect-ratio:auto;height:100%}
+.pan-on .file.big .thumb.tile,.pan-on .files[class*="cols-"] .thumb.tile{aspect-ratio:auto}
+.pan-on .rows:has(> :nth-child(3)){grid-auto-rows:minmax(0,1fr);align-content:stretch}
+.pan-on .file.row .thumb{height:100%;max-height:96px}
+.pan-on .file.row .thumb img,.pan-on .file.row .thumb.tile{aspect-ratio:auto;height:100%}
+@media (max-height:760px){.pan-on .blurb{display:none}.pan-on .file p{-webkit-line-clamp:1}}
+
+/* CV */
+.cv{border-top:1px solid var(--rule);padding-block:clamp(56px,8vw,112px)}
+.cv-grid{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:clamp(28px,5vw,72px);align-items:center}
+.cv-shot{display:block;border-radius:var(--r);overflow:hidden;border:1px solid var(--rule);box-shadow:var(--shadow);transform:rotate(-1.5deg);transition:transform .7s var(--ease)}
+.cv-shot:hover{transform:rotate(0) scale(1.01)}
+.cv-shot img{aspect-ratio:16/10;object-fit:cover;object-position:top;width:100%}
+.cv p.sub{color:var(--ink-2);margin-top:14px;max-width:44ch}
+.cv-links{display:grid;gap:12px;margin-top:28px}
+.cv-link{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:center;text-decoration:none;padding:16px 18px;border-radius:var(--r);border:1px solid var(--rule);background:var(--surface);transition:border-color .2s var(--ease),transform .25s var(--ease)}
+.cv-link:hover{border-color:var(--ink-3)}
+.cv-link:active{transform:translateY(1px) scale(.99)}
+.cv-link > i:first-child{font-size:1.4rem;color:var(--accent);width:44px;height:44px;border-radius:999px;display:grid;place-items:center;background:var(--accent-soft)}
+.cv-link strong{display:block;font-weight:600;font-size:1.05rem;letter-spacing:-.01em}
+.cv-link small{display:block;color:var(--ink-2);font-size:.9rem;line-height:1.45;margin-top:2px}
+.cv-link > i:last-child{color:var(--ink-3);transition:transform .3s var(--ease),color .2s}
+.cv-link:hover > i:last-child{transform:translate(2px,-2px);color:var(--accent)}
+.cv-link.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.cv-link.primary small{color:color-mix(in srgb,var(--accent-ink) 82%,transparent)}
+.cv-link.primary > i:first-child{background:color-mix(in srgb,var(--accent-ink) 16%,transparent);color:var(--accent-ink)}
+.cv-link.primary > i:last-child{color:var(--accent-ink)}
+.cv-link.primary:hover{filter:brightness(1.08);border-color:var(--accent)}
 
 footer{border-top:1px solid var(--rule);padding-block:40px 56px}
 footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:20px;align-items:center}
@@ -125,35 +184,48 @@ footer a{text-decoration:none;color:var(--ink-2);display:inline-flex;align-items
 footer a:hover{color:var(--ink)}
 footer small{color:var(--ink-3);font-size:.88rem}
 
-/* Motion: one load-in for the hero, reveal for sections entering view */
+/* Motion: hero load-in, reveal on enter, folders slide in from the right when stacked */
 @media (prefers-reduced-motion:no-preference){
   .rise{opacity:0;transform:translateY(16px);animation:rise .9s var(--ease) forwards}
   .rise.d1{animation-delay:.08s}.rise.d2{animation-delay:.16s}.rise.d3{animation-delay:.24s}
   @keyframes rise{to{opacity:1;transform:none}}
-  .reveal{opacity:0;transform:translateY(20px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
-  .reveal.in{opacity:1;transform:none}
+  .fan a{animation:deal .9s var(--ease) backwards}
+  .fan a:nth-child(1){animation-delay:.45s}.fan a:nth-child(2){animation-delay:.33s}.fan a:nth-child(3){animation-delay:.21s}
+  @keyframes deal{from{opacity:0;transform:translate(40px,24px) rotate(0)}}
+  .js .reveal{opacity:0;transform:translateY(20px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+  .js .reveal.in{opacity:1;transform:none}
+  :root.js:not(.pan-on) .folder{transition:opacity .9s var(--ease),transform .9s var(--ease)}
+  :root.js:not(.pan-on) .folder:not(.in){opacity:0;transform:translateX(72px)}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 
 /* Mobile collapse */
 @media (max-width:860px){
-  .hero{grid-template-columns:1fr}
-  .piece.wide{grid-template-columns:1fr}
-  .now{grid-template-columns:1fr}
+  .hero{grid-template-columns:1fr;min-height:0;padding-block:40px 64px}
+  .fan{justify-self:center;max-width:460px}
+  .bio-grid{grid-template-columns:1fr;align-items:start}
+  .files.feature{grid-template-columns:1fr}
+  .cv-grid{grid-template-columns:1fr}
+  .cv-shot{transform:none}
 }
 @media (max-width:640px){
-  .work-grid{grid-template-columns:1fr}
   .nav ul li.hide-sm{display:none}
-  .now-item{grid-template-columns:1fr}
-  .now-item .link,.now-item .status{grid-row:auto;grid-column:1}
+  .files.cols-2{grid-template-columns:1fr}
+  .files.cols-2 .file{display:grid;grid-template-columns:clamp(96px,30vw,140px) minmax(0,1fr);gap:16px;align-items:center}
+  .work-head{flex-direction:column;align-items:flex-start}
+  .cv-link{padding:14px}
+  .cv-link > i:first-child{width:38px;height:38px;font-size:1.2rem}
 }
 </style>
 <!-- seo, previews, analytics -->
 <link rel="canonical" href="https://paulbebear.com/">
 <meta property="og:site_name" content="Paul Bébéar">
 <link rel="alternate" type="application/rss+xml" title="Paul Bébéar" href="https://paulbebear.com/feed.xml">
+<script>document.documentElement.classList.add('js');</script>
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
 <script defer src="/_vercel/insights/script.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
 <body>
 
@@ -162,10 +234,9 @@ footer small{color:var(--ink-3);font-size:.88rem}
     <a class="brand" href="#top">Paul Bébéar</a>
     <nav aria-label="Primary">
       <ul>
-        <li><a href="#work">Work</a></li>
-        <li><a href="#now">Now</a></li>
         <li class="hide-sm"><a href="#about">About</a></li>
-        <li><a href="archive/">Archive</a></li>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#cv">CV</a></li>
         <li class="hide-sm"><a href="https://github.com/paul-bebear" rel="noopener">GitHub</a></li>
       </ul>
     </nav>
@@ -173,123 +244,225 @@ footer small{color:var(--ink-3);font-size:.88rem}
 </header>
 
 <main id="top">
-  <div class="wrap hero">
+  <div class="wrap hero" id="about">
     <div>
-      <h1 class="rise">Markets, money and history, made explorable.</h1>
-      <p class="rise d1">Data science and international markets at Albert School and Mines Paris. Based in Madrid.</p>
+      <h1 class="rise">I'm Paul. I make markets, money and history explorable.</h1>
+      <p class="rise d1">I study data science and markets at Albert School and Mines Paris, and work on AI for energy in Madrid.</p>
       <div class="ctas rise d2">
-        <a class="btn primary" href="#work">See work</a>
-        <a class="btn" href="/cv">Interactive CV <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="btn primary" href="#work">See my work</a>
         <a class="btn" href="https://www.linkedin.com/in/pbebear/" rel="noopener"><i class="ph ph-linkedin-logo" aria-hidden="true"></i>LinkedIn</a>
       </div>
     </div>
-    <figure class="rise d3" style="margin:0">
-      <a class="hero-media" href="https://atlas-through-time.vercel.app" rel="noopener" aria-label="Open Atlas Through Time">
-        <img src="assets/atlas.webp" width="1200" height="750" alt="Atlas Through Time: a 3D globe showing country borders in 1900, with a timeline slider from 3000 BCE to 2000 CE" fetchpriority="high">
-      </a>
-      <figcaption class="hero-cap">
-        <span><a href="https://atlas-through-time.vercel.app" rel="noopener">Atlas Through Time</a>. Borders, wars and nations across 5,000 years.</span>
-      </figcaption>
-    </figure>
+    <div class="fan" aria-label="Three recent pieces">
+      <a href="run-the-grid/" aria-label="Run the grid"><img src="assets/run-the-grid.webp" width="1200" height="750" alt="Run the grid: Spanish electricity demand falling to zero during the 28 April 2025 blackout"></a>
+      <a href="light-birthday/" aria-label="Your light-birthday stars"><img src="assets/light-birthday.webp" width="1200" height="750" alt="Your light-birthday stars: a night sky map with stars ringed in teal"></a>
+      <a href="https://atlas-through-time.vercel.app" rel="noopener" aria-label="Atlas Through Time"><img src="assets/atlas.webp" width="1200" height="750" alt="Atlas Through Time: a 3D globe showing country borders in 1900" fetchpriority="high"></a>
+    </div>
   </div>
 
-  <section id="work">
-    <div class="wrap">
-      <h2 class="section-title reveal">Work</h2>
-      <div class="work-grid">
-        <a class="piece wide reveal" href="run-the-grid/">
-          <div class="thumb"><img src="assets/run-the-grid.webp" width="1200" height="750" loading="lazy" alt="Run the grid: electricity demand in peninsular Spain on 28 April 2025 falling to zero at 12:33, against a normal day"></div>
-          <div>
-            <h3>Run the grid <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h3>
-            <p>Balance a real day on Spain's grid, then replay the 90 seconds that blacked out Spain and Portugal on 28 April 2025, from the official reports.</p>
-            <div class="meta">Interactive game and explainer, REE data and official reports</div>
-          </div>
-        </a>
-        <a class="piece wide reveal" href="light-birthday/">
-          <div class="thumb"><img src="assets/light-birthday.webp" width="1200" height="750" loading="lazy" alt="Your light-birthday stars: a night sky map with the stars whose light left them around your birth date ringed in teal"></div>
-          <div>
-            <h3>Your light-birthday stars <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h3>
-            <p>Enter your birthday and find the real stars whose light set off around when you were born and is reaching Earth now. Compare with a friend.</p>
-            <div class="meta">Interactive sky map, Gaia DR3 and Hipparcos data</div>
-          </div>
-        </a>
-        <a class="piece wide reveal" href="half-line/">
-          <div class="thumb"><img src="assets/half-line.webp" width="1200" height="750" loading="lazy" alt="The Half Line: a chart ranking 26 countries by the share of adults who hold half of all wealth"></div>
-          <div>
-            <h3>The Half Line <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h3>
-            <p>How few people hold half of everything, in 26 countries. Toggle wealth or income, remove billionaires, or count public wealth.</p>
-            <div class="meta">Data visualisation, WID and Forbes data</div>
-          </div>
-        </a>
-        <a class="piece reveal" href="spacex-ipo/">
-          <div class="thumb"><img src="assets/spacex-ipo.webp" width="1200" height="750" loading="lazy" alt="SpaceX's IPO, without the spin: summary page with key figures"></div>
-          <div>
-            <h3>SpaceX's IPO, checked <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h3>
-            <p>A viral video on the SpaceX listing, claim by claim. Most of it holds. The index mechanism it blames is described backwards.</p>
-            <div class="meta">Market analysis</div>
-          </div>
-        </a>
-        <a class="piece reveal" href="capex-opex-da/">
-          <div class="thumb"><img src="assets/capex-opex-da.webp" width="1200" height="750" loading="lazy" alt="Capex, Opex and D&amp;A: decision diagram for booking a cost as an expense or an asset"></div>
-          <div>
-            <h3>Capex, opex and D&amp;A <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h3>
-            <p>When a cost hits profit, with live charts. Ends with why regulated grid operators prefer to capitalise.</p>
-            <div class="meta">Finance explainer</div>
-          </div>
-        </a>
-        <a class="piece wide reveal" href="not-so-cosmic-cycles/">
-          <div class="thumb"><img src="assets/not-so-cosmic-cycles.webp" width="1200" height="750" loading="lazy" alt="Not-so-cosmic cycles: a birth-year slider above tabs on beliefs, politics, money, personality and substances"></div>
-          <div>
-            <h3>Not-so-cosmic cycles <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h3>
-            <p>When beliefs, tastes and habits set, and how each generation answers the last. Pick a birth year and see what your 18 to 25 window contained.</p>
-            <div class="meta">Interactive explainer, Gallup, NBER and NYU Stern data</div>
-          </div>
-        </a>
-      </div>
-      <a class="more reveal" href="archive/">Everything else, in the archive <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
-    </div>
-  </section>
-
-  <section id="now">
-    <div class="wrap now">
-      <h2 class="section-title reveal">Now</h2>
-      <div class="now-list">
-        <div class="now-item reveal">
-          <h3>Indexable</h3>
-          <a class="link" href="https://indexable.pro" rel="noopener">indexable.pro <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
-          <p>Structured data for restaurants and bars in Madrid, so search engines and AI assistants read their menus correctly.</p>
-        </div>
-        <div class="now-item reveal">
-          <h3>beBEARlifts</h3>
-          <a class="link" href="https://lifts.paulbebear.com" rel="noopener">lifts.paulbebear.com <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
-          <p>My offline fork of Liftosaur, the open-source lifting tracker. It runs from the iPhone home screen, with no account and no server.</p>
-        </div>
-        <div class="now-item reveal">
-          <h3>A site template for tattoo artists</h3>
-          <span class="status">In progress</span>
-          <p>One page that does the job: real portfolio photos, booking, aftercare.</p>
-        </div>
-        <div class="now-item reveal">
-          <h3>How power grids work</h3>
-          <span class="status">Next</span>
-          <p>A series of interactive explainers on electricity grids and power markets.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="about">
-    <div class="wrap about">
-      <h2 class="section-title reveal">About</h2>
+  <section class="bio">
+    <div class="wrap bio-grid">
       <p class="lead reveal">I grew up in New York with French parents, worked in hospitality in New York, Miami, Paris and Belgium, and now study data and markets.</p>
-      <p class="body reveal">I'm based in Madrid, interning at SENSE Reply on AI for energy systems and building Indexable on the side. I make these pieces to understand a subject properly, then publish them so others can use them too.</p>
-      <ul class="interests reveal" aria-label="Interests">
-        <li>Energy and grids</li>
-        <li>AI systems</li>
-        <li>Markets</li>
-        <li>History and geography</li>
-        <li>Data visualisation</li>
-      </ul>
+      <div class="reveal">
+        <p class="body">I'm interning at SENSE Reply on AI for energy systems and building Indexable on the side. I make these pieces to understand a subject properly, then publish them so others can use them too.</p>
+        <ul class="interests" aria-label="Interests">
+          <li>Energy and grids</li>
+          <li>AI systems</li>
+          <li>Markets</li>
+          <li>History and geography</li>
+          <li>Data visualisation</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="work" id="work" aria-labelledby="work-title">
+    <div class="work-pin">
+      <div class="wrap work-head">
+        <h2 class="section-title" id="work-title">Work</h2>
+        <nav aria-label="Folders">
+          <ul class="folder-index">
+            <li><a href="#f-explore"><i class="ph ph-compass" aria-hidden="true"></i>Explore</a></li>
+            <li><a href="#f-learn"><i class="ph ph-lightbulb" aria-hidden="true"></i>Learn</a></li>
+            <li><a href="#f-fun"><i class="ph ph-sparkle" aria-hidden="true"></i>Just for fun</a></li>
+            <li><a href="#f-apps"><i class="ph ph-device-mobile" aria-hidden="true"></i>Apps</a></li>
+            <li><a href="#f-work"><i class="ph ph-briefcase" aria-hidden="true"></i>For work</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="folders">
+        <!-- Explore: interactive discovery tools -->
+        <article class="folder" id="f-explore" aria-labelledby="f-explore-h">
+          <div class="tab"><i class="ph ph-compass" aria-hidden="true"></i><h3 id="f-explore-h">Explore</h3><span class="count">5</span></div>
+          <div class="sheet">
+            <p class="blurb">Tools for poking around a subject: spin a globe, drag a slider, swap countries and see what changes.</p>
+            <div class="files feature">
+              <a class="file big" href="https://atlas-through-time.vercel.app" rel="noopener">
+                <div class="thumb"><img src="assets/atlas.webp" width="1200" height="750" loading="lazy" alt="Atlas Through Time: a 3D globe showing country borders in 1900, with a timeline slider"></div>
+                <div>
+                  <h4>Atlas Through Time <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h4>
+                  <p>An interactive globe of borders, wars and nations across 5,000 years.</p>
+                </div>
+              </a>
+              <div class="rows">
+                <a class="file row" href="half-line/">
+                  <div class="thumb"><img src="assets/half-line.webp" width="1200" height="750" loading="lazy" alt="The Half Line: 26 countries ranked by the share of adults who hold half of all wealth"></div>
+                  <div><h4>The Half Line <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h4><p>How few people hold half of everything, in 26 countries.</p></div>
+                </a>
+                <a class="file row" href="premium-ladder/">
+                  <div class="thumb"><img src="assets/premium-ladder.webp" width="1200" height="750" loading="lazy" alt="The Premium Ladder: banking, consulting and Big Tech pay as a multiple of the median salary, by country"></div>
+                  <div><h4>The Premium Ladder <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h4><p>What banking, consulting and Big Tech pay against the median salary, in seven countries.</p></div>
+                </a>
+                <a class="file row" href="bottom-wage/">
+                  <div class="thumb"><img src="assets/bottom-wage.webp" width="1200" height="750" loading="lazy" alt="The Bottom Wage: legal minimum wage against the real bottom wage in eight US cities"></div>
+                  <div><h4>The Bottom Wage <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h4><p>Minimum wages against the hours of work rent really costs, in eight US cities.</p></div>
+                </a>
+                <a class="file row" href="not-so-cosmic-cycles/">
+                  <div class="thumb"><img src="assets/not-so-cosmic-cycles.webp" width="1200" height="750" loading="lazy" alt="Not-so-cosmic cycles: a birth-year slider above tabs on beliefs, politics and money"></div>
+                  <div><h4>Not-so-cosmic cycles <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h4><p>Pick a birth year and see when your beliefs, tastes and habits set.</p></div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Learn: explainers -->
+        <article class="folder" id="f-learn" aria-labelledby="f-learn-h">
+          <div class="tab"><i class="ph ph-lightbulb" aria-hidden="true"></i><h3 id="f-learn-h">Learn</h3><span class="count">4</span></div>
+          <div class="sheet">
+            <p class="blurb">Explainers I wrote to understand something properly: how a grid stays up, how a cost hits profit, what a programme would cost.</p>
+            <div class="files feature">
+              <a class="file big" href="run-the-grid/">
+                <div class="thumb"><img src="assets/run-the-grid.webp" width="1200" height="750" loading="lazy" alt="Run the grid: electricity demand in peninsular Spain on 28 April 2025 falling to zero at 12:33"></div>
+                <div>
+                  <h4>Run the grid <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h4>
+                  <p>Balance a real day on Spain's grid, then replay the 90 seconds that blacked out Spain and Portugal on 28 April 2025.</p>
+                </div>
+              </a>
+              <div class="rows">
+                <a class="file row" href="capex-opex-da/">
+                  <div class="thumb"><img src="assets/capex-opex-da.webp" width="1200" height="750" loading="lazy" alt="Capex, Opex and D&amp;A: decision diagram for booking a cost as an expense or an asset"></div>
+                  <div><h4>Capex, opex and D&amp;A <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h4><p>When a cost hits profit, with live charts, and why grid operators prefer to capitalise.</p></div>
+                </a>
+                <a class="file row" href="france-2027/">
+                  <div class="thumb"><img src="assets/france-2027.webp" width="1200" height="750" loading="lazy" alt="The 2027 fork: LFI and RN programmes side by side against the Macron baseline"></div>
+                  <div><h4>The 2027 fork <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h4><p>LFI and the RN side by side, against what Macron leaves behind, with the costings checked.</p></div>
+                </a>
+                <a class="file row" href="spacex-ipo/">
+                  <div class="thumb"><img src="assets/spacex-ipo.webp" width="1200" height="750" loading="lazy" alt="SpaceX's IPO, checked: summary page with key figures"></div>
+                  <div><h4>SpaceX's IPO, checked <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h4><p>A viral video on the listing, claim by claim. Most of it holds; one part is backwards.</p></div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Just for fun -->
+        <article class="folder" id="f-fun" aria-labelledby="f-fun-h">
+          <div class="tab"><i class="ph ph-sparkle" aria-hidden="true"></i><h3 id="f-fun-h">Just for fun</h3><span class="count">2</span></div>
+          <div class="sheet">
+            <p class="blurb">Small things that start with you: your birthday, your face.</p>
+            <div class="files cols-2">
+              <a class="file" href="light-birthday/">
+                <div class="thumb"><img src="assets/light-birthday.webp" width="1200" height="750" loading="lazy" alt="Your light-birthday stars: a night sky map with stars ringed in teal"></div>
+                <div>
+                  <h4>Your light-birthday stars <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h4>
+                  <p>The real stars whose light left them around when you were born and is reaching Earth now.</p>
+                </div>
+              </a>
+              <a class="file" href="face-layers/">
+                <div class="thumb"><img src="assets/face-layers.webp" width="1200" height="750" loading="lazy" alt="Your face in 10 layers: a portrait rebuilt from its first singular-value layers"></div>
+                <div>
+                  <h4>Your face in 10 layers <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h4>
+                  <p>Split a photo into layers ranked by importance and watch your face appear from the blur.</p>
+                </div>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Apps -->
+        <article class="folder" id="f-apps" aria-labelledby="f-apps-h">
+          <div class="tab"><i class="ph ph-device-mobile" aria-hidden="true"></i><h3 id="f-apps-h">Apps</h3><span class="count">2</span></div>
+          <div class="sheet">
+            <p class="blurb">Apps I use every day. No accounts, no servers.</p>
+            <div class="files cols-2">
+              <a class="file" href="https://lifts.paulbebear.com" rel="noopener">
+                <div class="thumb tile"><i class="ph ph-barbell" aria-hidden="true"></i></div>
+                <div>
+                  <h4>beBEARlifts <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h4>
+                  <p>My offline fork of Liftosaur, the open-source lifting tracker. It runs from the iPhone home screen.</p>
+                  <div class="meta">lifts.paulbebear.com</div>
+                </div>
+              </a>
+              <div class="file">
+                <div class="thumb tile"><i class="ph ph-books" aria-hidden="true"></i></div>
+                <div>
+                  <h4>Shelf</h4>
+                  <p>A private reading room for my e-book library. It runs entirely on my Mac, with no internet connection.</p>
+                  <div class="meta">Mac app, private</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- For work -->
+        <article class="folder" id="f-work" aria-labelledby="f-work-h">
+          <div class="tab"><i class="ph ph-briefcase" aria-hidden="true"></i><h3 id="f-work-h">For work</h3><span class="count">3</span></div>
+          <div class="sheet">
+            <p class="blurb">Built for clients and businesses. Older projects are on <a href="https://github.com/paul-bebear" rel="noopener">GitHub</a>.</p>
+            <div class="files feature">
+              <a class="file big" href="https://indexable.pro" rel="noopener">
+                <div class="thumb"><img src="assets/indexable.webp" width="1200" height="750" loading="lazy" alt="Indexable: clear websites for neighbourhood businesses in Madrid"></div>
+                <div>
+                  <h4>Indexable <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h4>
+                  <p>Websites and Google listings for independent restaurants, bars and tattoo artists in Madrid.</p>
+                  <div class="meta">indexable.pro</div>
+                </div>
+              </a>
+              <div class="rows">
+                <a class="file row" href="https://github.com/paul-bebear/Arcane-Wines-DB" rel="noopener">
+                  <div class="thumb tile"><i class="ph ph-wine" aria-hidden="true"></i></div>
+                  <div><h4>Arcane Wines DB <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h4><p>A database migration and BI frontend for a wine bar.</p><div class="meta">GitHub</div></div>
+                </a>
+                <div class="file row">
+                  <div class="thumb tile"><i class="ph ph-pen-nib" aria-hidden="true"></i></div>
+                  <div><h4>A site template for tattoo artists</h4><p>One page that does the job: real portfolio photos, booking, aftercare.</p><div class="meta">In progress</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="cv" id="cv" aria-labelledby="cv-title">
+    <div class="wrap cv-grid">
+      <a class="cv-shot reveal" href="https://cv.paulbebear.com/?simple" rel="noopener" aria-label="Open the classic CV"><img src="assets/cv.webp" width="1200" height="750" loading="lazy" alt="Paul Bébéar's CV: One street, four cities, with stops in New York, Paris, Milan and Madrid"></a>
+      <div class="reveal">
+        <h2 class="section-title" id="cv-title">My CV</h2>
+        <p class="sub">Three ways to read it, depending on how much time you have.</p>
+        <div class="cv-links">
+          <a class="cv-link primary" href="https://cv.paulbebear.com/?full" rel="noopener">
+            <i class="ph ph-path" aria-hidden="true"></i>
+            <span><strong>Walk through it</strong><small>One street, four cities: New York, Paris, Milan and Madrid.</small></span>
+            <i class="ph ph-arrow-up-right" aria-hidden="true"></i>
+          </a>
+          <a class="cv-link" href="https://cv.paulbebear.com/?simple" rel="noopener">
+            <i class="ph ph-article" aria-hidden="true"></i>
+            <span><strong>Classic CV</strong><small>The same CV on one page, in English or French.</small></span>
+            <i class="ph ph-arrow-up-right" aria-hidden="true"></i>
+          </a>
+          <a class="cv-link" href="https://cv.paulbebear.com/paul-bebear-cv.pdf" rel="noopener">
+            <i class="ph ph-file-pdf" aria-hidden="true"></i>
+            <span><strong>Download the PDF</strong><small>For printing or attaching to an application.</small></span>
+            <i class="ph ph-download-simple" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
     </div>
   </section>
 </main>
@@ -306,16 +479,85 @@ footer small{color:var(--ink-3);font-size:.88rem}
 </footer>
 
 <script>
-(() => {
-  const els = document.querySelectorAll('.reveal');
-  if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    els.forEach(e => e.classList.add('in')); return;
+document.addEventListener('DOMContentLoaded', () => {
+  const root = document.documentElement;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const folders = [...document.querySelectorAll('.folder')];
+  const tabs = [...document.querySelectorAll('.folder-index a')];
+  const setActive = i => tabs.forEach((t, k) => t.setAttribute('aria-current', k === i ? 'true' : 'false'));
+  setActive(0);
+
+  // Reveal on enter, and folders slide in from the right when stacked (small screens, or no GSAP)
+  const show = el => el.classList.add('in');
+  if (!('IntersectionObserver' in window) || reduce) {
+    document.querySelectorAll('.reveal, .folder').forEach(show);
+  } else {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => { if (en.isIntersecting) { show(en.target); io.unobserve(en.target); } });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    document.querySelectorAll('.reveal, .folder').forEach(el => io.observe(el));
+    // Stacked mode: highlight the folder in view
+    const spy = new IntersectionObserver(entries => {
+      if (root.classList.contains('pan-on')) return;
+      entries.forEach(en => { if (en.isIntersecting) setActive(folders.indexOf(en.target)); });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    folders.forEach(f => spy.observe(f));
   }
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
-  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.1 });
-  els.forEach(e => io.observe(e));
-})();
+
+  // Large screens: pin the Work section and pan the folders right to left as you scroll down
+  if (!window.gsap || !window.ScrollTrigger) return;
+  gsap.registerPlugin(ScrollTrigger);
+  const navH = () => document.querySelector('.nav').offsetHeight;
+  const mm = gsap.matchMedia();
+  mm.add('(min-width: 900px) and (min-height: 620px) and (prefers-reduced-motion: no-preference)', () => {
+    root.classList.add('pan-on');
+    folders.forEach(show);
+    const pin = document.querySelector('.work-pin');
+    const track = document.querySelector('.folders');
+    const distance = () => Math.max(0, track.scrollWidth - pin.clientWidth);
+    const stops = () => {
+      const d = distance() || 1;
+      return folders.map(f => Math.min(1, (f.offsetLeft - folders[0].offsetLeft) / d));
+    };
+    const nearest = p => { const s = stops(); let b = 0; s.forEach((v, i) => { if (Math.abs(v - p) < Math.abs(s[b] - p)) b = i; }); return b; };
+
+    const pan = gsap.to(track, {
+      x: () => -distance(),
+      ease: 'none',
+      scrollTrigger: {
+        trigger: pin,
+        start: () => 'top ' + navH(),
+        end: () => '+=' + distance(),
+        pin: true,
+        scrub: 0.6,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        snap: { snapTo: p => stops()[nearest(p)], duration: { min: 0.2, max: 0.5 }, delay: 0.08, ease: 'power1.inOut' },
+        onUpdate: self => setActive(nearest(self.progress)),
+      },
+    });
+
+    // Each folder after the first lands like a sheet of paper sliding onto the desk
+    folders.slice(1).forEach(f => {
+      gsap.from(f, {
+        rotation: 2.5, y: 28, opacity: 0.35, ease: 'none',
+        scrollTrigger: { trigger: f, containerAnimation: pan, start: 'left right', end: 'left 55%', scrub: true },
+      });
+    });
+
+    const onTab = e => {
+      const i = tabs.indexOf(e.currentTarget);
+      if (i < 0) return;
+      e.preventDefault();
+      const st = pan.scrollTrigger;
+      window.scrollTo({ top: st.start + stops()[i] * (st.end - st.start) + 1, behavior: 'smooth' });
+    };
+    tabs.forEach(t => t.addEventListener('click', onTab));
+    return () => { tabs.forEach(t => t.removeEventListener('click', onTab)); root.classList.remove('pan-on'); };
+  });
+  // Fonts and lazy images change widths; re-measure once everything has loaded
+  window.addEventListener('load', () => ScrollTrigger.refresh());
+});
 </script>
 </body>
 </html>

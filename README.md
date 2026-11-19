@@ -3,20 +3,19 @@
 Static site. No build step. Vercel serves the folder as-is.
 
 ```
-index.html              home: hero, Work, Now, About
+index.html              home: about-me hero, bio, Work (five folders that pan sideways as you scroll), CV links
 half-line/index.html    The Half Line
 premium-ladder/index.html  The Premium Ladder (companion to The Half Line)
 bottom-wage/index.html  The Bottom Wage (minimum wage vs real bottom wage, 8 US cities)
 spacex-ipo/index.html   SpaceX IPO teardown
 capex-opex-da/index.html  Capex, Opex and D&A
 not-so-cosmic-cycles/index.html  Not-so-cosmic cycles (when beliefs and habits lock in; 9 tabs, plain-language glossary)
-archive/index.html      full list of linked work (nav: Archive)
-labour-economics/index.html  Labour economics study guide
 light-birthday/index.html  Your light-birthday stars (stars whose light left them when you were born; data build in light-birthday/build/)
 run-the-grid/index.html  Run the grid (balance a real Spanish grid day, replay the 28 April 2025 Iberian blackout; research brief in RESEARCH.md, REE data build in build/)
 france-2027/index.html  The 2027 fork (LFI vs RN against the Macron baseline; programme texts, costings and the 14-bracket tax calculator are embedded in the page)
 face-layers/index.html  Your face in 10 layers (SVD of a photo, in the browser; the SVD runs in face-layers/svd-worker.js, sample paintings in face-layers/samples/)
-assets/                 thumbnails (1200x750 webp)
+assets/                 thumbnails (1200x750 webp); cv.webp and indexable.webp are screenshots of the live sites
+vercel.json             redirects: /cv to cv.paulbebear.com, /archive to /#work
 ```
 
 Atlas Through Time, Indexable and beBEARlifts link out to their own live sites. beBEARlifts lives at lifts.paulbebear.com, served by its own Vercel project (bebearlifts) from github.com/paul-bebear/beBEARlifts.
@@ -44,7 +43,11 @@ When a piece changes: replace its `index.html` here, refresh the thumbnail if th
 Local fix carried in the site copy: `capex-opex-da` has `align-content:start` on `.branch` (the "No" tag stretched into a tall pill). Re-apply it if the page is replaced, or fix it in the artifact.
 
 ## Adding a piece
-Home page Work section: 4-6 pieces max. Every published piece also gets an entry in archive/index.html.
+Everything lives on the home page now, in one of five folders inside the Work section: Explore (discovery tools), Learn (explainers), Just for fun, Apps, For work. There is no archive page any more (/archive redirects to /#work).
+
+To add a piece, copy a `file row` block into the right folder's `.rows` list and bump the number in that folder's tab. A folder with 4 or more items uses the `files feature` layout (one big card plus rows); a folder with 2 uses `files cols-2`. Pieces with no screenshot get a `thumb tile` with a Phosphor icon.
+
+The sideways pan only runs on screens at least 900px wide and 620px tall, with motion allowed. Everywhere else the folders stack and slide in from the right. Check both after a change.
 
 Every page also carries a `<!-- seo, previews, analytics -->` block just before `</head>`. When you add or replace a piece:
 
@@ -56,5 +59,3 @@ Every page also carries a `<!-- seo, previews, analytics -->` block just before 
 If you replace a page's `index.html` with a fresh export, its block is gone, so re-add it.
 
 Analytics is Vercel Web Analytics (`/_vercel/insights/script.js`). It must be switched on in the Vercel dashboard (Project, Analytics, Enable). Until then the script 404s harmlessly.
-
-premium-ladder and labour-economics have no thumbnail yet. Their previews use half-line.jpg as a stand-in.

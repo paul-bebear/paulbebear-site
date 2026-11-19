@@ -5,6 +5,16 @@
       "source": "/cv",
       "destination": "https://cv.paulbebear.com/",
       "permanent": false
+    },
+    {
+      "source": "/archive",
+      "destination": "/#work",
+      "permanent": true
+    },
+    {
+      "source": "/archive/",
+      "destination": "/#work",
+      "permanent": true
     }
   ]
 }
