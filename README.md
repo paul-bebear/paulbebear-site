@@ -28,7 +28,7 @@ Each piece has one source of truth. The site copy is the published version.
 |---|---|---|
 | The Half Line | `~/Downloads/The Half Line.html` (move to its own folder) | /half-line/ |
 | SpaceX teardown | `~/Downloads/spacex-ipo-teardown.html` | /spacex-ipo/ |
-| Capex, Opex and D&A | Claude artifact RU9kPwZPtANiyG2pynjb5G | /capex-opex-da/ |
+| Capex, Opex and D&A | `capex-opex-da/index.html` itself, since it gained step mode and the recording view (beat sheet in `capex-opex-da/VIDEO.md`). The Claude artifact RU9kPwZPtANiyG2pynjb5G is the older original; do not re-export from it | /capex-opex-da/ |
 | The Premium Ladder | built from scripts in a Claude session (data, tax model, page template); the page embeds all data | /premium-ladder/ |
 | The Bottom Wage | built from scripts in a Claude session (model.py, template.html); the page embeds all data | /bottom-wage/ |
 | Atlas Through Time | github.com/paul-bebear/atlas-through-time | external, already live |
