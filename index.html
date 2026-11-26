@@ -77,14 +77,27 @@ p{margin:0}
 .btn.primary:hover{filter:brightness(1.08)}
 
 .fan{position:relative;aspect-ratio:16/12;max-width:560px;width:100%;justify-self:end}
-.fan a{position:absolute;width:78%;border-radius:var(--r);overflow:hidden;border:1px solid var(--rule);box-shadow:var(--shadow);background:var(--surface);transition:transform .7s var(--ease)}
+/* Cards sit in three slots (back, middle, front), placed by translate in % of the card itself.
+   Without JS the slots follow DOM order; with JS, data-slot moves each card and the front one tucks to the back every second. */
+.fan a{position:absolute;left:0;top:0;width:78%;border-radius:var(--r);overflow:hidden;border:1px solid var(--rule);box-shadow:var(--shadow);background:var(--surface);transform:translate(calc(var(--x) + var(--dx,0px)),calc(var(--y) + var(--dy,0px))) rotate(calc(var(--r) + var(--dr,0deg)));transition:transform .7s var(--ease)}
 .fan img{aspect-ratio:16/10;object-fit:cover;object-position:top;width:100%}
-.fan a:nth-child(1){left:22%;top:0;transform:rotate(5deg)}
-.fan a:nth-child(2){left:11%;top:14%;transform:rotate(-2deg)}
-.fan a:nth-child(3){left:0;top:30%;transform:rotate(-7deg)}
-.fan:hover a:nth-child(1){transform:rotate(8deg) translate(14px,-10px)}
-.fan:hover a:nth-child(3){transform:rotate(-10deg) translate(-12px,10px)}
-.fan a:hover{z-index:2}
+.fan a:nth-child(1){--x:28.2%;--y:0%;--r:5deg;z-index:1}
+.fan a:nth-child(2){--x:14.1%;--y:21.5%;--r:-2deg;z-index:2}
+.fan a:nth-child(3){--x:0%;--y:46.2%;--r:-7deg;z-index:3}
+.fan a[data-slot="0"]{--x:28.2%;--y:0%;--r:5deg;z-index:1}
+.fan a[data-slot="1"]{--x:14.1%;--y:21.5%;--r:-2deg;z-index:2}
+.fan a[data-slot="2"]{--x:0%;--y:46.2%;--r:-7deg;z-index:3}
+.fan:hover a:is([data-slot="0"],:nth-child(1):not([data-slot])){--dx:14px;--dy:-10px;--dr:3deg}
+.fan:hover a:is([data-slot="2"],:nth-child(3):not([data-slot])){--dx:-12px;--dy:10px;--dr:-3deg}
+.fan a:hover{z-index:4}
+.fan.dealt a{animation:none}
+.fan.dealt a.tuck{animation:tuck .75s var(--ease)}
+@keyframes tuck{
+  0%{transform:translate(0%,46.2%) rotate(-7deg);z-index:4}
+  42%{transform:translate(-12%,62%) rotate(-12deg);z-index:4}
+  43%{z-index:0}
+  100%{transform:translate(28.2%,0%) rotate(5deg);z-index:0}
+}
 
 /* Bio: wide lead sentence, body and interests beside it */
 .bio{border-top:1px solid var(--rule);padding-block:clamp(56px,8vw,104px)}
@@ -540,6 +553,29 @@ document.addEventListener('DOMContentLoaded', () => {
       entries.forEach(en => { if (en.isIntersecting) setActive(folders.indexOf(en.target)); });
     }, { rootMargin: '-45% 0px -50% 0px' });
     folders.forEach(f => spy.observe(f));
+  }
+
+  // Hero cards: every second the front card tucks to the back. Pauses on hover or focus, off screen, and in background tabs.
+  const fan = document.querySelector('.fan');
+  if (fan && !reduce) {
+    const cards = [...fan.children];
+    cards.forEach((c, i) => { c.dataset.slot = i; c.addEventListener('animationend', e => { if (e.animationName === 'tuck') c.classList.remove('tuck'); }); });
+    let hold = false, onScreen = true;
+    fan.addEventListener('pointerenter', () => { hold = true; });
+    fan.addEventListener('pointerleave', () => { hold = false; });
+    fan.addEventListener('focusin', () => { hold = true; });
+    fan.addEventListener('focusout', () => { hold = false; });
+    if ('IntersectionObserver' in window) new IntersectionObserver(([en]) => { onScreen = en.isIntersecting; }).observe(fan);
+    const shuffle = () => {
+      if (hold || !onScreen || document.hidden) return;
+      cards.forEach(c => {
+        const s = +c.dataset.slot;
+        if (s === cards.length - 1) { c.classList.remove('tuck'); void c.offsetWidth; c.classList.add('tuck'); c.dataset.slot = 0; }
+        else c.dataset.slot = s + 1;
+      });
+    };
+    // Start once the load-in deal has finished
+    setTimeout(() => { fan.classList.add('dealt'); setInterval(shuffle, 1000); }, 1500);
   }
 
   // Large screens: pin the Work section and pan the folders right to left as you scroll down
