@@ -3,7 +3,7 @@
 Static site. No build step. Vercel serves the folder as-is.
 
 ```
-index.html              home: about-me hero, bio, Work (five folders that pan sideways as you scroll), CV links
+index.html              home: about-me hero, bio, Work (six folders that pan sideways as you scroll), CV links
 half-line/index.html    The Half Line
 premium-ladder/index.html  The Premium Ladder (companion to The Half Line)
 bottom-wage/index.html  The Bottom Wage (minimum wage vs real bottom wage, 8 US cities)
@@ -15,7 +15,7 @@ run-the-grid/index.html  Run the grid (balance a real Spanish grid day, replay t
 france-2027/index.html  The 2027 fork (LFI vs RN against the Macron baseline; programme texts, costings and the 14-bracket tax calculator are embedded in the page)
 face-layers/index.html  Your face in 10 layers (SVD of a photo, in the browser; the SVD runs in face-layers/svd-worker.js, sample paintings in face-layers/samples/; #step-N opens the filming step mode, beat sheet in face-layers/VIDEO.md)
 videos/index.html       Off and on the grid (the video timeline and skill tree; standalone, not in the Work folders; to mark a video as out, add it to POSTED at the top of the script; R or ?rec opens the recording view)
-assets/                 thumbnails (1200x750 webp); cv.webp and indexable.webp are screenshots of the live sites
+assets/                 thumbnails (1200x750 webp); cv, indexable, perfil and landed are screenshots of the live sites
 vercel.json             redirects: /cv to cv.paulbebear.com, /archive to /#work
 ```
 

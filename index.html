@@ -117,6 +117,7 @@ p{margin:0}
 .files{flex:1;min-height:0;display:grid;gap:clamp(14px,2vw,24px)}
 .files.feature{grid-template-columns:minmax(0,6fr) minmax(0,5fr)}
 .files.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.files.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
 .rows{display:grid;gap:12px;align-content:start;min-height:0}
 
 .file{text-decoration:none;display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;border-radius:var(--r)}
@@ -146,7 +147,7 @@ a.file.row:hover{background:color-mix(in srgb,var(--surface) 60%,transparent)}
 .pan-on .folder{width:min(1060px,calc(100vw - 2 * var(--gut) - 64px));height:100%;flex-shrink:0}
 .pan-on .sheet{gap:clamp(12px,2vh,20px)}
 .pan-on .files{grid-template-rows:minmax(0,1fr)}
-.pan-on .file.big,.pan-on .files.cols-2 .file{min-height:0}
+.pan-on .file.big,.pan-on .files[class*="cols-"] .file{min-height:0}
 .pan-on .file.big .thumb,.pan-on .files[class*="cols-"] .thumb{flex:1;min-height:0}
 .pan-on .file.big .thumb img,.pan-on .files[class*="cols-"] .thumb img{aspect-ratio:auto;height:100%}
 .pan-on .file.big .thumb.tile,.pan-on .files[class*="cols-"] .thumb.tile{aspect-ratio:auto}
@@ -205,13 +206,14 @@ footer small{color:var(--ink-3);font-size:.88rem}
   .fan{justify-self:center;max-width:460px}
   .bio-grid{grid-template-columns:1fr;align-items:start}
   .files.feature{grid-template-columns:1fr}
+  .files.cols-3{grid-template-columns:repeat(2,minmax(0,1fr))}
   .cv-grid{grid-template-columns:1fr}
   .cv-shot{transform:none}
 }
 @media (max-width:640px){
   .nav ul li.hide-sm{display:none}
-  .files.cols-2{grid-template-columns:1fr}
-  .files.cols-2 .file{display:grid;grid-template-columns:clamp(96px,30vw,140px) minmax(0,1fr);gap:16px;align-items:center}
+  .files.cols-2,.files.cols-3{grid-template-columns:1fr}
+  .files.cols-2 .file,.files.cols-3 .file{display:grid;grid-template-columns:clamp(96px,30vw,140px) minmax(0,1fr);gap:16px;align-items:center}
   .work-head{flex-direction:column;align-items:flex-start}
   .cv-link{padding:14px}
   .cv-link > i:first-child{width:38px;height:38px;font-size:1.2rem}
@@ -254,8 +256,8 @@ footer small{color:var(--ink-3);font-size:.88rem}
       </div>
     </div>
     <div class="fan" aria-label="Three recent pieces">
-      <a href="run-the-grid/" aria-label="Run the grid"><img src="assets/run-the-grid.webp" width="1200" height="750" alt="Run the grid: Spanish electricity demand falling to zero during the 28 April 2025 blackout"></a>
-      <a href="light-birthday/" aria-label="Your light-birthday stars"><img src="assets/light-birthday.webp" width="1200" height="750" alt="Your light-birthday stars: a night sky map with stars ringed in teal"></a>
+      <a href="https://landed.paulbebear.com" rel="noopener" aria-label="Landed"><img src="assets/landed.webp" width="1200" height="750" alt="Landed Madrid: New to Madrid? Start here. A guide for Americans, with the Metrópolis building"></a>
+      <a href="https://perfil.paulbebear.com" rel="noopener" aria-label="Perfil"><img src="assets/perfil.webp" width="1200" height="750" alt="Perfil: twelve nights in Madrid, and one morning of surgery, over a rooftop terrace at sunset"></a>
       <a href="https://atlas-through-time.vercel.app" rel="noopener" aria-label="Atlas Through Time"><img src="assets/atlas.webp" width="1200" height="750" alt="Atlas Through Time: a 3D globe showing country borders in 1900" fetchpriority="high"></a>
     </div>
   </div>
@@ -283,6 +285,7 @@ footer small{color:var(--ink-3);font-size:.88rem}
         <nav aria-label="Folders">
           <ul class="folder-index">
             <li><a href="#f-explore"><i class="ph ph-compass" aria-hidden="true"></i>Explore</a></li>
+            <li><a href="#f-ventures"><i class="ph ph-storefront" aria-hidden="true"></i>Ventures</a></li>
             <li><a href="#f-learn"><i class="ph ph-lightbulb" aria-hidden="true"></i>Learn</a></li>
             <li><a href="#f-fun"><i class="ph ph-sparkle" aria-hidden="true"></i>Just for fun</a></li>
             <li><a href="#f-apps"><i class="ph ph-device-mobile" aria-hidden="true"></i>Apps</a></li>
@@ -322,6 +325,41 @@ footer small{color:var(--ink-3);font-size:.88rem}
                   <div class="thumb"><img src="assets/not-so-cosmic-cycles.webp" width="1200" height="750" loading="lazy" alt="Not-so-cosmic cycles: a birth-year slider above tabs on beliefs, politics and money"></div>
                   <div><h4>Not-so-cosmic cycles <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h4><p>Pick a birth year and see when your beliefs, tastes and habits set.</p></div>
                 </a>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Ventures: businesses of my own -->
+        <article class="folder" id="f-ventures" aria-labelledby="f-ventures-h">
+          <div class="tab"><i class="ph ph-storefront" aria-hidden="true"></i><h3 id="f-ventures-h">Ventures</h3><span class="count">3</span></div>
+          <div class="sheet">
+            <p class="blurb">Businesses I'm starting, each with its own site.</p>
+            <div class="files cols-3">
+              <a class="file" href="https://perfil.paulbebear.com" rel="noopener">
+                <div class="thumb"><img src="assets/perfil.webp" width="1200" height="750" loading="lazy" alt="Perfil: twelve nights in Madrid, and one morning of surgery"></div>
+                <div>
+                  <h4>Perfil <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h4>
+                  <p>Rhinoplasty with an independent Madrid surgeon, then ten to fourteen nights in a five-star hotel with a nurse, a driver and a host. One quote, flights included.</p>
+                  <div class="meta">perfil.paulbebear.com</div>
+                </div>
+              </a>
+              <a class="file" href="https://landed.paulbebear.com" rel="noopener">
+                <div class="thumb"><img src="assets/landed.webp" width="1200" height="750" loading="lazy" alt="Landed Madrid: New to Madrid? Start here."></div>
+                <div>
+                  <h4>Landed <i class="ph ph-arrow-up-right" aria-hidden="true"></i></h4>
+                  <p>A guide for Americans who just arrived in Madrid: English-speaking doctors, neighbourhoods matched to your budget, and how to get around.</p>
+                  <div class="meta">landed.paulbebear.com</div>
+                </div>
+              </a>
+              <!-- Lorraine: swap this div for an <a class="file" href="https://lorraine.paulbebear.com" rel="noopener"> once the site is live -->
+              <div class="file">
+                <div class="thumb tile"><i class="ph ph-t-shirt" aria-hidden="true"></i></div>
+                <div>
+                  <h4>Lorraine</h4>
+                  <p>A clothing line. The site opens soon.</p>
+                  <div class="meta">Coming soon</div>
+                </div>
               </div>
             </div>
           </div>
