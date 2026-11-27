@@ -81,28 +81,26 @@ p{margin:0}
 .btn.primary:hover{filter:brightness(1.08)}
 
 .fan{position:relative;aspect-ratio:16/12;max-width:560px;width:100%;justify-self:end}
-/* Cards sit in four slots (back to front), placed by translate in % of the card itself.
+/* Cards sit in three slots (back, middle, front), placed by translate in % of the card itself.
    Without JS the slots follow DOM order; with JS, data-slot moves each card and the front one tucks to the back every second. */
 .fan a{position:absolute;left:0;top:0;width:78%;border-radius:var(--r);overflow:hidden;border:1px solid var(--rule);box-shadow:var(--shadow);background:var(--surface);transform:translate(calc(var(--x) + var(--dx,0px)),calc(var(--y) + var(--dy,0px))) rotate(calc(var(--r) + var(--dr,0deg)));transition:transform .7s var(--ease)}
 .fan img{aspect-ratio:16/10;object-fit:cover;object-position:top;width:100%}
-.fan a:nth-child(1){--x:30.8%;--y:0%;--r:6deg;z-index:1}
-.fan a:nth-child(2){--x:20.5%;--y:15.4%;--r:1deg;z-index:2}
-.fan a:nth-child(3){--x:10.3%;--y:30.8%;--r:-3deg;z-index:3}
-.fan a:nth-child(4){--x:0%;--y:46.2%;--r:-7deg;z-index:4}
-.fan a[data-slot="0"]{--x:30.8%;--y:0%;--r:6deg;z-index:1}
-.fan a[data-slot="1"]{--x:20.5%;--y:15.4%;--r:1deg;z-index:2}
-.fan a[data-slot="2"]{--x:10.3%;--y:30.8%;--r:-3deg;z-index:3}
-.fan a[data-slot="3"]{--x:0%;--y:46.2%;--r:-7deg;z-index:4}
+.fan a:nth-child(1){--x:28.2%;--y:0%;--r:5deg;z-index:1}
+.fan a:nth-child(2){--x:14.1%;--y:21.5%;--r:-2deg;z-index:2}
+.fan a:nth-child(3){--x:0%;--y:46.2%;--r:-7deg;z-index:3}
+.fan a[data-slot="0"]{--x:28.2%;--y:0%;--r:5deg;z-index:1}
+.fan a[data-slot="1"]{--x:14.1%;--y:21.5%;--r:-2deg;z-index:2}
+.fan a[data-slot="2"]{--x:0%;--y:46.2%;--r:-7deg;z-index:3}
 .fan:hover a:is([data-slot="0"],:nth-child(1):not([data-slot])){--dx:14px;--dy:-10px;--dr:3deg}
-.fan:hover a:is([data-slot="3"],:nth-child(4):not([data-slot])){--dx:-12px;--dy:10px;--dr:-3deg}
-.fan a:hover{z-index:5}
+.fan:hover a:is([data-slot="2"],:nth-child(3):not([data-slot])){--dx:-12px;--dy:10px;--dr:-3deg}
+.fan a:hover{z-index:4}
 .fan.dealt a{animation:none}
 .fan.dealt a.tuck{animation:tuck .75s var(--ease)}
 @keyframes tuck{
-  0%{transform:translate(0%,46.2%) rotate(-7deg);z-index:5}
-  42%{transform:translate(-12%,62%) rotate(-12deg);z-index:5}
+  0%{transform:translate(0%,46.2%) rotate(-7deg);z-index:4}
+  42%{transform:translate(-12%,62%) rotate(-12deg);z-index:4}
   43%{z-index:0}
-  100%{transform:translate(30.8%,0%) rotate(6deg);z-index:0}
+  100%{transform:translate(28.2%,0%) rotate(5deg);z-index:0}
 }
 
 /* Bio: wide lead sentence, body and interests beside it */
@@ -210,7 +208,7 @@ footer small{color:var(--ink-3);font-size:.88rem}
   .rise.d1{animation-delay:.08s}.rise.d2{animation-delay:.16s}.rise.d3{animation-delay:.24s}
   @keyframes rise{to{opacity:1;transform:none}}
   .fan a{animation:deal .9s var(--ease) backwards}
-  .fan a:nth-child(1){animation-delay:.54s}.fan a:nth-child(2){animation-delay:.42s}.fan a:nth-child(3){animation-delay:.30s}.fan a:nth-child(4){animation-delay:.18s}
+  .fan a:nth-child(1){animation-delay:.45s}.fan a:nth-child(2){animation-delay:.33s}.fan a:nth-child(3){animation-delay:.21s}
   @keyframes deal{from{opacity:0;transform:translate(40px,24px) rotate(0)}}
   .js .reveal{opacity:0;transform:translateY(20px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
   .js .reveal.in{opacity:1;transform:none}
@@ -275,10 +273,9 @@ footer small{color:var(--ink-3);font-size:.88rem}
         <a class="btn" href="https://www.linkedin.com/in/pbebear/" rel="noopener"><i class="ph ph-linkedin-logo" aria-hidden="true"></i>LinkedIn</a>
       </div>
     </div>
-    <div class="fan" aria-label="Four recent pieces">
+    <div class="fan" aria-label="Three recent pieces">
       <a href="https://landed.paulbebear.com" rel="noopener" aria-label="Landed"><img src="assets/landed.webp" width="1200" height="750" alt="Landed Madrid: New to Madrid? Start here. A guide for Americans, with the Metrópolis building"></a>
       <a href="https://perfil.paulbebear.com" rel="noopener" aria-label="Perfil"><img src="assets/perfil.webp" width="1200" height="750" alt="Perfil: twelve nights in Madrid, and one morning of surgery, over a rooftop terrace at sunset"></a>
-      <a href="https://lorraine.paulbebear.com" rel="noopener" aria-label="Lorraine"><img src="assets/lorraine.webp" width="1200" height="750" alt="Lorraine Studio: The Lorraine Collection, six models in hooded capes, fitted layers and wide-leg cargo denim"></a>
       <a href="https://atlas-through-time.vercel.app" rel="noopener" aria-label="Atlas Through Time"><img src="assets/atlas.webp" width="1200" height="750" alt="Atlas Through Time: a 3D globe showing country borders in 1900" fetchpriority="high"></a>
     </div>
   </div>
@@ -353,10 +350,11 @@ footer small{color:var(--ink-3);font-size:.88rem}
 
         <!-- Ventures: businesses of my own -->
         <article class="folder" id="f-ventures" aria-labelledby="f-ventures-h">
-          <div class="tab"><i class="ph ph-storefront" aria-hidden="true"></i><h3 id="f-ventures-h">Ventures</h3><span class="count">3</span></div>
+          <div class="tab"><i class="ph ph-storefront" aria-hidden="true"></i><h3 id="f-ventures-h">Ventures</h3><span class="count">2</span></div>
           <div class="sheet">
             <p class="blurb">Businesses I'm starting, each with its own site.</p>
-            <div class="files cols-3">
+            <!-- Lorraine is hidden for now. To bring it back: uncomment its card below, set the count to 3 and the grid to cols-3. -->
+            <div class="files cols-2">
               <a class="file" href="https://perfil.paulbebear.com" rel="noopener">
                 <div class="thumb"><img src="assets/perfil.webp" width="1200" height="750" loading="lazy" alt="Perfil: twelve nights in Madrid, and one morning of surgery"></div>
                 <div>
@@ -373,6 +371,7 @@ footer small{color:var(--ink-3);font-size:.88rem}
                   <div class="meta">landed.paulbebear.com</div>
                 </div>
               </a>
+              <!--
               <a class="file" href="https://lorraine.paulbebear.com" rel="noopener">
                 <div class="thumb"><img src="assets/lorraine.webp" width="1200" height="750" loading="lazy" alt="Lorraine Studio: The Lorraine Collection, six models in hooded capes, fitted layers and wide-leg cargo denim"></div>
                 <div>
@@ -381,6 +380,7 @@ footer small{color:var(--ink-3);font-size:.88rem}
                   <div class="meta">lorraine.paulbebear.com</div>
                 </div>
               </a>
+              -->
             </div>
           </div>
         </article>
